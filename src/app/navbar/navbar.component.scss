@@ -1,0 +1,74 @@
+.navbar {
+  display: flex;
+  justify-content: center;
+  margin: 40px auto 20px;
+  gap: 20px;
+  padding: 20px;
+  border-radius: 12px;
+  background-color: rgba(white, 0.25);
+  backdrop-filter: 3px;
+}
+
+.tab {
+  position: relative;
+  z-index:1
+}
+
+.tab-tile {
+    display: flex;
+  padding: 15px;
+  border-radius: 10px;
+  color:#222;
+  cursor: pointer;
+}
+
+.tab-tile::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: 0;
+  left: 0;
+  background-color: brown;
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+  opacity:0.9;
+transition: 0.2s;
+}
+
+.tab-tile:hover::before {
+    transform:scale(1.2);
+    opacity:1;
+}
+
+.dashboard-tab .tab-tile::before {
+    // background: linear-gradient(45deg, #f5a5f8, #c79b59);
+    background: linear-gradient(45deg, #F7A1AB, #B8C4F5)
+}
+
+.calendar-tab .tab-tile::before {
+    background: linear-gradient(45deg, #8ADBE5, #FAC6CC);
+}
+
+.settings-tab .tab-tile::before {
+    background: linear-gradient(45deg, #F8A98C, #ABE5ED);
+}
+
+.notifications-tab .tab-tile::before {
+    background: linear-gradient(45deg, #B8C4F5, #F7A1AB);
+}
+
+
+// #8ca3ba
+
+
+
+// #ca9b84
+
+
+// #95a0b2
+
+// #efead6
+
+
+// #1c3c63

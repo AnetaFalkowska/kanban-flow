@@ -1,0 +1,43 @@
+@import url("https://cdn.jsdelivr.net/gh/jgthms/minireset.css@master/minireset.min.css");
+@import url("https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,100..900&display=swap");
+
+.app-wrapper {
+//   background-color: green;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+    background-image: url("../assets/picture1.jpg");
+  background-repeat: no-repeat;
+  background-size:cover;
+  background-position: center;
+  background-attachment: fixed;
+}
+
+.top-section {
+//   background-color: darkblue;
+  padding: 50px;
+  text-align: center;
+  color: whitesmoke;
+  h1 {
+    font-size: 40px;
+    font-weight: 600;
+    text-shadow: 0 1px 4px rgba(black, 0.1);
+  }
+  h2 {
+    font-size: 26px;
+    text-shadow: 0 1px 3px rgba(black, 0.1);
+  }
+}
+
+.content-section {
+//   background-color: antiquewhite;
+  flex-grow: 1;
+}
+
+.bottom-section {
+  width: 100%;
+//   background-color: aquamarine;
+  app-navbar {
+    display: flex;
+  }
+}
