@@ -1,0 +1,20 @@
+.dashboard-wrapper {
+  height: 100%;
+  overflow-y: auto;
+}
+
+.boardcards-container {
+
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding:30px;
+}
+
+.title {
+    color: rgba(black, 0.7);
+    font-size: 36px;
+    font-weight: 600;
+    text-align: center;
+}

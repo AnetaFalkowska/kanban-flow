@@ -1,12 +1,41 @@
 /* You can add global styles to this file, and also import other style files */
 
 html {
-    font-family: "Inter", sans-serif ;
-    color: #222;
+  font-family: "Inter", sans-serif;
+  color: #222;
 }
 
-
-.tab {
-
+.container {
+  max-width: 1000px;
+  margin: auto;
 }
 
+.btns-container {
+  display: flex;
+
+  &.btns-centered {
+    justify-content: center;
+  }
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  background: rgba(black, 0.75);
+  color: whitesmoke;
+  font-size: 16px;
+  font-weight: 400;
+  border: none;
+  padding: 10px 22px;
+  border-radius: 6px;
+  cursor: pointer;
+
+  &:hover {
+    background: rgba(black, 0.85);
+    backdrop-filter: blur(3px);
+  }
+
+  &:active {
+    background: rgba(black, 0.92);
+  }
+}
