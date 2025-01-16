@@ -2,11 +2,9 @@
   <div class="container">
     <h1 class="title">Your Boards</h1>
     <div class="boardcards-container">
-      <app-board-card></app-board-card>
-      <app-board-card></app-board-card>
-      <app-board-card></app-board-card>
-      <app-board-card></app-board-card>
-      <app-board-card></app-board-card>
+      @for (board of boards; track board.id) {
+        <app-board-card [board]="board"></app-board-card>
+      }
     </div>
     <div class="btns-container btns-centered">
       <a class="btn"><i class="material-icons-outlined">add</i>Add</a>

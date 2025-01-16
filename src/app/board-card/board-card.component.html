@@ -1,15 +1,15 @@
-<div class="board-card">
-  <h3 class="board-card-title">Board 1</h3>
-  <p>Tasks:</p>
-  <ul>
-    <li class="task-category">
-      TODO
-      <span>3</span>
-    </li>
-    <li class="task-category">
-      IN PROG
-      <span>2</span>
-    </li>
-  </ul>
-</div>
+<a [routerLink]="board?.id" class="board-card-link">
+  <div class="board-card">
+    <h3 class="board-card-title">{{board?.name}}</h3>
+    <p class="board-card-subtitle">Tasks:</p>
+    <ul class="tasks-list">
+      @for (column of board?.columns; track column.id) {
+      <li [routerLink]="board?.id" class="task-category">
+        {{ column.name }}
+        <span class="task-count">{{ column.tasks.length }}</span>
+      </li>
+      }  
+    </ul>
+  </div>
+</a>
 

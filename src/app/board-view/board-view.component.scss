@@ -10,11 +10,10 @@
   background: rgba(black, 0.2);
   border-radius: 12px;
   padding: 12px;
-
 }
 
 .board-header {
-    width: 100%;
+  width: 100%;
   display: flex;
   justify-content: space-between;
   gap: 20px;
@@ -33,6 +32,6 @@
   gap: 20px;
 
   app-column {
-    flex-grow: 1;
+    flex: 1;
   }
 }

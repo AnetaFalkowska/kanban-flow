@@ -1,14 +1,16 @@
 <div class="column-wrapper">
-    <div>
-        <h3>TODO</h3>
-        <ul>
-            <li>task 1</li>
-            <li>task 1</li>
-            <li>task 1</li>
-            <li>task 1</li>
-        </ul>
-    </div>    
-    <div class="btns-container btns-centered">
-        <a class="btn btn-small"><i class="material-icons-outlined">add</i>Add</a>
-    </div>
+  <div>
+    <h3>{{column?.name}}</h3>
+    @if (column?.tasks?.length !== 0) {
+      <ul class="tasks-container">
+        @for (task of column?.tasks; track task.id) {
+          <app-task-card [task]="task"></app-task-card>
+        }
+      </ul>
+    }
+
+  </div>
+  <div class="btns-container btns-centered">
+    <a class="btn btn-small"><i class="material-icons-outlined">add</i>Add</a>
+  </div>
 </div>

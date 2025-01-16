@@ -1,16 +1,16 @@
 <div class="board-view-wrapper">
   <div class="container board-container">
     <div class="board-header">
-      <h2>Board Name</h2>
+      <h2>{{board?.name}}</h2>
       <div class="btns-container">
         <button class="btn">Edit</button>
         <button class="btn">Delete</button>
       </div>
     </div>
     <div class="columns-container">
-        <app-column></app-column>
-        <app-column></app-column>
-        <app-column></app-column>
+      @for (column of board?.columns; track column.id ) {
+        <app-column [column]="column"></app-column>
+      }
     </div>
   </div>
 </div>
