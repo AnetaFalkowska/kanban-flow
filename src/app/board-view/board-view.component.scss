@@ -1,0 +1,38 @@
+.board-view-wrapper {
+  height: 100%;
+  overflow-y: auto;
+}
+
+.board-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: rgba(black, 0.2);
+  border-radius: 12px;
+  padding: 12px;
+
+}
+
+.board-header {
+    width: 100%;
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  margin: 8px auto 20px;
+
+  h2 {
+    color: rgba(white, 0.85);
+    font-size: 36px;
+    font-weight: 600;
+  }
+}
+
+.columns-container {
+  flex-grow: 1;
+  display: flex;
+  gap: 20px;
+
+  app-column {
+    flex-grow: 1;
+  }
+}

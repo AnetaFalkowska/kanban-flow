@@ -6,12 +6,13 @@ html {
 }
 
 .container {
-  max-width: 1000px;
+  max-width: 1200px;
   margin: auto;
 }
 
 .btns-container {
   display: flex;
+  gap: 15px;
 
   &.btns-centered {
     justify-content: center;
@@ -29,6 +30,11 @@ html {
   padding: 10px 22px;
   border-radius: 6px;
   cursor: pointer;
+
+  &.btn-small {
+    font-size: 14px;
+    padding: 6px 18px;
+  }
 
   &:hover {
     background: rgba(black, 0.85);

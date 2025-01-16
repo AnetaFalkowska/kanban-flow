@@ -1,0 +1,21 @@
+.column-wrapper {
+ 
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        
+        // width:300px;
+        height:100%;
+        padding: 20px;
+        border-radius: 12px;
+        background-color: rgba(white, 0.45);
+        backdrop-filter: blur(3px);
+        text-align: center;
+
+        h3 {
+                margin: 0 0 16px;
+                font-size: 28px;
+                font-weight: 600;
+              }
+}
+
