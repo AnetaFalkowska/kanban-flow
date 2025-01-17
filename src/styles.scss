@@ -1,8 +1,36 @@
 /* You can add global styles to this file, and also import other style files */
+@import url("https://cdn.jsdelivr.net/gh/jgthms/minireset.css@master/minireset.min.css");
+@import url("https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,100..900&display=swap");
 
 html {
   font-family: "Inter", sans-serif;
   color: #222;
+}
+
+a {
+  text-decoration: none;
+}
+
+
+h1 {
+  font-size: 48px;
+}
+
+h2 {
+  font-size: 40px;
+  margin-bottom: 25px;
+}
+
+h1.is-bold,
+h2.is-bold {
+    font-weight: bold;
+    letter-spacing: -2px;
+}
+
+h4 {
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 12px;
 }
 
 .container {
@@ -10,30 +38,44 @@ html {
   margin: auto;
 }
 
+.container-sm {
+  max-width: 600px;
+  margin: auto;
+}
+
 .btns-container {
   display: flex;
-  gap: 15px;
+  gap: 10px;
 
   &.btns-centered {
     justify-content: center;
+  }
+
+  .align-end {
+    margin-left: auto;
   }
 }
 
 .btn {
   display: inline-flex;
+  justify-content: center;
   align-items: center;
   background: rgba(black, 0.75);
-  color: whitesmoke;
+  color: white;
+  font-family: inherit;
   font-size: 16px;
   font-weight: 400;
   border: none;
-  padding: 10px 22px;
-  border-radius: 6px;
+  // padding: 10px 22px;
+  padding: 7px 20px;
+  border-radius: 4px;
   cursor: pointer;
+  transition: all 0.2 ease;
 
   &.btn-small {
-    font-size: 14px;
-    padding: 6px 18px;
+    font-size: 12px;
+    padding: 4px 8px;
+    background: rgba(black, 0.65);
   }
 
   &:hover {
@@ -43,5 +85,53 @@ html {
 
   &:active {
     background: rgba(black, 0.92);
+  }
+}
+
+.form-field {
+  margin-bottom: 16px;
+
+  label {
+    display: block;
+    margin-bottom:5px;
+    font-weight: 500;
+    color: #333;
+  }
+
+  .error-message {
+    color: red;
+    font-size: 14px;
+  }
+}
+
+input {
+  width: 100%;
+  background: rgba(white, 0.9);
+  display: block;
+  box-sizing: border-box;
+  padding: 10px;
+ 
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+  font-family: inherit;
+
+  &.input-sm {
+    width:200px;
+    font-size: 14px;
+  }
+  
+  &:hover {
+    background: rgba(white, 0.95);
+  }
+
+  &:focus {
+    background: white;
+    outline: none;
+  }
+
+  &:hover,
+  &:focus {
+    border-color: rgba(black, 0.42);
   }
 }

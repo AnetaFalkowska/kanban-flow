@@ -1,0 +1,77 @@
+.add-board-wrapper {
+  background: rgba(white, 0.75);
+  backdrop-filter: blur(20px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 30px;
+  border-radius: 8px;
+  max-height: 100%;
+  overflow: auto;
+}
+
+.column-section {
+  margin-bottom: 30px;
+}
+
+.column-name {
+  font-size: 16px;
+  font-weight: bold;
+  color: #555;
+}
+
+.edit-column-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.column-name {
+    font-size: 16px;
+    font-weight: bold;
+    color: #555;
+  }
+
+.edit-column-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #cac9c9;
+}
+
+.add-btn {
+    margin:8px 0;
+}
+
+.add-icon {
+  font-size: 16px;
+  vertical-align: middle;
+}
+
+
+.add-btn {
+  margin:8px 0;
+}
+
+.add-icon {
+font-size: 16px;
+vertical-align: middle;
+}
+
+
+
+@media (max-width: 768px) {
+  .edit-column-actions {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .btns-container {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+
+  .btn {
+    width: 100%;
+  }
+}
+
