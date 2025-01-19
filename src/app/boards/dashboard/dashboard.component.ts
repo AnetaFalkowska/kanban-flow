@@ -4,6 +4,7 @@ import { Board } from '../../shared/board.model';
 import { BoardService } from '../../shared/board.service';
 import { RouterModule } from '@angular/router';
 
+
 @Component({
   selector: 'app-dashboard',
   imports: [BoardCardComponent, RouterModule],
@@ -17,5 +18,6 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit() {
     this.boards = this.boardService.getBoards();
+    
   }
 }

@@ -1,15 +1,26 @@
 <div class="column-wrapper">
-  <div>
-    <h3>{{column?.name}}</h3>
-    @if (column?.tasks?.length !== 0) {
-      <ul class="tasks-container">
-        @for (task of column?.tasks; track task.id) {
-          <app-task-card [task]="task"></app-task-card>
-        }
-      </ul>
-    }
+  <h3>{{ column?.name }}</h3>
+  @if (column?.tasks?.length !== 0) {
 
-  </div>
+  <div
+    cdkDropList
+    #todoList="cdkDropList"
+    #emptyList="cdkDropList"
+    [cdkDropListData]="column?.tasks"
+    class="tasks-container"
+    (cdkDropListDropped)="onDrop($event)"
+  >
+    @if (column?.tasks?.length === 0) {
+    <div cdkDropListEmpty>Drag items here</div>
+    } @for (task of column?.tasks; track task.id) {
+    <div class="my-item" cdkDrag [cdkDragData]="task.name">
+      <app-task-card class="my-item" cdkDrag [cdkDragData]="task.name" [task]="task"
+        ><div class="task-placeholder" *cdkDragPlaceholder></div
+      ></app-task-card>
+    </div>
+    <!-- <div class="my-item" cdkDrag [cdkDragData]="task.name"><div class="task-placeholder" *cdkDragPlaceholder></div>{{task.name}}</div> -->
+    }
+  </div>}
   <div class="btns-container btns-centered">
     <a class="btn btn-small"><i class="material-icons-outlined">add</i>Add</a>
   </div>
