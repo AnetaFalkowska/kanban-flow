@@ -7,8 +7,11 @@ import {
   FormBuilder,
   FormArray,
   AbstractControl,
+  NgForm,
 } from '@angular/forms';
-
+import { BoardService } from '../../shared/board.service';
+import { Board } from '../../shared/board.model';
+import { Column } from '../../shared/column.model';
 
 @Component({
   selector: 'app-add-board',
@@ -25,7 +28,7 @@ export class AddBoardComponent implements OnInit {
 
   boardForm!: FormGroup;
 
-  constructor(private formBuilder: FormBuilder) {}
+  constructor(private formBuilder: FormBuilder, private boardService:BoardService) {}
 
   ngOnInit(): void {
     this.boardForm = this.formBuilder.group({
@@ -41,9 +44,7 @@ export class AddBoardComponent implements OnInit {
   }
 
   populateExistingData() {
-    this.columns.forEach((c) =>
-      this.items.push(this.createExistingItem(c))
-    );
+    this.columns.forEach((c) => this.items.push(this.createExistingItem(c)));
   }
 
   createExistingItem(column: any): AbstractControl {
@@ -56,11 +57,12 @@ export class AddBoardComponent implements OnInit {
   createItem(): FormGroup {
     return new FormGroup({
       columnName: new FormControl('', Validators.required),
-      taskLimit: new FormControl(null)
+      taskLimit: new FormControl(null),
     });
   }
 
   isFormValid(): boolean {
+    console.log(this.boardForm.valid && this.boardForm.dirty)
     return this.boardForm.valid && this.boardForm.dirty;
   }
 
@@ -76,7 +78,9 @@ export class AddBoardComponent implements OnInit {
   }
 
   getFormData() {
-    const finalData = <{ name: string; taskLimit?: number }[]>this.boardForm.value.items;
+    const finalData = <{ name: string; taskLimit?: number }[]>(
+      this.boardForm.value.items
+    );
     return finalData;
   }
 
@@ -86,8 +90,14 @@ export class AddBoardComponent implements OnInit {
     this.items.markAsDirty();
   }
 
-  onAddBoard() {
-    
-  }
+  onAddBoard(form:FormGroup<any>) {
+    console.log("submitted")
+    const { name, items } = form.value;
 
+    const columns = items.map(
+      (item: any) => new Column(item.columnName, [], item.taskLimit || undefined)
+    );
+  
+    this.boardService.addBoard(new Board(name, columns));
+  }
 }

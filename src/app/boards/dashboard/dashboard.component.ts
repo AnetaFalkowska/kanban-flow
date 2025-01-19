@@ -3,11 +3,12 @@ import { BoardCardComponent } from '../board-card/board-card.component';
 import { Board } from '../../shared/board.model';
 import { BoardService } from '../../shared/board.service';
 import { RouterModule } from '@angular/router';
+import { JsonPipe } from '@angular/common';
 
 
 @Component({
   selector: 'app-dashboard',
-  imports: [BoardCardComponent, RouterModule],
+  imports: [BoardCardComponent, RouterModule, JsonPipe],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
 })

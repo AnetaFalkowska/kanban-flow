@@ -1,6 +1,6 @@
 <div class="add-board-wrapper container-sm">
   <h2 class="is-bold">New Board</h2>
-  <form [formGroup]="boardForm" novalidate>
+  <form [formGroup]="boardForm" novalidate (ngSubmit)="onAddBoard(boardForm)">
     <div class="form-field">
       <label idFor="borad-name">Board Name</label>
       <input type="text" id="borad-name" formControlName="name" />
@@ -18,12 +18,12 @@
       @for (item of items.controls; track item; let i =$index) {
       <div formArrayName="items">
         <div [formGroupName]="i">
-          <div class="edit-column-actions">  
-              <input formControlName="columnName" type="text" />
-              @if (validateField(item)) {
-              <p class="error-message">Value is required</p>
-              }         
-              <input formControlName="taskLimit" type="number" />
+          <div class="edit-column-actions">
+            <input formControlName="columnName" type="text" />
+            @if (validateField(item)) {
+            <p class="error-message">Value is required</p>
+            }
+            <input formControlName="taskLimit" type="number" />
             <button (click)="removeItem(i)" type="button" class="btn btn-small">
               Delete
             </button>
@@ -40,7 +40,9 @@
     <div class="btns-container">
       <button type="button" class="btn">Delete</button
       ><button type="button" class="btn">Cancel</button
-      ><button [disabled]="!isFormValid()" type="submit" class="btn align-end">Save</button>
+      ><button [disabled]="!isFormValid()" type="submit" class="btn align-end">
+        Save
+      </button>
     </div>
   </form>
 </div>
