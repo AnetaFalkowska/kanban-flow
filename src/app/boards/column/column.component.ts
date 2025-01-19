@@ -7,7 +7,7 @@ import {
   CdkDragDrop,
   CdkDropList,
   DragDropModule,
-  CdkDragPlaceholder
+  CdkDragPlaceholder,
 } from '@angular/cdk/drag-drop';
 
 @Component({
@@ -17,7 +17,7 @@ import {
   styleUrl: './column.component.scss',
 })
 export class ColumnComponent {
-  @Input() column?: Column;
+  @Input() column: Column = { id: '', name: '', tasks: [] }
   @Output() dropEmitter = new EventEmitter<CdkDragDrop<any>>();
 
   onDrop(e: CdkDragDrop<any>) {

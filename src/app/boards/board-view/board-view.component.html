@@ -9,10 +9,32 @@
     </div>
 
     <div class="columns-container" cdkDropListGroup>
-      <!-- All lists in here will be connected. -->
       @for (column of board?.columns; track column.id ) {
       <app-column [column]="column" (dropEmitter)="drop($event)"></app-column>
       }
     </div>
   </div>
 </div>
+
+
+<!-- <div cdkDropListGroup>
+
+  @for (column of board?.columns; track column.id) {
+    <div class="example-container">
+      <h2>To do</h2>
+    
+      <div
+        cdkDropList
+        #todoList="cdkDropList"
+        [cdkDropListData]="column.tasks"
+        class="example-list"
+        (cdkDropListDropped)="drop($event)">
+        @for (task of column.tasks; track task.id) {
+          <div class="example-box" cdkDrag>{{task.name}}</div>
+        }
+      </div>
+    </div>
+  }
+</div> -->
+
+

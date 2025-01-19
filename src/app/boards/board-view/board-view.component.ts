@@ -43,32 +43,19 @@ export class BoardViewComponent implements OnInit, OnDestroy {
     this.unsubscribe$.complete();
   }
 
-  // board = {
-  //   name: 'example',
-  //   columns: [
-  //     {
-  //       id:"1",
-  //       name: 'todo',
-  //       tasks: [{id:"3", name:'Get to work'}, {id:"4", name:'Pick up groceries'}, {id:"5", name: 'Go home'}],
-  //     },
-  //     {
-  //       id:"2",
-  //       name: 'done',
-  //       tasks: [{id:"6", name:'Get up'}, {id:"7", name: 'Brush teeth'}, {id:"8", name: 'Take a shower'}, {id:"9", name: 'Check e-mail'}, {id:"10", name: 'Walk dog'}],
-        
-  //     },
-  //   ],
-  // };
 
-  drop(event: CdkDragDrop<string[]>) {
+  drop(event: CdkDragDrop<{id:string, name:string}[]>) {
+
     if (event.previousContainer === event.container) {
+  
       moveItemInArray(
         event.container.data,
         event.previousIndex,
         event.currentIndex
       );
     } else {
-      transferArrayItem(
+
+      transferArrayItem(        
         event.previousContainer.data,
         event.container.data,
         event.previousIndex,

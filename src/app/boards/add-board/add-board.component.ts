@@ -86,4 +86,8 @@ export class AddBoardComponent implements OnInit {
     this.items.markAsDirty();
   }
 
+  onAddBoard() {
+    
+  }
+
 }
