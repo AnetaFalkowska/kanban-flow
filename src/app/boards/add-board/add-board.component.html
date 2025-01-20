@@ -3,12 +3,12 @@
   <form [formGroup]="boardForm" novalidate (ngSubmit)="onAddBoard(boardForm)">
     <div class="form-field">
       <label idFor="borad-name">Board Name</label>
-      <input type="text" id="borad-name" formControlName="name" />
-      @if (boardForm.get('name')?.touched && boardForm.get('name')?.errors)
-      {<ng-container>
-        @if (boardForm.get('name')?.errors?.['required']) {
+      <input type="text" id="borad-name" formControlName="boardName" />
+      @if (boardForm.get('boardName')?.touched &&
+      boardForm.get('boardName')?.errors) {<ng-container>
+        @if (boardForm.get('boardName')?.errors?.['required']) {
         <p class="error-message">Value is required</p>
-        } @if (boardForm.get('name')?.errors?.['minlength']) {
+        } @if (boardForm.get('boardName')?.errors?.['minlength']) {
         <p class="error-message">Value must be at least 3 characters long</p>
         } </ng-container
       >}
@@ -30,6 +30,9 @@
           </div>
         </div>
       </div>
+      } @if (boardForm.get('items')?.touched && boardForm.get('items')?.errors)
+      {
+      <p class="error-message">Columns should have qnique names</p>
       }
 
       <button class="add-btn btn btn-small" (click)="addItem()">
@@ -39,8 +42,9 @@
 
     <div class="btns-container">
       <button type="button" class="btn">Delete</button
-      ><button type="button" class="btn">Cancel</button
-      ><button [disabled]="!isFormValid()" type="submit" class="btn align-end">
+      ><button type="button" class="btn">Cancel</button>
+
+      <button [disabled]="!isFormValid()" type="submit" class="btn align-end">
         Save
       </button>
     </div>

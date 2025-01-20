@@ -12,10 +12,12 @@ import {
 import { BoardService } from '../../shared/board.service';
 import { Board } from '../../shared/board.model';
 import { Column } from '../../shared/column.model';
+import { Router } from '@angular/router';
+import { JsonPipe } from '@angular/common';
 
 @Component({
   selector: 'app-add-board',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, JsonPipe],
   templateUrl: './add-board.component.html',
   styleUrl: './add-board.component.scss',
 })
@@ -28,12 +30,20 @@ export class AddBoardComponent implements OnInit {
 
   boardForm!: FormGroup;
 
-  constructor(private formBuilder: FormBuilder, private boardService:BoardService) {}
+
+  constructor(
+    private formBuilder: FormBuilder,
+    private boardService: BoardService,
+    private route: Router
+  ) {}
 
   ngOnInit(): void {
     this.boardForm = this.formBuilder.group({
-      name: new FormControl('', [Validators.required, Validators.minLength(3)]),
-      items: this.formBuilder.array([]),
+      boardName: new FormControl('', [
+        Validators.required,
+        Validators.minLength(3),
+      ]),
+      items: this.formBuilder.array([], this.uniqueColumnNames),
     });
 
     this.populateExistingData();
@@ -61,8 +71,15 @@ export class AddBoardComponent implements OnInit {
     });
   }
 
+  uniqueColumnNames(formArray: AbstractControl): { [key: string]: any } | null {
+    const columnNames = (formArray as FormArray).controls.map((control) =>
+      control.get('columnName')?.value.trim().toLowerCase()
+    );
+    const hasDuplicates = new Set(columnNames).size !== columnNames.length;
+    return hasDuplicates ? { nonUniqueNames: true } : null;
+  }
+
   isFormValid(): boolean {
-    console.log(this.boardForm.valid && this.boardForm.dirty)
     return this.boardForm.valid && this.boardForm.dirty;
   }
 
@@ -74,14 +91,6 @@ export class AddBoardComponent implements OnInit {
     this.items.push(this.createItem());
     this.boardForm.markAsDirty();
     this.items.markAsDirty();
-    console.log(this.getFormData());
-  }
-
-  getFormData() {
-    const finalData = <{ name: string; taskLimit?: number }[]>(
-      this.boardForm.value.items
-    );
-    return finalData;
   }
 
   removeItem(index: number): void {
@@ -90,14 +99,15 @@ export class AddBoardComponent implements OnInit {
     this.items.markAsDirty();
   }
 
-  onAddBoard(form:FormGroup<any>) {
-    console.log("submitted")
-    const { name, items } = form.value;
+  onAddBoard(form: FormGroup<any>) {
+    const { boardName, items } = form.value;
 
     const columns = items.map(
-      (item: any) => new Column(item.columnName, [], item.taskLimit || undefined)
+      (item: any) =>
+        new Column(item.columnName, [], item.taskLimit || undefined)
     );
-  
-    this.boardService.addBoard(new Board(name, columns));
+
+    this.boardService.addBoard(new Board(boardName, columns));
+    this.route.navigateByUrl('');
   }
 }
