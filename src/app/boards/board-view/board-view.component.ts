@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ColumnComponent } from '../column/column.component';
 import { Board } from '../../shared/board.model';
 import { BoardService } from '../../shared/board.service';
-import { ActivatedRoute, ParamMap } from '@angular/router';
+import { ActivatedRoute, ParamMap, Router, RouterModule } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import {
   CdkDragDrop,
@@ -15,7 +15,7 @@ import {
 
 @Component({
   selector: 'app-board-view',
-  imports: [ColumnComponent, DragDropModule],
+  imports: [ColumnComponent, DragDropModule, RouterModule],
   templateUrl: './board-view.component.html',
   styleUrl: './board-view.component.scss',
 })
@@ -25,7 +25,8 @@ export class BoardViewComponent implements OnInit, OnDestroy {
 
   constructor(
     private boardService: BoardService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -61,6 +62,13 @@ export class BoardViewComponent implements OnInit, OnDestroy {
         event.previousIndex,
         event.currentIndex
       );
+    }
+  }
+
+  deleteBoard() {
+    if (this.board) {
+      this.boardService.deleteBoard(this.board.id);
+      this.router.navigateByUrl('');
     }
   }
 }

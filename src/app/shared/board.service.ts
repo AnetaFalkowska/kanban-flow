@@ -26,6 +26,10 @@ export class BoardService {
   updateBoard(id: string, updatedFields: Partial<Board>): void {
     const board = this.getBoard(id);
     if (!board) return;
+
+    console.log(updatedFields)
+
+
     //TODO updating logic
   }
 

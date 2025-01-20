@@ -3,8 +3,8 @@
     <div class="board-header">
       <h2>{{ board?.name }}</h2>
       <div class="btns-container">
-        <button class="btn">Edit</button>
-        <button class="btn">Delete</button>
+        <a routerLink="edit" class="btn">Edit</a>
+        <button (click)="deleteBoard()" class="btn">Delete</button>
       </div>
     </div>
 
@@ -16,25 +16,5 @@
   </div>
 </div>
 
-
-<!-- <div cdkDropListGroup>
-
-  @for (column of board?.columns; track column.id) {
-    <div class="example-container">
-      <h2>To do</h2>
-    
-      <div
-        cdkDropList
-        #todoList="cdkDropList"
-        [cdkDropListData]="column.tasks"
-        class="example-list"
-        (cdkDropListDropped)="drop($event)">
-        @for (task of column.tasks; track task.id) {
-          <div class="example-box" cdkDrag>{{task.name}}</div>
-        }
-      </div>
-    </div>
-  }
-</div> -->
 
 

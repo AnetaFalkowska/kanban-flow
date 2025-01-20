@@ -12,16 +12,21 @@ import {
 import { BoardService } from '../../shared/board.service';
 import { Board } from '../../shared/board.model';
 import { Column } from '../../shared/column.model';
-import { Router } from '@angular/router';
+import {
+  ActivatedRoute,
+  ParamMap,
+  Router,
+  RouterModule,
+} from '@angular/router';
 import { JsonPipe } from '@angular/common';
 
 @Component({
-  selector: 'app-add-board',
-  imports: [ReactiveFormsModule, JsonPipe],
-  templateUrl: './add-board.component.html',
-  styleUrl: './add-board.component.scss',
+  selector: 'app-board-form',
+  imports: [ReactiveFormsModule, RouterModule],
+  templateUrl: './board-form.component.html',
+  styleUrl: './board-form.component.scss',
 })
-export class AddBoardComponent implements OnInit {
+export class BoardFormComponent implements OnInit {
   columns: { name: string; taskLimit?: number }[] = [
     { name: 'Todo' },
     { name: 'In progress' },
@@ -29,15 +34,22 @@ export class AddBoardComponent implements OnInit {
   ];
 
   boardForm!: FormGroup;
-
+  editMode: boolean = false;
+  boardId: string | null = null;
 
   constructor(
     private formBuilder: FormBuilder,
     private boardService: BoardService,
-    private route: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
+    this.route.paramMap.subscribe((paramMap: ParamMap) => {
+      this.boardId = paramMap.get('id');
+      this.editMode = !!this.boardId
+    });
+
     this.boardForm = this.formBuilder.group({
       boardName: new FormControl('', [
         Validators.required,
@@ -54,7 +66,17 @@ export class AddBoardComponent implements OnInit {
   }
 
   populateExistingData() {
-    this.columns.forEach((c) => this.items.push(this.createExistingItem(c)));
+    if (!this.editMode) {
+      this.columns.forEach((c) => this.items.push(this.createExistingItem(c)));
+    } else if (this.boardId) {
+      const board = this.boardService.getBoard(this.boardId);
+      board?.columns.forEach((c) =>
+        this.items.push(this.createExistingItem(c))
+      );
+      this.boardForm.patchValue({
+        boardName: board?.name,
+      });
+    }
   }
 
   createExistingItem(column: any): AbstractControl {
@@ -107,7 +129,20 @@ export class AddBoardComponent implements OnInit {
         new Column(item.columnName, [], item.taskLimit || undefined)
     );
 
-    this.boardService.addBoard(new Board(boardName, columns));
-    this.route.navigateByUrl('');
+    const board = new Board(boardName, items);
+
+    if (!this.editMode) {
+      this.boardService.addBoard(new Board(boardName, columns));
+      this.router.navigateByUrl('');
+    } else if (this.boardId) {
+      this.boardService.updateBoard(this.boardId, board)
+    }
+  }
+
+  deleteBoard() {
+    if (this.boardId) {
+      this.boardService.deleteBoard(this.boardId);
+      this.router.navigateByUrl('');
+    }
   }
 }

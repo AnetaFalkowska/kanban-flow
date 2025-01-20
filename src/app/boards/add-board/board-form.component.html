@@ -1,5 +1,5 @@
 <div class="add-board-wrapper container-sm">
-  <h2 class="is-bold">New Board</h2>
+  <h2 class="is-bold">{{editMode ? "Edit Board":"New Board"}}</h2>
   <form [formGroup]="boardForm" novalidate (ngSubmit)="onAddBoard(boardForm)">
     <div class="form-field">
       <label idFor="borad-name">Board Name</label>
@@ -19,11 +19,14 @@
       <div formArrayName="items">
         <div [formGroupName]="i">
           <div class="edit-column-actions">
-            <input formControlName="columnName" type="text" />
-            @if (validateField(item)) {
-            <p class="error-message">Value is required</p>
-            }
-            <input formControlName="taskLimit" type="number" />
+            <div class="column-name">
+              <input placeholder="Column Name" formControlName="columnName" type="text" />
+              @if (validateField(item)) {
+              <p class="error-message">Column Name is required</p>
+              }
+            </div>
+            
+            <input class="task-limit" placeholder="Task Limit (optional)" formControlName="taskLimit" type="number" />
             <button (click)="removeItem(i)" type="button" class="btn btn-small">
               Delete
             </button>
@@ -32,17 +35,17 @@
       </div>
       } @if (boardForm.get('items')?.touched && boardForm.get('items')?.errors)
       {
-      <p class="error-message">Columns should have qnique names</p>
+      <p class="error-message">Column names must be unique</p>
       }
 
-      <button class="add-btn btn btn-small" (click)="addItem()">
+      <button type="button" class="add-btn btn btn-small" (click)="addItem()">
         <i class="add-icon material-icons-outlined">add</i>Add Column
       </button>
     </div>
 
     <div class="btns-container">
-      <button type="button" class="btn">Delete</button
-      ><button type="button" class="btn">Cancel</button>
+      @if (editMode) {<button (click)="deleteBoard()" class="btn">Delete</button>}
+      <button routerLink="" type="button" class="btn">Cancel</button>
 
       <button [disabled]="!isFormValid()" type="submit" class="btn align-end">
         Save
