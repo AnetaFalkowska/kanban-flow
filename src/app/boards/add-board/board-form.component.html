@@ -27,13 +27,13 @@
             </div>
             
             <input class="task-limit" placeholder="Task Limit (optional)" formControlName="taskLimit" type="number" />
-            <button (click)="removeItem(i)" type="button" class="btn btn-small">
+            <button [disabled] = "items.length === 1" (click)="removeItem(i)" type="button" class="btn btn-small">
               Delete
             </button>
           </div>
         </div>
       </div>
-      } @if (boardForm.get('items')?.touched && boardForm.get('items')?.errors)
+      } @if (boardForm.get('items')?.touched && boardForm.get('items')?.errors?.['uniqueColumnNames'])
       {
       <p class="error-message">Column names must be unique</p>
       }
