@@ -47,7 +47,7 @@ export class BoardFormComponent implements OnInit {
   ngOnInit(): void {
     this.route.paramMap.subscribe((paramMap: ParamMap) => {
       this.boardId = paramMap.get('id');
-      this.editMode = !!this.boardId
+      this.editMode = !!this.boardId;
     });
 
     this.boardForm = this.formBuilder.group({
@@ -81,6 +81,7 @@ export class BoardFormComponent implements OnInit {
 
   createExistingItem(column: any): AbstractControl {
     return new FormGroup({
+      columnId: new FormControl(column.id || ''),
       columnName: new FormControl(column.name, Validators.required),
       taskLimit: new FormControl(column.taskLimit || null),
     });
@@ -88,6 +89,7 @@ export class BoardFormComponent implements OnInit {
 
   createItem(): FormGroup {
     return new FormGroup({
+      columnId: new FormControl(''),
       columnName: new FormControl('', Validators.required),
       taskLimit: new FormControl(null),
     });
@@ -122,21 +124,20 @@ export class BoardFormComponent implements OnInit {
   }
 
   onAddBoard(form: FormGroup<any>) {
-    const { boardName, items } = form.value;
+    
 
-    const columns = items.map(
-      (item: any) =>
-        new Column(item.columnName, [], item.taskLimit || undefined)
-    );
-
-    const board = new Board(boardName, items);
-
-    if (!this.editMode) {
+    if (this.boardId) {
+      
+      this.boardService.updateBoard(this.boardId, form.value);
+    } else if (!this.editMode) {
+      const { boardName, items } = form.value
+      const columns = items.map(
+        (item: any) =>
+          new Column(item.columnName, [], item.taskLimit || undefined)
+      );
       this.boardService.addBoard(new Board(boardName, columns));
-      this.router.navigateByUrl('');
-    } else if (this.boardId) {
-      this.boardService.updateBoard(this.boardId, board)
     }
+    this.router.navigateByUrl('');
   }
 
   deleteBoard() {
