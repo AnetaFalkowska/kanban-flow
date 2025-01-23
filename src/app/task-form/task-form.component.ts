@@ -30,7 +30,7 @@ export class TaskFormComponent implements OnInit, OnDestroy {
   columnId: string | null = null;
   taskId: string | null = null;
   task?: Task;
-  unsubscribe$ = new Subject<void>()
+  unsubscribe$ = new Subject<void>();
 
   constructor(
     private formBuilder: FormBuilder,
@@ -43,42 +43,39 @@ export class TaskFormComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.initializeForm();
 
-    combineLatest([
-      this.route.paramMap,
-      this.stateService.currentTaskCtx,
-    ]).
-    pipe(takeUntil(this.unsubscribe$)).
-    subscribe(([paramMap, context]) => {
-      this.taskId = paramMap.get('taskId');
-      if (context && this.taskId) {
-        const { boardId, columnId } = context;
-        if (boardId && columnId) {
-          this.boardId = boardId;
-          this.columnId = columnId;
-          this.task = this.taskService.getTask(
-            this.boardId,
-            this.columnId,
-            this.taskId
-          );
-          this.editMode = !!this.task;
-          this.populateExistingData();
+    combineLatest([this.route.paramMap, this.stateService.currentTaskCtx])
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe(([paramMap, context]) => {
+        this.taskId = paramMap.get('taskId');
+        if (context) {
+          const { boardId, columnId } = context;
+          if (boardId && columnId) {
+            this.boardId = boardId;
+            this.columnId = columnId;
+
+            if (this.taskId) {
+              this.task = this.taskService.getTask(
+                this.boardId,
+                this.columnId,
+                this.taskId
+              );
+              this.editMode = !!this.task;
+              this.populateExistingData();
+            }
+          }
         }
-      }
-    });
+      });
   }
 
   ngOnDestroy(): void {
     this.stateService.clearTaskContext();
     this.unsubscribe$.next();
-    this.unsubscribe$.complete()
+    this.unsubscribe$.complete();
   }
 
   initializeForm(): void {
     this.taskForm = this.formBuilder.group({
-      name: new FormControl('', [
-        Validators.required,
-        Validators.minLength(3),
-      ]),
+      name: new FormControl('', [Validators.required, Validators.minLength(3)]),
     });
   }
 
@@ -95,6 +92,7 @@ export class TaskFormComponent implements OnInit, OnDestroy {
   }
 
   onSubmit(form: FormGroup<any>): void {
+    console.log(this.boardId, this.columnId);
     if (!this.boardId || !this.columnId) return;
 
     const taskData = form.value;
@@ -105,8 +103,8 @@ export class TaskFormComponent implements OnInit, OnDestroy {
         this.taskId,
         taskData
       );
-    } else {
-      this.taskService.addTask(
+    } else if (!this.editMode) {
+       this.taskService.addTask(
         this.boardId,
         this.columnId,
         new Task(taskData.name)

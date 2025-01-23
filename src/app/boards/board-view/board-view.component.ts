@@ -17,6 +17,7 @@ import {
   CdkDropList,
   DragDropModule,
 } from '@angular/cdk/drag-drop';
+import { Task } from '../../shared/task.model';
 
 @Component({
   selector: 'app-board-view',
@@ -48,7 +49,7 @@ export class BoardViewComponent implements OnInit, OnDestroy {
     this.unsubscribe$.complete();
   }
 
-  drop(event: CdkDragDrop<{ id: string; name: string }[]>) {
+  drop(event: CdkDragDrop<Task[]>) {
     if (event.previousContainer === event.container) {
       moveItemInArray(
         event.container.data,

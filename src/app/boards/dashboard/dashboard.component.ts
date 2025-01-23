@@ -8,7 +8,7 @@ import { JsonPipe } from '@angular/common';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [BoardCardComponent, RouterModule, JsonPipe],
+  imports: [BoardCardComponent, RouterModule],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
 })
