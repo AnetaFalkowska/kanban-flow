@@ -5,6 +5,7 @@ import { SettingsComponent } from './settings/settings.component';
 import { NotificationsComponent } from './notifications/notifications.component';
 import { BoardViewComponent } from './boards/board-view/board-view.component';
 import { BoardFormComponent } from './boards/add-board/board-form.component';
+import { TaskFormComponent } from './task-form/task-form.component';
 
 export const routes: Routes = [
   { path: '', component: DashboardComponent },
@@ -14,4 +15,5 @@ export const routes: Routes = [
   { path: 'notifications', component: NotificationsComponent },
   { path: ':id', component: BoardViewComponent },
   { path: ':id/edit', component: BoardFormComponent },
+  { path: 'tasks/:taskId/edit', component: TaskFormComponent },
 ];

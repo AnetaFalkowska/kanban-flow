@@ -1,0 +1,18 @@
+<div class="task-form-wrapper container-sm">
+    <h2 class="is-bold">{{editMode ? "Edit Task":"New Task"}}</h2>
+    <form [formGroup]="taskForm" novalidate (ngSubmit)="onSubmit(taskForm)">
+      <div class="form-field">
+        <label idFor="borad-name">Task Name</label>
+        <input type="text" id="borad-name" formControlName="name" />
+      </div>
+  
+      <div class="btns-container">
+        @if (editMode) {<button (click)="deleteTask()" class="btn">Delete</button>}
+        <button routerLink="" type="button" class="btn">Cancel</button>
+  
+        <button [disabled]="!isFormValid()" type="submit" class="btn align-end">
+          Save
+        </button>
+      </div>
+    </form>
+  </div>

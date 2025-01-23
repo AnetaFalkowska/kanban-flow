@@ -7,7 +7,6 @@ import {
   FormBuilder,
   FormArray,
   AbstractControl,
-  NgForm,
 } from '@angular/forms';
 import { BoardService } from '../../shared/board.service';
 import { Board } from '../../shared/board.model';
@@ -123,7 +122,7 @@ export class BoardFormComponent implements OnInit {
     this.items.markAsDirty();
   }
 
-  onAddBoard(form: FormGroup<any>) {
+  onSubmit(form: FormGroup<any>) {
     
 
     if (this.boardId) {

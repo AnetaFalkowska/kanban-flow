@@ -1,6 +1,6 @@
-<div class="add-board-wrapper container-sm">
+<div class="board-form-wrapper container-sm">
   <h2 class="is-bold">{{editMode ? "Edit Board":"New Board"}}</h2>
-  <form [formGroup]="boardForm" novalidate (ngSubmit)="onAddBoard(boardForm)">
+  <form [formGroup]="boardForm" novalidate (ngSubmit)="onSubmit(boardForm)">
     <div class="form-field">
       <label idFor="borad-name">Board Name</label>
       <input type="text" id="borad-name" formControlName="boardName" />

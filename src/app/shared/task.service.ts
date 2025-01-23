@@ -7,10 +7,12 @@ import { Task } from './task.model';
   providedIn: 'root',
 })
 export class TaskService {
-  boards: Board[] = BoardData;
+  boards:Board[] = BoardData
+  
   constructor() {}
 
-  getTasks(boardId: string, columnId: string): Task[] | undefined {
+  
+  getTasks(boardId:string, columnId:string): Task[] | undefined {
     const column = this.boards
       ?.find((b) => b.id === boardId)
       ?.columns.find((c) => c.id === columnId);
@@ -32,13 +34,15 @@ export class TaskService {
     columnId: string,
     taskId: string,
     updatedFields: Partial<Task>
-  ) {
+  ):void {
     const tasks = this.getTasks(boardId, columnId);
     const updatedTask = tasks?.find((t) => t.id === taskId);
+    console.log(updatedFields)
     if (updatedTask) Object.assign(updatedTask, updatedFields);
+    console.log(updatedTask)
   }
 
-  deleteTask(boardId: string, columnId: string, taskId: string) {
+  deleteTask(boardId: string, columnId: string, taskId: string):void {
     const tasks = this.getTasks(boardId, columnId);
     const removedTaskId = tasks?.findIndex((t) => t.id === taskId);
     if (removedTaskId === -1) return;

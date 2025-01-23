@@ -2,7 +2,12 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ColumnComponent } from '../column/column.component';
 import { Board } from '../../shared/board.model';
 import { BoardService } from '../../shared/board.service';
-import { ActivatedRoute, ParamMap, Router, RouterModule } from '@angular/router';
+import {
+  ActivatedRoute,
+  ParamMap,
+  Router,
+  RouterModule,
+} from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import {
   CdkDragDrop,
@@ -31,11 +36,10 @@ export class BoardViewComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.route.paramMap
-
+      .pipe(takeUntil(this.unsubscribe$))
       .subscribe((paramMap: ParamMap) => {
         const idParam = paramMap.get('id');
         if (idParam) this.board = this.boardService.getBoard(idParam);
-
       });
   }
 
@@ -44,19 +48,15 @@ export class BoardViewComponent implements OnInit, OnDestroy {
     this.unsubscribe$.complete();
   }
 
-
-  drop(event: CdkDragDrop<{id:string, name:string}[]>) {
-
+  drop(event: CdkDragDrop<{ id: string; name: string }[]>) {
     if (event.previousContainer === event.container) {
-  
       moveItemInArray(
         event.container.data,
         event.previousIndex,
         event.currentIndex
       );
     } else {
-
-      transferArrayItem(        
+      transferArrayItem(
         event.previousContainer.data,
         event.container.data,
         event.previousIndex,

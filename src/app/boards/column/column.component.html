@@ -3,7 +3,7 @@
 
   <div
     cdkDropList
-    #todoList="cdkDropList"
+    
     #emptyList="cdkDropList"
     [cdkDropListData]="column.tasks"
     class="tasks-container"
@@ -11,7 +11,7 @@
   >
     @for (task of column.tasks; track task.id) {
     <div class="my-item" cdkDrag [cdkDragData]="task.name">
-      <app-task-card class="my-item" [task]="task"> </app-task-card>
+      <app-task-card class="my-item" [task]="task" (editClick)="onEditClick(task)" (deleteClick)="onDeleteClick(task)"> </app-task-card>
       <!-- <div class="my-item" cdkDrag [cdkDragData]="task.name">
         {{ task.name }}        
       </div> -->
