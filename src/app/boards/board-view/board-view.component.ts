@@ -8,7 +8,7 @@ import {
   Router,
   RouterModule,
 } from '@angular/router';
-import { Subject, takeUntil } from 'rxjs';
+import { map, of, Subject, switchMap, takeUntil } from 'rxjs';
 import {
   CdkDragDrop,
   moveItemInArray,
@@ -37,11 +37,15 @@ export class BoardViewComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.route.paramMap
-      .pipe(takeUntil(this.unsubscribe$))
-      .subscribe((paramMap: ParamMap) => {
-        const idParam = paramMap.get('id');
-        if (idParam) this.board = this.boardService.getBoard(idParam);
-      });
+
+      .pipe(
+        takeUntil(this.unsubscribe$),
+        map((paramMap: ParamMap) => paramMap.get('id')),
+        switchMap((idParam) => {
+             return idParam ? this.boardService.getBoard(idParam) : of(undefined);
+        })
+      )
+      .subscribe((board) => this.board = board);
   }
 
   ngOnDestroy(): void {
@@ -67,9 +71,13 @@ export class BoardViewComponent implements OnInit, OnDestroy {
   }
 
   deleteBoard() {
-    if (this.board) {
-      this.boardService.deleteBoard(this.board.id);
-      this.router.navigateByUrl('');
+    if (this.board?.id) {
+      this.boardService.deleteBoard(this.board.id).subscribe({
+        next: () => {
+          console.log(`Board with ID ${this.board?.id} deleted successfully.`);
+          this.router.navigateByUrl('');
+        },
+      });
     }
   }
 }

@@ -68,12 +68,22 @@ export class BoardFormComponent implements OnInit {
     if (!this.editMode) {
       this.columns.forEach((c) => this.items.push(this.createExistingItem(c)));
     } else if (this.boardId) {
-      const board = this.boardService.getBoard(this.boardId);
-      board?.columns.forEach((c) =>
-        this.items.push(this.createExistingItem(c))
-      );
-      this.boardForm.patchValue({
-        boardName: board?.name,
+      this.boardService.getBoard(this.boardId).subscribe({
+        next: (board) => {
+          if (!board) {
+            console.error('Board not found!');
+            return;
+          }
+          board.columns.forEach((c) =>
+            this.items.push(this.createExistingItem(c))
+          );
+          this.boardForm.patchValue({
+            boardName: board.name,
+          });
+        },
+        error: (error) => {
+          console.error('Error fetching board:', error);
+        },
       });
     }
   }
@@ -123,26 +133,30 @@ export class BoardFormComponent implements OnInit {
   }
 
   onSubmit(form: FormGroup<any>) {
-    
-
     if (this.boardId) {
-      
-      this.boardService.updateBoard(this.boardId, form.value);
+        this.boardService.updateBoard(this.boardId, form.value).subscribe({next: () => {
+        this.router.navigateByUrl('');
+      },});
     } else if (!this.editMode) {
-      const { boardName, items } = form.value
+      const { boardName, items } = form.value;
       const columns = items.map(
         (item: any) =>
-          new Column(item.columnName, [], item.taskLimit || undefined)
+          new Column(item.columnName, [], item.taskLimit || null)
       );
-      this.boardService.addBoard(new Board(boardName, columns));
+      const newBoard = new Board(boardName, columns)
+      this.boardService.addBoard(newBoard).subscribe({
+        next: (id: string) => {
+          this.router.navigateByUrl('');
+        },
+      });
     }
-    this.router.navigateByUrl('');
   }
 
   deleteBoard() {
     if (this.boardId) {
-      this.boardService.deleteBoard(this.boardId);
-      this.router.navigateByUrl('');
+      return;
+      // this.boardService.deleteBoard(this.boardId);
+      // this.router.navigateByUrl('');
     }
   }
 }

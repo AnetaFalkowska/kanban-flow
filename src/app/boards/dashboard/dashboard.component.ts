@@ -3,7 +3,6 @@ import { BoardCardComponent } from '../board-card/board-card.component';
 import { Board } from '../../shared/board.model';
 import { BoardService } from '../../shared/board.service';
 import { RouterModule } from '@angular/router';
-import { JsonPipe } from '@angular/common';
 
 
 @Component({
@@ -14,11 +13,15 @@ import { JsonPipe } from '@angular/common';
 })
 export class DashboardComponent implements OnInit {
   boards: Board[] = [];
+ 
 
   constructor(private boardService: BoardService) {}
 
-  ngOnInit() {
-    this.boards = this.boardService.getBoards();
-    
+  ngOnInit():void {
+    this.boardService.getBoards().subscribe({
+      next: (data) => {
+        this.boards = data;
+      },      
+    });
   }
 }

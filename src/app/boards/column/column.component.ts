@@ -27,7 +27,7 @@ import { Subject, takeUntil } from 'rxjs';
   styleUrl: './column.component.scss',
 })
 export class ColumnComponent implements OnInit, OnDestroy {
-  @Input() column: Column = { id: '', name: '', tasks: [] };
+  @Input() column: Column = new Column('', []);
   @Output() dropEmitter = new EventEmitter<CdkDragDrop<Task[]>>();
   boardId: string | null = null;
   unsubscribe$ = new Subject<void>();

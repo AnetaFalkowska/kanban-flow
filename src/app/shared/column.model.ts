@@ -7,4 +7,19 @@ export class Column {
     constructor(public name:string, public tasks:Task[] = [], public taskLimit?: number) {
         this.id = uuidv4();
     }
+
+
+    toJSON() {
+        return {
+          name: this.name,
+          tasks: this.tasks.map((task) => ({
+            id: task.id,
+            name: task.name,
+            priority: task.priority,
+            description: task.description,
+            duedate:task.duedate
+          })),
+          taskLimit: this.taskLimit
+        };
+      }
 }

@@ -2,24 +2,47 @@ import { Injectable } from '@angular/core';
 import { Board } from './board.model';
 import { BoardData } from '../../db-data';
 import { Column } from './column.model';
+import { from, Observable, switchMap } from 'rxjs';
+import {
+  Firestore,
+  addDoc,
+  collection,
+  collectionData,
+  deleteDoc,
+  doc,
+  docData,
+  updateDoc,
+} from '@angular/fire/firestore';
 
 @Injectable({
   providedIn: 'root',
 })
 export class BoardService {
-  boards: Board[] = BoardData;
-  constructor() {}
+  private boards;
 
-  getBoards() {
-    return this.boards;
+  constructor(private firestore: Firestore) {
+    this.boards = collection(this.firestore, 'boards');
   }
 
-  getBoard(id: string): Board | undefined {
-    return this.boards.find((b) => b.id === id);
+  getBoards(): Observable<Board[]> {
+    console.log("get boards")
+    const boards = collection(this.firestore, 'boards');
+    return collectionData(boards, { idField: 'id' }) as Observable<Board[]>;
   }
 
-  addBoard(board: Board): void {
-    this.boards.push(board);
+  getBoard(id: string): Observable<Board | undefined> {
+    console.log("get board")
+    const board = doc(this.firestore, `boards/${id}`);
+    return docData(board, { idField: 'id' }) as Observable<Board>;
+  }
+
+  addBoard(board: Board): Observable<string> {
+    console.log("add board")
+    const boardData = board.toJSON();
+    const promise = addDoc(this.boards, boardData).then(
+      (response) => response.id
+    );
+    return from(promise);
   }
 
   updateBoard(
@@ -28,40 +51,50 @@ export class BoardService {
       boardName: string;
       items: { columnId: string; columnName: string; taskLimit: number }[];
     }
-  ): void {
-    const board = this.getBoard(id);
-    if (!board) return;
+  ): Observable<void> {
+    console.log("update board")
+    const boardDocRef = doc(this.firestore, `boards/${id}`);
 
-    board.name = updatedFields.boardName;
+    return this.getBoard(id).pipe(
+      switchMap((board) =>{
+      if (!board) throw new Error(`Board with ID ${id} does not exist.`) 
 
-    const existingColumnsMap = new Map(
-      board.columns.map((column) => [column.id, column])
-    );
+      const updatedBoardName = updatedFields.boardName;
+  
+      const existingColumnsMap = new Map(
+        board.columns.map((column) => [column.id, column])
+      );
+  
+      const updatedColumns = updatedFields.items
+        .map((item) => {
+          const { columnId, columnName, taskLimit } = item;
+  
+          if (columnId.length === 0) {
+            return new Column(columnName, [], taskLimit).toJSON();
+          }
+          const existingColumn = existingColumnsMap.get(columnId);
+          if (existingColumn) {
+            return {
+              ...existingColumn,
+              name: columnName,
+              taskLimit: taskLimit,
+            };
+          }
+  
+          return null;
+        })
+        .filter((column) => column !== null);
+  
+      const updatedBoardData = {name: updatedBoardName, columns:updatedColumns};
+      return from(updateDoc(boardDocRef, updatedBoardData))
+    })
+  );
+}
 
-    const updatedColumns = updatedFields.items
-      .map((item) => {
-        const { columnId, columnName, taskLimit } = item;
-
-        if (columnId.length === 0) {
-          return new Column(columnName, [], taskLimit);
-        }
-        const existingColumn = existingColumnsMap.get(columnId);
-        if (existingColumn) {
-          existingColumn.name = columnName;
-          existingColumn.taskLimit = taskLimit;
-          return existingColumn;
-        }
-
-        return null;
-      })
-      .filter((column) => column !== null);
-
-    board.columns = updatedColumns;
-  }
-
-  deleteBoard(id: string): void {
-    const boardIndex = this.boards.findIndex((b) => b.id === id);
-    if (boardIndex === -1) return;
-    this.boards.splice(boardIndex, 1);
+  deleteBoard(id: string): Observable<void> {
+    console.log("delete board")
+    const boardDocRef = doc(this.firestore, `boards/${id}`);
+    const promise = deleteDoc(boardDocRef);
+    return from(promise);
   }
 }
