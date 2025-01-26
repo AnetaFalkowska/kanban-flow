@@ -28,6 +28,7 @@ import { Task } from '../../shared/task.model';
 export class BoardViewComponent implements OnInit, OnDestroy {
   public board?: Board;
   private unsubscribe$ = new Subject<void>();
+  private isDeleting = false;
 
   constructor(
     private boardService: BoardService,
@@ -36,19 +37,26 @@ export class BoardViewComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    console.log("onInit")
     this.route.paramMap
 
       .pipe(
-        takeUntil(this.unsubscribe$),
+
         map((paramMap: ParamMap) => paramMap.get('id')),
         switchMap((idParam) => {
-             return idParam ? this.boardService.getBoard(idParam) : of(undefined);
+          return idParam ? this.boardService.getBoard(idParam) : of(undefined);
         })
       )
-      .subscribe((board) => this.board = board);
+      .subscribe((board) => {
+        if (!this.isDeleting) {
+          this.board = board;
+          console.log('view board on init: ', this.board);
+        }
+      });
   }
 
   ngOnDestroy(): void {
+    console.log('destroy done');
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
   }
@@ -72,12 +80,20 @@ export class BoardViewComponent implements OnInit, OnDestroy {
 
   deleteBoard() {
     if (this.board?.id) {
-      this.boardService.deleteBoard(this.board.id).subscribe({
-        next: () => {
-          console.log(`Board with ID ${this.board?.id} deleted successfully.`);
-          this.router.navigateByUrl('');
-        },
-      });
+      this.isDeleting = true
+      console.log('start delete: ', this.board.id);
+      this.boardService
+        .deleteBoard(this.board.id)
+        .pipe(takeUntil(this.unsubscribe$))
+        .subscribe({
+          next: () => {
+            console.log(
+              `Board with ID ${this.board?.id} deleted successfully.`
+            );
+            this.isDeleting = false;
+            this.router.navigateByUrl('');
+          },
+        });
     }
   }
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   ReactiveFormsModule,
   FormGroup,
@@ -18,6 +18,7 @@ import {
   RouterModule,
 } from '@angular/router';
 import { JsonPipe } from '@angular/common';
+import { Subject, takeUntil, tap } from 'rxjs';
 
 @Component({
   selector: 'app-board-form',
@@ -25,7 +26,7 @@ import { JsonPipe } from '@angular/common';
   templateUrl: './board-form.component.html',
   styleUrl: './board-form.component.scss',
 })
-export class BoardFormComponent implements OnInit {
+export class BoardFormComponent implements OnInit, OnDestroy {
   columns: { name: string; taskLimit?: number }[] = [
     { name: 'Todo' },
     { name: 'In progress' },
@@ -35,6 +36,7 @@ export class BoardFormComponent implements OnInit {
   boardForm!: FormGroup;
   editMode: boolean = false;
   boardId: string | null = null;
+  unsubscribe$ = new Subject<void>();
 
   constructor(
     private formBuilder: FormBuilder,
@@ -44,10 +46,16 @@ export class BoardFormComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.route.paramMap.subscribe((paramMap: ParamMap) => {
-      this.boardId = paramMap.get('id');
-      this.editMode = !!this.boardId;
-    });
+    console.log('from on init');
+    this.route.paramMap
+      .pipe(
+        takeUntil(this.unsubscribe$),
+        
+      )
+      .subscribe((paramMap: ParamMap) => {
+        this.boardId = paramMap.get('id');
+        this.editMode = !!this.boardId;
+      });
 
     this.boardForm = this.formBuilder.group({
       boardName: new FormControl('', [
@@ -64,27 +72,34 @@ export class BoardFormComponent implements OnInit {
     return <FormArray>this.boardForm?.get('items');
   }
 
+  ngOnDestroy(): void {
+    this.unsubscribe$.next(), this.unsubscribe$.complete();
+  }
+
   populateExistingData() {
     if (!this.editMode) {
       this.columns.forEach((c) => this.items.push(this.createExistingItem(c)));
     } else if (this.boardId) {
-      this.boardService.getBoard(this.boardId).subscribe({
-        next: (board) => {
-          if (!board) {
-            console.error('Board not found!');
-            return;
-          }
-          board.columns.forEach((c) =>
-            this.items.push(this.createExistingItem(c))
-          );
-          this.boardForm.patchValue({
-            boardName: board.name,
-          });
-        },
-        error: (error) => {
-          console.error('Error fetching board:', error);
-        },
-      });
+      this.boardService
+        .getBoard(this.boardId)
+        .pipe(takeUntil(this.unsubscribe$))
+        .subscribe({
+          next: (board) => {
+            if (!board) {
+              console.error('Board not found!');
+              return;
+            }
+            board.columns.forEach((c) =>
+              this.items.push(this.createExistingItem(c))
+            );
+            this.boardForm.patchValue({
+              boardName: board.name,
+            });
+          },
+          error: (error) => {
+            console.error('Error fetching board:', error);
+          },
+        });
     }
   }
 
@@ -134,21 +149,29 @@ export class BoardFormComponent implements OnInit {
 
   onSubmit(form: FormGroup<any>) {
     if (this.boardId) {
-        this.boardService.updateBoard(this.boardId, form.value).subscribe({next: () => {
-        this.router.navigateByUrl('');
-      },});
+
+      this.boardService
+        .updateBoard(this.boardId, form.value)
+        .pipe(takeUntil(this.unsubscribe$))
+        .subscribe({
+          next: () => {
+            this.router.navigate([`/${this.boardId}`])
+          },
+        });
     } else if (!this.editMode) {
       const { boardName, items } = form.value;
       const columns = items.map(
-        (item: any) =>
-          new Column(item.columnName, [], item.taskLimit || null)
+        (item: any) => new Column(item.columnName, [], item.taskLimit || null)
       );
-      const newBoard = new Board(boardName, columns)
-      this.boardService.addBoard(newBoard).subscribe({
-        next: (id: string) => {
-          this.router.navigateByUrl('');
-        },
-      });
+      const newBoard = new Board(boardName, columns);
+      this.boardService
+        .addBoard(newBoard)
+        .pipe(takeUntil(this.unsubscribe$))
+        .subscribe({
+          next: (id: string) => {
+            this.router.navigateByUrl('');
+          },
+        });
     }
   }
 

@@ -8,9 +8,6 @@ import { RouterModule } from '@angular/router';
   templateUrl: './board-card.component.html',
   styleUrl: './board-card.component.scss',
 })
-export class BoardCardComponent implements OnInit {
+export class BoardCardComponent {
   @Input() board?: Board;
-  ngOnInit() {
-    console.log('this is from board card', this.board);
-  }
 }

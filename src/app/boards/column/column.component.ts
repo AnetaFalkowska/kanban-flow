@@ -65,7 +65,7 @@ export class ColumnComponent implements OnInit, OnDestroy {
 
   onDeleteClick(task: Task) {
     if (this.boardId) {
-      this.taskService.deleteTask(this.boardId, this.column.id, task.id);
+      // this.taskService.deleteTask(this.boardId, this.column.id, task.id);
       this.stateService.clearTaskContext();
     }
   }

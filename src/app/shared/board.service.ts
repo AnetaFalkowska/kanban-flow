@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Board } from './board.model';
 import { BoardData } from '../../db-data';
 import { Column } from './column.model';
-import { from, Observable, switchMap } from 'rxjs';
+import { from, map, Observable, switchMap, tap } from 'rxjs';
 import {
   Firestore,
   addDoc,
@@ -26,14 +26,14 @@ export class BoardService {
 
   getBoards(): Observable<Board[]> {
     console.log("get boards")
-    const boards = collection(this.firestore, 'boards');
-    return collectionData(boards, { idField: 'id' }) as Observable<Board[]>;
+    const boardsRef = collection(this.firestore, 'boards');
+    return collectionData(boardsRef, { idField: 'id' }) as Observable<Board[]>;
   }
 
   getBoard(id: string): Observable<Board | undefined> {
     console.log("get board")
-    const board = doc(this.firestore, `boards/${id}`);
-    return docData(board, { idField: 'id' }) as Observable<Board>;
+    const boardDocRef = doc(this.firestore, `boards/${id}`);
+    return docData(boardDocRef, { idField: 'id' }) as Observable<Board>;
   }
 
   addBoard(board: Board): Observable<string> {

@@ -31,30 +31,31 @@ export class TaskService {
 
   //// TODO
 
-  addTask(boardId: string, columnId: string, task: Task): void {
-    const tasks = this.getTasks(boardId, columnId);
-    tasks?.push(task);
-  }
+//   addTask(boardId: string, columnId: string, task: Task): void {
+//     const tasks = this.getTasks(boardId, columnId);
+//     tasks?.push(task);
+//   }
 
-  updateTask(
-    boardId: string,
-    columnId: string,
-    taskId: string,
-    updatedFields: Partial<Task>
-  ): void {
-    const tasks = this.getTasks(boardId, columnId);
-    const updatedTask = tasks?.find((t) => t.id === taskId);
-    console.log(updatedFields);
-    if (updatedTask) Object.assign(updatedTask, updatedFields);
-    console.log(updatedTask);
-  }
+//   updateTask(
+//     boardId: string,
+//     columnId: string,
+//     taskId: string,
+//     updatedFields: Partial<Task>
+//   ): void {
+//     const tasks = this.getTasks(boardId, columnId);
+//     const updatedTask = tasks?.find((t) => t.id === taskId);
+//     console.log(updatedFields);
+//     if (updatedTask) Object.assign(updatedTask, updatedFields);
+//     console.log(updatedTask);
+//   }
 
-  deleteTask(boardId: string, columnId: string, taskId: string): void {
-    const tasks = this.getTasks(boardId, columnId);
-    const removedTaskId = tasks?.findIndex((t) => t.id === taskId);
-    if (removedTaskId === -1) return;
-    if (removedTaskId !== undefined && removedTaskId !== -1) {
-      tasks?.splice(removedTaskId, 1);
-    }
-  }
+//   deleteTask(boardId: string, columnId: string, taskId: string): void {
+//     const tasks = this.getTasks(boardId, columnId);
+//     const removedTaskId = tasks?.findIndex((t) => t.id === taskId);
+//     if (removedTaskId === -1) return;
+//     if (removedTaskId !== undefined && removedTaskId !== -1) {
+//       tasks?.splice(removedTaskId, 1);
+//     }
+//   }
+// }
 }

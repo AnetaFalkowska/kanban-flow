@@ -43,28 +43,28 @@ export class TaskFormComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.initializeForm();
 
-    combineLatest([this.route.paramMap, this.stateService.currentTaskCtx])
-      .pipe(takeUntil(this.unsubscribe$))
-      .subscribe(([paramMap, context]) => {
-        this.taskId = paramMap.get('taskId');
-        if (context) {
-          const { boardId, columnId } = context;
-          if (boardId && columnId) {
-            this.boardId = boardId;
-            this.columnId = columnId;
+    // combineLatest([this.route.paramMap, this.stateService.currentTaskCtx])
+    //   .pipe(takeUntil(this.unsubscribe$))
+    //   .subscribe(([paramMap, context]) => {
+    //     this.taskId = paramMap.get('taskId');
+    //     if (context) {
+    //       const { boardId, columnId } = context;
+    //       if (boardId && columnId) {
+    //         this.boardId = boardId;
+    //         this.columnId = columnId;
 
-            if (this.taskId) {
-              this.task = this.taskService.getTask(
-                this.boardId,
-                this.columnId,
-                this.taskId
-              );
-              this.editMode = !!this.task;
-              this.populateExistingData();
-            }
-          }
-        }
-      });
+    //         if (this.taskId) {
+    //           this.task = this.taskService.getTask(
+    //             this.boardId,
+    //             this.columnId,
+    //             this.taskId
+    //           );
+    //           this.editMode = !!this.task;
+    //           this.populateExistingData();
+    //         }
+    //       }
+    //     }
+    //   });
   }
 
   ngOnDestroy(): void {
@@ -97,25 +97,25 @@ export class TaskFormComponent implements OnInit, OnDestroy {
 
     const taskData = form.value;
     if (this.editMode && this.taskId) {
-      this.taskService.updateTask(
-        this.boardId,
-        this.columnId,
-        this.taskId,
-        taskData
-      );
+      // this.taskService.updateTask(
+      //   this.boardId,
+      //   this.columnId,
+      //   this.taskId,
+      //   taskData
+      // );
     } else if (!this.editMode) {
-       this.taskService.addTask(
-        this.boardId,
-        this.columnId,
-        new Task(taskData.name)
-      );
+      //  this.taskService.addTask(
+      //   this.boardId,
+      //   this.columnId,
+      //   new Task(taskData.name)
+      // );
     }
     this.router.navigate([`/${this.boardId}`]);
   }
 
   deleteTask() {
     if (this.boardId && this.columnId && this.taskId) {
-      this.taskService.deleteTask(this.boardId, this.columnId, this.taskId);
+      // this.taskService.deleteTask(this.boardId, this.columnId, this.taskId);
       this.router.navigate([`/${this.boardId}`]);
     }
   }
