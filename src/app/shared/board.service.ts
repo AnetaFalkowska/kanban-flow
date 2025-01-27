@@ -1,8 +1,8 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Board } from './board.model';
 import { BoardData } from '../../db-data';
 import { Column } from './column.model';
-import { from, map, Observable, switchMap, tap } from 'rxjs';
+import { from, map, Observable, shareReplay, switchMap, tap } from 'rxjs';
 import {
   Firestore,
   addDoc,
@@ -18,11 +18,10 @@ import {
   providedIn: 'root',
 })
 export class BoardService {
-  private boards;
 
-  constructor(private firestore: Firestore) {
-    this.boards = collection(this.firestore, 'boards');
-  }
+  private firestore = inject(Firestore);
+
+  constructor() {}
 
   getBoards(): Observable<Board[]> {
     console.log("get boards")
@@ -38,8 +37,9 @@ export class BoardService {
 
   addBoard(board: Board): Observable<string> {
     console.log("add board")
+    const boardsRef = collection(this.firestore, 'boards');
     const boardData = board.toJSON();
-    const promise = addDoc(this.boards, boardData).then(
+    const promise = addDoc(boardsRef, boardData).then(
       (response) => response.id
     );
     return from(promise);

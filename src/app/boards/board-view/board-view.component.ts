@@ -8,7 +8,7 @@ import {
   Router,
   RouterModule,
 } from '@angular/router';
-import { map, of, Subject, switchMap, takeUntil } from 'rxjs';
+import { map, of, ReplaySubject, Subject, switchMap, takeUntil } from 'rxjs';
 import {
   CdkDragDrop,
   moveItemInArray,
@@ -37,15 +37,15 @@ export class BoardViewComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    console.log("onInit")
+  
     this.route.paramMap
 
-      .pipe(
-
+      .pipe(           
         map((paramMap: ParamMap) => paramMap.get('id')),
         switchMap((idParam) => {
           return idParam ? this.boardService.getBoard(idParam) : of(undefined);
-        })
+        }),
+        takeUntil(this.unsubscribe$)
       )
       .subscribe((board) => {
         if (!this.isDeleting) {

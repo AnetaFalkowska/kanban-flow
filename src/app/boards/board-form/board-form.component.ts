@@ -18,7 +18,7 @@ import {
   RouterModule,
 } from '@angular/router';
 import { JsonPipe } from '@angular/common';
-import { Subject, takeUntil, tap } from 'rxjs';
+import { Subject, take, takeUntil, tap } from 'rxjs';
 
 @Component({
   selector: 'app-board-form',
@@ -46,12 +46,8 @@ export class BoardFormComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    console.log('from on init');
     this.route.paramMap
-      .pipe(
-        takeUntil(this.unsubscribe$),
-        
-      )
+      .pipe(takeUntil(this.unsubscribe$))
       .subscribe((paramMap: ParamMap) => {
         this.boardId = paramMap.get('id');
         this.editMode = !!this.boardId;
@@ -85,6 +81,7 @@ export class BoardFormComponent implements OnInit, OnDestroy {
         .pipe(takeUntil(this.unsubscribe$))
         .subscribe({
           next: (board) => {
+            console.log('Board data:', board);
             if (!board) {
               console.error('Board not found!');
               return;
@@ -149,13 +146,12 @@ export class BoardFormComponent implements OnInit, OnDestroy {
 
   onSubmit(form: FormGroup<any>) {
     if (this.boardId) {
-
       this.boardService
         .updateBoard(this.boardId, form.value)
         .pipe(takeUntil(this.unsubscribe$))
         .subscribe({
           next: () => {
-            this.router.navigate([`/${this.boardId}`])
+            this.router.navigate([`/${this.boardId}`]);
           },
         });
     } else if (!this.editMode) {
