@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   ReactiveFormsModule,
   FormGroup,
@@ -17,7 +17,7 @@ import {
   Router,
   RouterModule,
 } from '@angular/router';
-import { JsonPipe } from '@angular/common';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-board-form',
@@ -25,7 +25,7 @@ import { JsonPipe } from '@angular/common';
   templateUrl: './board-form.component.html',
   styleUrl: './board-form.component.scss',
 })
-export class BoardFormComponent implements OnInit {
+export class BoardFormComponent implements OnInit, OnDestroy {
   columns: { name: string; taskLimit?: number }[] = [
     { name: 'Todo' },
     { name: 'In progress' },
@@ -35,6 +35,7 @@ export class BoardFormComponent implements OnInit {
   boardForm!: FormGroup;
   editMode: boolean = false;
   boardId: string | null = null;
+  unsubscribe$ = new Subject<void>()
 
   constructor(
     private formBuilder: FormBuilder,
@@ -44,7 +45,7 @@ export class BoardFormComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.route.paramMap.subscribe((paramMap: ParamMap) => {
+    this.route.paramMap.pipe(takeUntil(this.unsubscribe$)).subscribe((paramMap: ParamMap) => {
       this.boardId = paramMap.get('id');
       this.editMode = !!this.boardId;
     });
@@ -60,6 +61,11 @@ export class BoardFormComponent implements OnInit {
     this.populateExistingData();
   }
 
+  ngOnDestroy(): void {
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete()
+  }
+
   get items(): FormArray {
     return <FormArray>this.boardForm?.get('items');
   }
@@ -68,12 +74,13 @@ export class BoardFormComponent implements OnInit {
     if (!this.editMode) {
       this.columns.forEach((c) => this.items.push(this.createExistingItem(c)));
     } else if (this.boardId) {
-      const board = this.boardService.getBoard(this.boardId);
-      board?.columns.forEach((c) =>
-        this.items.push(this.createExistingItem(c))
-      );
-      this.boardForm.patchValue({
-        boardName: board?.name,
+      this.boardService.getBoard(this.boardId).pipe(takeUntil(this.unsubscribe$)).subscribe((board) => {
+        board.columns.forEach((c) =>
+          this.items.push(this.createExistingItem(c))
+        );
+        this.boardForm.patchValue({
+          boardName: board.name,
+        });
       });
     }
   }
@@ -123,18 +130,16 @@ export class BoardFormComponent implements OnInit {
   }
 
   onSubmit(form: FormGroup<any>) {
-    
-
     if (this.boardId) {
-      
-      this.boardService.updateBoard(this.boardId, form.value);
+      return
+      // this.boardService.updateBoard(this.boardId, form.value);
     } else if (!this.editMode) {
-      const { boardName, items } = form.value
+      const { boardName, items } = form.value;
       const columns = items.map(
         (item: any) =>
           new Column(item.columnName, [], item.taskLimit || undefined)
       );
-      this.boardService.addBoard(new Board(boardName, columns));
+      this.boardService.addBoard(new Board(boardName, columns)).pipe(takeUntil(this.unsubscribe$)).subscribe({next: ()=> console.log("Added board")});
     }
     this.router.navigateByUrl('');
   }
