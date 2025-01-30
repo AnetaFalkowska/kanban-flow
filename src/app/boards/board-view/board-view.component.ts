@@ -44,7 +44,7 @@ export class BoardViewComponent implements OnInit, OnDestroy {
 
         takeUntil(this.unsubscribe$)
       )
-      .subscribe({next:(board) => this.board = board});
+      .subscribe({ next: (board) => (this.board = board) });
   }
 
   ngOnDestroy(): void {
@@ -70,9 +70,14 @@ export class BoardViewComponent implements OnInit, OnDestroy {
   }
 
   deleteBoard() {
-    if (this.board) {
-      this.boardService.deleteBoard(this.board.id);
-      this.router.navigateByUrl('');
-    }
+    if (!this.board) return;
+
+    this.boardService
+      .deleteBoard(this.board.id)
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: () => this.router.navigateByUrl(''),
+        error: (err) => console.error('Failed to delete board:', err),
+      });
   }
 }
