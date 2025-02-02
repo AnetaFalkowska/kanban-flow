@@ -17,10 +17,17 @@ import {
   CdkDropList,
   DragDropModule,
 } from '@angular/cdk/drag-drop';
+import { EditableHeaderComponent } from "../../editable-header/editable-header.component";
 
 @Component({
   selector: 'app-board-view',
-  imports: [ColumnComponent, DragDropModule, RouterModule],
+  imports: [
+    ColumnComponent,
+    DragDropModule,
+    RouterModule,
+
+    EditableHeaderComponent
+],
   templateUrl: './board-view.component.html',
   styleUrl: './board-view.component.scss',
 })
@@ -44,7 +51,11 @@ export class BoardViewComponent implements OnInit, OnDestroy {
 
         takeUntil(this.unsubscribe$)
       )
-      .subscribe({ next: (board) => (this.board = board) });
+      .subscribe({
+        next: (board) => {
+          this.board = board;
+        },
+      });
   }
 
   ngOnDestroy(): void {
@@ -68,6 +79,14 @@ export class BoardViewComponent implements OnInit, OnDestroy {
       );
     }
   }
+
+
+  updateBoardName(boardName:string) {
+    if (this.board && boardName !== this.board.name) { 
+    this.boardService
+      .updateBoardName(this.board.id, boardName)
+      .subscribe();
+  }}
 
   deleteBoard() {
     if (!this.board) return;

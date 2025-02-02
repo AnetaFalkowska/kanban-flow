@@ -39,13 +39,10 @@ export class BoardService {
       .pipe(catchError(this.handleError('adding board')));
   }
 
-  updateBoardName(
-    id: string,
-    updatedFields: {
-      boardName: string;
-    }
-  ): Observable<Board> {
-    return this.http.put<Board>(`${this.API_URL}/${id}`, {name:updatedFields.boardName}).pipe(catchError(this.handleError('updating board name')));      
+  updateBoardName(id: string, updatedBoardName: string): Observable<Board> {
+    return this.http
+      .put<Board>(`${this.API_URL}/${id}`, { name: updatedBoardName })
+      .pipe(catchError(this.handleError('updating board name')));
   }
 
   deleteBoard(id: string): Observable<void> {

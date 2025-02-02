@@ -1,0 +1,13 @@
+:host {
+    width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  margin: 8px auto 20px;
+
+  h2 {
+    color: rgba(white, 0.85);
+    font-size: 36px;
+    font-weight: 600;
+  }
+}

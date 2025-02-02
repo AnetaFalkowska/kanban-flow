@@ -1,12 +1,10 @@
 <div class="board-view-wrapper">
   <div class="container board-container">
-    <div class="board-header">
-      <h2>{{ board?.name }}</h2>
-      <div class="btns-container">
-        <a routerLink="edit" class="btn">Edit</a>
-        <button (click)="deleteBoard()" class="btn">Delete</button>
-      </div>
-    </div>
+    <app-editable-header
+      [name]="board!.name"
+      (saveEdit)="updateBoardName($event)"
+      (deleteClick)="deleteBoard()"
+    />
 
     <div class="columns-container" cdkDropListGroup>
       @for (column of board?.columns; track column.id ) {
@@ -15,6 +13,3 @@
     </div>
   </div>
 </div>
-
-
-

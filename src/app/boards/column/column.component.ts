@@ -1,4 +1,11 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { TaskCardComponent } from '../../task-card/task-card.component';
 import { Task } from '../../shared/task.model';
 import { Column } from '../../shared/column.model';
@@ -17,10 +24,11 @@ import {
 } from '@angular/router';
 import { StateService } from '../../shared/state.service';
 import { Subject, takeUntil } from 'rxjs';
+import { EditableHeaderComponent } from '../../editable-header/editable-header.component';
 
 @Component({
   selector: 'app-column',
-  imports: [TaskCardComponent, DragDropModule, RouterModule],
+  imports: [TaskCardComponent, DragDropModule, RouterModule, EditableHeaderComponent],
   templateUrl: './column.component.html',
   styleUrl: './column.component.scss',
 })
@@ -28,7 +36,7 @@ export class ColumnComponent implements OnInit, OnDestroy {
   @Input() column: Column = { id: '', name: '', tasks: [] };
   @Output() dropEmitter = new EventEmitter<CdkDragDrop<any>>();
   boardId: string | null = null;
-  unsubscribe$ = new Subject<void>()
+  unsubscribe$ = new Subject<void>();
 
   constructor(
     private taskService: TaskService,
@@ -38,19 +46,41 @@ export class ColumnComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.route.paramMap.pipe(takeUntil(this.unsubscribe$)).subscribe((paramMap: ParamMap) => {
-      this.boardId = paramMap.get('id');
-    });
+    this.route.paramMap
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe((paramMap: ParamMap) => {
+        this.boardId = paramMap.get('id');
+      });
   }
 
   ngOnDestroy(): void {
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
-
   }
 
   onDrop(e: CdkDragDrop<any>) {
     this.dropEmitter.emit(e);
+  }
+
+  updateColumnName(columnName: string) {
+    if (this.column && columnName !== this.column.name) {
+      return;
+      // this.columnService
+      //   .updateBoardName(this.column.id, columnName)
+      //   .subscribe();
+    }
+  }
+
+  deleteColumn() {
+    if (!this.column) return;
+
+    // this.columnService
+    //   .deleteBoard(this.column.id)
+    //   .pipe(takeUntil(this.unsubscribe$))
+    //   .subscribe({
+    //     next: () => this.router.navigateByUrl(''),
+    //     error: (err) => console.error('Failed to delete column:', err),
+    //   });
   }
 
   onEditClick(task: Task) {
@@ -61,7 +91,8 @@ export class ColumnComponent implements OnInit, OnDestroy {
   onDeleteClick(task: Task) {
     if (this.boardId) {
       this.taskService
-        .deleteTask(this.boardId, this.column.id, task.id).pipe(takeUntil(this.unsubscribe$))
+        .deleteTask(this.boardId, this.column.id, task.id)
+        .pipe(takeUntil(this.unsubscribe$))
         .subscribe(() => this.router.navigate([`/${this.boardId}`]));
     }
   }

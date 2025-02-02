@@ -1,5 +1,9 @@
 <div class="column-wrapper">
-  <h3>{{ column.name }}</h3>
+  <app-editable-header
+      [name]="column!.name"
+      (saveEdit)="updateColumnName($event)"
+      (deleteClick)="deleteColumn()"
+    />
 
   <div
     cdkDropList
