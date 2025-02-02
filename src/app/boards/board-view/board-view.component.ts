@@ -17,7 +17,9 @@ import {
   CdkDropList,
   DragDropModule,
 } from '@angular/cdk/drag-drop';
-import { EditableHeaderComponent } from "../../editable-header/editable-header.component";
+import { EditableHeaderComponent } from '../../editable-header/editable-header.component';
+import { ColumnService } from '../../shared/column.service';
+import { Column } from '../../shared/column.model';
 
 @Component({
   selector: 'app-board-view',
@@ -26,8 +28,8 @@ import { EditableHeaderComponent } from "../../editable-header/editable-header.c
     DragDropModule,
     RouterModule,
 
-    EditableHeaderComponent
-],
+    EditableHeaderComponent,
+  ],
   templateUrl: './board-view.component.html',
   styleUrl: './board-view.component.scss',
 })
@@ -37,6 +39,7 @@ export class BoardViewComponent implements OnInit, OnDestroy {
 
   constructor(
     private boardService: BoardService,
+    private columnService: ColumnService,
     private route: ActivatedRoute,
     private router: Router
   ) {}
@@ -80,13 +83,11 @@ export class BoardViewComponent implements OnInit, OnDestroy {
     }
   }
 
-
-  updateBoardName(boardName:string) {
-    if (this.board && boardName !== this.board.name) { 
-    this.boardService
-      .updateBoardName(this.board.id, boardName)
-      .subscribe();
-  }}
+  updateBoardName(boardName: string) {
+    if (this.board && boardName !== this.board.name) {
+      this.boardService.updateBoardName(this.board.id, boardName).subscribe();
+    }
+  }
 
   deleteBoard() {
     if (!this.board) return;
@@ -98,5 +99,11 @@ export class BoardViewComponent implements OnInit, OnDestroy {
         next: () => this.router.navigateByUrl(''),
         error: (err) => console.error('Failed to delete board:', err),
       });
+  }
+
+  onAddColumn() {
+    if (!this.board) return;
+    const newColumn = new Column('Column Name');
+    this.columnService.addColumn(this.board.id, newColumn).subscribe();
   }
 }

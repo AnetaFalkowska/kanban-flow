@@ -1,9 +1,10 @@
 :host {
-    width: 100%;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
   justify-content: center;
   gap: 40px;
-  margin: 8px auto 20px;
 
   h2 {
     color: rgba(white, 0.85);

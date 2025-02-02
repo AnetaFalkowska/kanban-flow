@@ -1,10 +1,16 @@
 <div class="board-view-wrapper">
   <div class="container board-container">
-    <app-editable-header
-      [name]="board!.name"
-      (saveEdit)="updateBoardName($event)"
-      (deleteClick)="deleteBoard()"
-    />
+
+    <div class="board-header">
+      @if (board) {<app-editable-header
+        [name]="board!.name"
+        (saveEdit)="updateBoardName($event)"
+        (deleteClick)="deleteBoard()"
+      />}
+      <button (click)="onAddColumn()" class="btn">
+        <i class="material-icons-outlined">add</i>New Column
+      </button>
+    </div>
 
     <div class="columns-container" cdkDropListGroup>
       @for (column of board?.columns; track column.id ) {

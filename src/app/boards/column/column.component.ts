@@ -25,10 +25,16 @@ import {
 import { StateService } from '../../shared/state.service';
 import { Subject, takeUntil } from 'rxjs';
 import { EditableHeaderComponent } from '../../editable-header/editable-header.component';
+import { ColumnService } from '../../shared/column.service';
 
 @Component({
   selector: 'app-column',
-  imports: [TaskCardComponent, DragDropModule, RouterModule, EditableHeaderComponent],
+  imports: [
+    TaskCardComponent,
+    DragDropModule,
+    RouterModule,
+    EditableHeaderComponent,
+  ],
   templateUrl: './column.component.html',
   styleUrl: './column.component.scss',
 })
@@ -41,6 +47,7 @@ export class ColumnComponent implements OnInit, OnDestroy {
   constructor(
     private taskService: TaskService,
     private stateService: StateService,
+    private columnService: ColumnService,
     private route: ActivatedRoute,
     private router: Router
   ) {}
@@ -63,24 +70,23 @@ export class ColumnComponent implements OnInit, OnDestroy {
   }
 
   updateColumnName(columnName: string) {
-    if (this.column && columnName !== this.column.name) {
-      return;
-      // this.columnService
-      //   .updateBoardName(this.column.id, columnName)
-      //   .subscribe();
+    if (this.boardId && this.column && columnName !== this.column.name) {
+      this.columnService
+        .updateColumnName(this.boardId, this.column.id, columnName)
+        .subscribe();
     }
   }
 
   deleteColumn() {
-    if (!this.column) return;
-
-    // this.columnService
-    //   .deleteBoard(this.column.id)
-    //   .pipe(takeUntil(this.unsubscribe$))
-    //   .subscribe({
-    //     next: () => this.router.navigateByUrl(''),
-    //     error: (err) => console.error('Failed to delete column:', err),
-    //   });
+    if (this.boardId && this.column) {
+      this.columnService
+        .deleteColumn(this.boardId, this.column.id)
+        .pipe(takeUntil(this.unsubscribe$))
+        .subscribe({
+          next: () => this.router.navigateByUrl(''),
+          error: (err) => console.error('Failed to delete column:', err),
+        });
+    }
   }
 
   onEditClick(task: Task) {

@@ -12,6 +12,12 @@
   padding: 12px;
 }
 
+.board-header {
+  position: relative;
+  width: 100%;  
+  margin: 8px auto 20px;
+
+}
 
 .columns-container {
   flex-grow: 1;
@@ -22,7 +28,6 @@
     flex: 1;
   }
 }
-
 
 /////
 // .example-container {
