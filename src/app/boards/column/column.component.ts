@@ -60,10 +60,9 @@ export class ColumnComponent implements OnInit, OnDestroy {
 
   onDeleteClick(task: Task) {
     if (this.boardId) {
-      return
-      // this.taskService
-      //   .deleteTask(this.boardId, this.column.id, task.id).pipe(takeUntil(this.unsubscribe$))
-      //   .subscribe(() => this.router.navigate([`/${this.boardId}`]));
+      this.taskService
+        .deleteTask(this.boardId, this.column.id, task.id).pipe(takeUntil(this.unsubscribe$))
+        .subscribe(() => this.router.navigate([`/${this.boardId}`]));
     }
   }
 

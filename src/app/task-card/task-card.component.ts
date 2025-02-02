@@ -38,10 +38,6 @@ export class TaskCardComponent {
     });
   }
 
-  f() {
-    console.log("clicked")
-  }
-
   onEditClick() {
     this.editClick.emit();
   }

@@ -19,68 +19,20 @@ export class TaskService {
     };
   }
 
-  constructor(private http: HttpClient, private boardService: BoardService) {}
-
-  getTasks(boardId: string, columnId: string): Observable<Task[]> {
-    return this.boardService.getBoard(boardId).pipe(
-      map((board) => {
-        if (!board) throw new Error('Board not found');
-        const column = board.columns.find((c) => c.id === columnId);
-        if (!column) throw new Error('Column not found');
-        return column.tasks;
-      }),
-      catchError(this.handleError('fetching tasks'))
-    );
-  }
+  constructor(private http: HttpClient) {}
 
   getTask(boardId: string, columnId: string, taskId: string): Observable<Task> {
-    return this.getTasks(boardId, columnId).pipe(
-      map((tasks) => {
-        const task = tasks.find((t) => t.id === taskId);
-        if (!task) throw new Error('Task not found');
-        return task;
-      }),
-      catchError(this.handleError('fetching task'))
-    );
-  }
-
-  modifyBoard(
-    boardId: string,
-    columnId: string,
-    modifyFn: (tasks: Task[]) => Task[]
-  ): Observable<Board> {
-    return this.boardService.getBoard(boardId).pipe(
-      map((board) => {
-        if (!board) throw new Error('Board not found');
-        const columnIndex = board.columns.findIndex((c) => c.id === columnId);
-        if (columnIndex === -1) throw new Error('Column not found');
-
-        const updatedColumn = {
-          ...board.columns[columnIndex],
-          tasks: modifyFn(board.columns[columnIndex].tasks),
-        };
-
-        console.log("From modifyBoard: ",updatedColumn);
-
-        const updatedColumns = [...board.columns];
-        updatedColumns[columnIndex] = updatedColumn;
-
-        const updatedBoard = { ...board, columns: updatedColumns };
-
-        return updatedBoard;
-      }),
-      switchMap((updatedBoard) =>
-        this.http
-          .put<Board>(`${this.API_URL}/${boardId}`, updatedBoard, {
-            headers: { 'Content-Type': 'application/json' },
-          })
-          .pipe(catchError(this.handleError('adding task')))
+    return this.http
+      .get<Task>(
+        `${this.API_URL}/${boardId}/columns/${columnId}/tasks/${taskId}`
       )
-    );
+      .pipe(catchError(this.handleError('getting task')));
   }
 
-  addTask(boardId: string, columnId: string, task: Task): Observable<Board> {
-    return this.modifyBoard(boardId, columnId, (tasks) => [...tasks, task]);
+  addTask(boardId: string, columnId: string, task: Task): Observable<Task> {
+    return this.http
+      .post<Task>(`${this.API_URL}/${boardId}/columns/${columnId}/tasks/`, task)
+      .pipe(catchError(this.handleError('adding task')));
   }
 
   updateTask(
@@ -88,27 +40,24 @@ export class TaskService {
     columnId: string,
     taskId: string,
     updatedFields: Partial<Task>
-  ): Observable<Board> {
-    return this.modifyBoard(boardId, columnId, (tasks) =>
-      tasks.map((task) =>
-        task.id === taskId ? { ...task, ...updatedFields } : task
+  ): Observable<Task> {
+    return this.http
+      .put<Task>(
+        `${this.API_URL}/${boardId}/columns/${columnId}/tasks/${taskId}`,
+        updatedFields
       )
-    );
+      .pipe(catchError(this.handleError('updating task')));
   }
 
   deleteTask(
     boardId: string,
     columnId: string,
     taskId: string
-  ): Observable<Board> {
-    console.log('deleting in service');
-    return this.modifyBoard(boardId, columnId, (tasks) =>
-      {const updatedTasks = tasks.filter((task) => task.id !== taskId);
-
-    console.log('Before deletion:', tasks);
-    console.log('After deletion:', updatedTasks);
-
-    return updatedTasks;}
-    );
+  ): Observable<void> {
+    return this.http
+      .delete<void>(
+        `${this.API_URL}/${boardId}/columns/${columnId}/tasks/${taskId}`
+      )
+      .pipe(catchError(this.handleError('deleting task')));
   }
 }

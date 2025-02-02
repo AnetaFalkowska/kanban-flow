@@ -53,6 +53,7 @@ export class TaskFormComponent implements OnInit, OnDestroy {
           this.boardId = boardId;
           this.columnId = columnId;
           this.taskId = paramMap.get('taskId');
+          console.log(this.boardId, this.columnId, this.taskId)
 
           return this.boardId && this.columnId && this.taskId
             ? this.taskService.getTask(this.boardId, this.columnId, this.taskId)
@@ -110,9 +111,7 @@ export class TaskFormComponent implements OnInit, OnDestroy {
   }
 
   deleteTask() {
-    console.log(this.boardId, this.columnId, this.taskId)
     if (this.boardId && this.columnId && this.taskId) {
-      console.log("deleting")
       this.taskService
         .deleteTask(this.boardId, this.columnId, this.taskId).pipe(takeUntil(this.unsubscribe$))
         .subscribe((board) => {console.log(board);this.router.navigate([`/${this.boardId}`])});
