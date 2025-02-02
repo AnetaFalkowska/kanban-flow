@@ -15,7 +15,7 @@ import {
 } from '@angular/router';
 import { Task } from '../shared/task.model';
 import { StateService } from '../shared/state.service';
-import { combineLatest, Subject, takeUntil } from 'rxjs';
+import { combineLatest, of, Subject, switchMap, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-task-form',
@@ -29,8 +29,8 @@ export class TaskFormComponent implements OnInit, OnDestroy {
   boardId: string | null = null;
   columnId: string | null = null;
   taskId: string | null = null;
-  task?: Task;
-  unsubscribe$ = new Subject<void>()
+  task: Task | null = null;
+  unsubscribe$ = new Subject<void>();
 
   constructor(
     private formBuilder: FormBuilder,
@@ -43,42 +43,38 @@ export class TaskFormComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.initializeForm();
 
-    combineLatest([
-      this.route.paramMap,
-      this.stateService.currentTaskCtx,
-    ]).
-    pipe(takeUntil(this.unsubscribe$)).
-    subscribe(([paramMap, context]) => {
-      this.taskId = paramMap.get('taskId');
-      if (context && this.taskId) {
-        const { boardId, columnId } = context;
-        if (boardId && columnId) {
+    combineLatest([this.route.paramMap, this.stateService.currentTaskCtx])
+      .pipe(
+        takeUntil(this.unsubscribe$),
+        switchMap(([paramMap, context]) => {
+          if (!context) return of(null);
+
+          const { boardId, columnId } = context;
           this.boardId = boardId;
           this.columnId = columnId;
-          this.task = this.taskService.getTask(
-            this.boardId,
-            this.columnId,
-            this.taskId
-          );
-          this.editMode = !!this.task;
-          this.populateExistingData();
-        }
-      }
-    });
+          this.taskId = paramMap.get('taskId');
+
+          return this.boardId && this.columnId && this.taskId
+            ? this.taskService.getTask(this.boardId, this.columnId, this.taskId)
+            : of(null);
+        })
+      )
+      .subscribe((task) => {
+        this.task = task;
+        this.editMode = !!task;
+        this.populateExistingData();
+      });
   }
 
   ngOnDestroy(): void {
     this.stateService.clearTaskContext();
     this.unsubscribe$.next();
-    this.unsubscribe$.complete()
+    this.unsubscribe$.complete();
   }
 
   initializeForm(): void {
     this.taskForm = this.formBuilder.group({
-      name: new FormControl('', [
-        Validators.required,
-        Validators.minLength(3),
-      ]),
+      name: new FormControl('', [Validators.required, Validators.minLength(3)]),
     });
   }
 
@@ -99,26 +95,27 @@ export class TaskFormComponent implements OnInit, OnDestroy {
 
     const taskData = form.value;
     if (this.editMode && this.taskId) {
-      this.taskService.updateTask(
-        this.boardId,
-        this.columnId,
-        this.taskId,
-        taskData
-      );
+      this.taskService
+        .updateTask(this.boardId, this.columnId, this.taskId, taskData).pipe(takeUntil(this.unsubscribe$))
+        .subscribe(() => {
+          this.router.navigate([`/${this.boardId}`]);
+        });
     } else {
-      this.taskService.addTask(
-        this.boardId,
-        this.columnId,
-        new Task(taskData.name)
-      );
+      this.taskService
+        .addTask(this.boardId, this.columnId, new Task(taskData.name)).pipe(takeUntil(this.unsubscribe$))
+        .subscribe(() => {
+          this.router.navigate([`/${this.boardId}`]);
+        });
     }
-    this.router.navigate([`/${this.boardId}`]);
   }
 
   deleteTask() {
+    console.log(this.boardId, this.columnId, this.taskId)
     if (this.boardId && this.columnId && this.taskId) {
-      this.taskService.deleteTask(this.boardId, this.columnId, this.taskId);
-      this.router.navigate([`/${this.boardId}`]);
+      console.log("deleting")
+      this.taskService
+        .deleteTask(this.boardId, this.columnId, this.taskId).pipe(takeUntil(this.unsubscribe$))
+        .subscribe((board) => {console.log(board);this.router.navigate([`/${this.boardId}`])});
     }
   }
 }

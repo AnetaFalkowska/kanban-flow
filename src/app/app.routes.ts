@@ -16,4 +16,5 @@ export const routes: Routes = [
   { path: ':id', component: BoardViewComponent },
   { path: ':id/edit', component: BoardFormComponent },
   { path: 'tasks/:taskId/edit', component: TaskFormComponent },
+  { path: 'tasks/add', component: TaskFormComponent },
 ];
