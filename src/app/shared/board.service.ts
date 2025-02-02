@@ -12,22 +12,23 @@ export class BoardService {
   private readonly API_URL = 'http://localhost:3000/api/boards';
   constructor(private http: HttpClient) {}
 
+  handleError(action: string) {
+    return (error: any) => {
+      console.error(`Error ${action}: `, error);
+      return throwError(() => new Error(`Error ${action}}`));
+    };
+  }
+
   getBoards(): Observable<Board[]> {
-    return this.http.get<Board[]>(this.API_URL).pipe(
-      catchError((err) => {
-        console.error('Error fetching boards: ', err);
-        return throwError(() => new Error('Error fetching boards'));
-      })
-    );
+    return this.http
+      .get<Board[]>(this.API_URL)
+      .pipe(catchError(this.handleError('getting boards')));
   }
 
   getBoard(id: string): Observable<Board> {
-    return this.http.get<Board>(`${this.API_URL}/${id}`).pipe(
-      catchError((err) => {
-        console.error('Error fetching board: ', err);
-        return throwError(() => new Error('Error fetching board'));
-      })
-    );
+    return this.http
+      .get<Board>(`${this.API_URL}/${id}`)
+      .pipe(catchError(this.handleError('getting board')));
   }
 
   addBoard(board: Board): Observable<Board> {
@@ -35,68 +36,21 @@ export class BoardService {
       .post<Board>(this.API_URL, board, {
         headers: { 'Content-Type': 'application/json' },
       })
-      .pipe(
-        catchError((err) => {
-          console.error('Error adding board: ', err);
-          return throwError(() => new Error('Error adding board'));
-        })
-      );
+      .pipe(catchError(this.handleError('adding board')));
   }
 
-  updateBoard(
+  updateBoardName(
     id: string,
     updatedFields: {
       boardName: string;
-      items: { columnId: string; columnName: string; taskLimit: number }[];
     }
   ): Observable<Board> {
-    return this.getBoard(id).pipe(
-      map((board) => {
-        if (!board) return throwError(() => new Error('Board not found'));
-
-        board.name = updatedFields.boardName;
-
-        const existingColumnsMap = new Map(
-          board.columns.map((column) => [column.id, column])
-        );
-
-        board.columns = updatedFields.items
-          .map((item) => {
-            const { columnId, columnName, taskLimit } = item;
-
-            if (!columnId) {
-              return new Column(columnName, [], taskLimit);
-            }
-            const existingColumn = existingColumnsMap.get(columnId);
-            if (existingColumn) {
-              return { ...existingColumn, name: columnName, taskLimit };
-            }
-
-            return null;
-          })
-          .filter((column) => column !== null) as Column[];
-
-        return board;
-      }),
-
-      switchMap((updatedBoard) =>
-        this.http.put<Board>(`${this.API_URL}/${id}`, updatedBoard, {
-          headers: { 'Content-Type': 'application/json' },
-        })
-      ),
-      catchError((err) => {
-        console.error('Error updating board: ', err);
-        return throwError(() => new Error('Error updating board'));
-      })
-    );
+    return this.http.put<Board>(`${this.API_URL}/${id}`, {name:updatedFields.boardName}).pipe(catchError(this.handleError('updating board name')));      
   }
 
   deleteBoard(id: string): Observable<void> {
-    return this.http.delete<void>(`${this.API_URL}/${id}`).pipe(
-      catchError((err) => {
-        console.error('Error deleting board: ', err);
-        return throwError(() => new Error('Error deleting board'));
-      })
-    );
+    return this.http
+      .delete<void>(`${this.API_URL}/${id}`)
+      .pipe(catchError(this.handleError('deleting board')));
   }
 }

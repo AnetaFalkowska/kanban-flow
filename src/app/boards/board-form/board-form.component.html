@@ -1,5 +1,5 @@
 <div class="board-form-wrapper container-sm">
-  <h2 class="is-bold">{{editMode ? "Edit Board":"New Board"}}</h2>
+  <h2 class="is-bold">New Board</h2>
   <form [formGroup]="boardForm" novalidate (ngSubmit)="onSubmit(boardForm)">
     <div class="form-field">
       <label idFor="borad-name">Board Name</label>
@@ -44,9 +44,7 @@
     </div>
 
     <div class="btns-container">
-      @if (editMode) {<button (click)="deleteBoard()" class="btn">Delete</button>}
       <button routerLink="" type="button" class="btn">Cancel</button>
-
       <button [disabled]="!isFormValid()" type="submit" class="btn align-end">
         Save
       </button>

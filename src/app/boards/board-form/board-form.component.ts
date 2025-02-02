@@ -33,8 +33,6 @@ export class BoardFormComponent implements OnInit, OnDestroy {
   ];
 
   boardForm!: FormGroup;
-  editMode: boolean = false;
-  boardId: string | null = null;
   unsubscribe$ = new Subject<void>();
 
   constructor(
@@ -45,13 +43,6 @@ export class BoardFormComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.route.paramMap
-      .pipe(takeUntil(this.unsubscribe$))
-      .subscribe((paramMap: ParamMap) => {
-        this.boardId = paramMap.get('id');
-        this.editMode = !!this.boardId;
-      });
-
     this.boardForm = this.formBuilder.group({
       boardName: new FormControl('', [
         Validators.required,
@@ -73,21 +64,7 @@ export class BoardFormComponent implements OnInit, OnDestroy {
   }
 
   populateExistingData() {
-    if (!this.editMode) {
-      this.columns.forEach((c) => this.items.push(this.createExistingItem(c)));
-    } else if (this.boardId) {
-      this.boardService
-        .getBoard(this.boardId)
-        .pipe(takeUntil(this.unsubscribe$))
-        .subscribe((board) => {
-          board.columns.forEach((c) =>
-            this.items.push(this.createExistingItem(c))
-          );
-          this.boardForm.patchValue({
-            boardName: board.name,
-          });
-        });
-    }
+    this.columns.forEach((c) => this.items.push(this.createExistingItem(c)));
   }
 
   createExistingItem(column: any): AbstractControl {
@@ -135,45 +112,20 @@ export class BoardFormComponent implements OnInit, OnDestroy {
   }
 
   onSubmit(form: FormGroup<any>) {
-    if (this.boardId) {
-      this.boardService
-        .updateBoard(this.boardId, form.value)
-        .pipe(takeUntil(this.unsubscribe$))
-        .subscribe({
-          next: () => {
-            console.log('Board updated');
-            this.router.navigateByUrl('');
-          },
-          error: (err) => console.error('Error updating board:', err),
-        });
-    } else {
-      const { boardName, items } = form.value;
-      const columns = items.map(
-        (item: any) =>
-          new Column(item.columnName, [], item.taskLimit || undefined)
-      );
-      this.boardService
-        .addBoard(new Board(boardName, columns))
-        .pipe(takeUntil(this.unsubscribe$))
-        .subscribe({
-          next: () => {
-            console.log('Board added');
-            this.router.navigateByUrl('');
-          },
-          error: (err) => console.error('Error adding board:', err),
-        });
-    }
-  }
-
-  deleteBoard() {
-    if (!this.boardId) return;
-
+    const { boardName, items } = form.value;
+    const columns = items.map(
+      (item: any) =>
+        new Column(item.columnName, [], item.taskLimit || undefined)
+    );
     this.boardService
-      .deleteBoard(this.boardId)
+      .addBoard(new Board(boardName, columns))
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
-        next: () => this.router.navigateByUrl(''),
-        error: (err) => console.error('Failed to delete board:', err),
+        next: () => {
+          console.log('Board added');
+          this.router.navigateByUrl('');
+        },
+        error: (err) => console.error('Error adding board:', err),
       });
   }
 }
