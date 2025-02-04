@@ -13,15 +13,15 @@ import { Subject, takeUntil } from 'rxjs';
 })
 export class DashboardComponent implements OnInit, OnDestroy {
   boards: Board[] = [];
-  unsubscribe$ = new Subject<void>();
+  private readonly unsubscribe$ = new Subject<void>();
 
-  constructor(private boardService: BoardService) {}
+  constructor(private readonly boardService: BoardService) {}
 
   ngOnInit() {
     this.boardService
       .getBoards()
       .pipe(takeUntil(this.unsubscribe$))
-      .subscribe({ next: (res) => (this.boards = res) });
+      .subscribe(res => this.boards = res);
   }
 
   ngOnDestroy(): void {

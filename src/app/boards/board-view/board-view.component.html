@@ -4,8 +4,8 @@
     <div class="board-header">
       @if (board) {<app-editable-header
         [name]="board!.name"
-        (saveEdit)="updateBoardName($event)"
-        (deleteClick)="deleteBoard()"
+        (saveEdit)="onUpdateBoardName($event)"
+        (deleteClick)="onDeleteBoard()"
       />}
       <button (click)="onAddColumn()" class="btn">
         <i class="material-icons-outlined">add</i>New Column

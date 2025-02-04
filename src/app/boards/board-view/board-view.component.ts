@@ -27,7 +27,6 @@ import { Column } from '../../shared/column.model';
     ColumnComponent,
     DragDropModule,
     RouterModule,
-
     EditableHeaderComponent,
   ],
   templateUrl: './board-view.component.html',
@@ -38,10 +37,10 @@ export class BoardViewComponent implements OnInit, OnDestroy {
   private unsubscribe$ = new Subject<void>();
 
   constructor(
-    private boardService: BoardService,
-    private columnService: ColumnService,
-    private route: ActivatedRoute,
-    private router: Router
+    private readonly boardService: BoardService,
+    private readonly columnService: ColumnService,
+    private readonly route: ActivatedRoute,
+    private readonly router: Router
   ) {}
 
   ngOnInit(): void {
@@ -54,11 +53,7 @@ export class BoardViewComponent implements OnInit, OnDestroy {
 
         takeUntil(this.unsubscribe$)
       )
-      .subscribe({
-        next: (board) => {
-          this.board = board;
-        },
-      });
+      .subscribe((board) => (this.board = board));
   }
 
   ngOnDestroy(): void {
@@ -67,6 +62,7 @@ export class BoardViewComponent implements OnInit, OnDestroy {
   }
 
   drop(event: CdkDragDrop<{ id: string; name: string }[]>) {
+    if (!event.previousContainer || !event.container) return;
     if (event.previousContainer === event.container) {
       moveItemInArray(
         event.container.data,
@@ -83,22 +79,21 @@ export class BoardViewComponent implements OnInit, OnDestroy {
     }
   }
 
-  updateBoardName(boardName: string) {
+  onUpdateBoardName(boardName: string) {
     if (this.board && boardName !== this.board.name) {
-      this.boardService
-        .updateBoardName(this.board.id, boardName)
-        .subscribe(() => (this.board!.name = boardName));
+      this.boardService.updateBoardName(this.board.id, boardName).subscribe({
+        error: (err) => console.error('Failed to update board name:', err),
+      });
     }
   }
 
-  deleteBoard() {
+  onDeleteBoard() {
     if (!this.board) return;
-
     this.boardService
       .deleteBoard(this.board.id)
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
-        next: () => this.router.navigateByUrl(''),
+        next: () => this.router.navigateByUrl('/'),
         error: (err) => console.error('Failed to delete board:', err),
       });
   }
@@ -106,9 +101,16 @@ export class BoardViewComponent implements OnInit, OnDestroy {
   onAddColumn() {
     if (!this.board) return;
     const newColumn = new Column('Column Name');
-    this.columnService
-      .addColumn(this.board.id, newColumn)
-      .subscribe((createdColumn) => this.board!.columns.push(createdColumn));
+    this.columnService.addColumn(this.board.id, newColumn).subscribe({
+      next: (createdColumn) => {
+        this.board = {
+          id: this.board!.id,
+          name: this.board!.name,
+          columns: [...this.board!.columns, createdColumn],
+        };
+      },
+      error: (err) => console.error('Failed to add column:', err),
+    });
   }
 
   onDeleteColumn(columnId: string) {
@@ -116,10 +118,15 @@ export class BoardViewComponent implements OnInit, OnDestroy {
     this.columnService
       .deleteColumn(this.board.id, columnId)
       .pipe(takeUntil(this.unsubscribe$))
-      .subscribe(() => {
-        this.board!.columns = this.board!.columns.filter(
-          (col) => col.id !== columnId
-        );
+      .subscribe({
+        next: () => {
+          this.board = {
+            id: this.board!.id,
+            name: this.board!.name,
+            columns: this.board!.columns.filter((col) => col.id !== columnId),
+          };
+        },
+        error: (err) => console.error('Failed to delete column:', err),
       });
   }
 }
