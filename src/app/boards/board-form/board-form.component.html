@@ -1,6 +1,6 @@
 <div class="board-form-wrapper container-sm">
   <h2 class="is-bold">New Board</h2>
-  <form [formGroup]="boardForm" novalidate (ngSubmit)="onSubmit(boardForm)">
+  <form [formGroup]="boardForm" novalidate (ngSubmit)="onSubmit()">
     <div class="form-field">
       <label idFor="borad-name">Board Name</label>
       <input type="text" id="borad-name" formControlName="boardName" />
@@ -15,30 +15,30 @@
     </div>
     <div class="column-section">
       <h4>Columns</h4>
-      @for (item of items.controls; track item; let i =$index) {
-      <div formArrayName="items">
-        <div [formGroupName]="i">
+      <div formArrayName="columns">
+        @for (column of columns.controls; track column; let i =$index) {
+
+        <div class="form-field">
           <div class="edit-column-actions">
-            <div class="column-name">
-              <input placeholder="Column Name" formControlName="columnName" type="text" />
-              @if (validateField(item)) {
-              <p class="error-message">Column Name is required</p>
-              }
-            </div>
-            
-            <input class="task-limit" placeholder="Task Limit (optional)" formControlName="taskLimit" type="number" />
-            <button [disabled] = "items.length === 1" (click)="removeItem(i)" type="button" class="btn btn-small">
+            <input [formControlName]="i" type="text" />
+            <button
+              [disabled]="columns.length === 1"
+              (click)="removeColumn(i)"
+              type="button"
+              class="btn btn-small"
+            >
               Delete
             </button>
           </div>
+          @if (validateField(column)) {
+            <p class="error-message">Column Name is required</p>
+            }          
         </div>
-      </div>
-      } @if (boardForm.get('items')?.touched && boardForm.get('items')?.errors?.['uniqueColumnNames'])
-      {
-      <p class="error-message">Column names must be unique</p>
-      }
 
-      <button type="button" class="add-btn btn btn-small" (click)="addItem()">
+
+        }
+      </div>
+      <button type="button" class="add-btn btn btn-small" (click)="addColumn()">
         <i class="add-icon material-icons-outlined">add</i>Add Column
       </button>
     </div>
