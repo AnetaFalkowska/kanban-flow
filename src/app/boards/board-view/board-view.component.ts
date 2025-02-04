@@ -85,7 +85,9 @@ export class BoardViewComponent implements OnInit, OnDestroy {
 
   updateBoardName(boardName: string) {
     if (this.board && boardName !== this.board.name) {
-      this.boardService.updateBoardName(this.board.id, boardName).subscribe();
+      this.boardService
+        .updateBoardName(this.board.id, boardName)
+        .subscribe(() => (this.board!.name = boardName));
     }
   }
 
@@ -104,6 +106,20 @@ export class BoardViewComponent implements OnInit, OnDestroy {
   onAddColumn() {
     if (!this.board) return;
     const newColumn = new Column('Column Name');
-    this.columnService.addColumn(this.board.id, newColumn).subscribe();
+    this.columnService
+      .addColumn(this.board.id, newColumn)
+      .subscribe((createdColumn) => this.board!.columns.push(createdColumn));
+  }
+
+  onDeleteColumn(columnId: string) {
+    if (!this.board) return;
+    this.columnService
+      .deleteColumn(this.board.id, columnId)
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe(() => {
+        this.board!.columns = this.board!.columns.filter(
+          (col) => col.id !== columnId
+        );
+      });
   }
 }

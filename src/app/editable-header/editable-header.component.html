@@ -11,13 +11,15 @@
 } @else {
 <div class="form-field">
   <input
-    [(ngModel)]="name"
+    class="edit-name"
+    [(ngModel)]="tempName"
     #nameField="ngModel"
-    (blur)="onSaveEdit()"
-    (keyup.enter)="onSaveEdit()"
+    (blur)="onSaveEdit(nameField)"
+    (keyup.enter)="onSaveEdit(nameField)"
     (keydown.escape)="onCancelEdit()"
     required
     minlength="3"
+    autofocus
   />
   @if (showValidationErrors) {<ng-container
     >@if (nameField.errors?.['required']) {
@@ -27,6 +29,17 @@
     }</ng-container
   >}
 </div>
+<div (click)="$event.stopPropagation()" class="task-item-actions" >
+    <div (click)="onSaveEdit(nameField)" class="task-item-actions-btn" [class.editMode]="editMode">
+      <i class="material-icons-outlined">check</i>
+    </div>
+    <div (click)="onCancelEdit()" class="task-item-actions-btn" [ngClass]="{ 'editMode': editMode }">
+      <i class="material-icons">close</i>
+    </div>
+  </div>
+
+}
+
 
 <!-- <div class="btns-container">
   <button routerLink="" type="button" class="btn" (click)="onCancelEdit()">
@@ -41,5 +54,3 @@
     Save
   </button>
 </div> -->
-
-}

@@ -30,10 +30,11 @@ export class ColumnService {
     columnId: string,
     updatedColumnName: string
   ): Observable<Column> {
+    console.log('updating in service')
     return this.http
       .put<Column>(
         `${this.API_URL}/${boardId}/columns/${columnId}`,
-        updatedColumnName
+        {name:updatedColumnName}
       )
       .pipe(catchError(this.handleError('updating column name')));
   }

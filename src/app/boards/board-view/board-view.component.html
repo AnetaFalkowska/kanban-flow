@@ -14,7 +14,7 @@
 
     <div class="columns-container" cdkDropListGroup>
       @for (column of board?.columns; track column.id ) {
-      <app-column [column]="column" (dropEmitter)="drop($event)"></app-column>
+      <app-column [column]="column" (dropEmitter)="drop($event)" (deleteClick)="onDeleteColumn(column.id)"></app-column>
       }
     </div>
   </div>

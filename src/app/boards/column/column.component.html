@@ -14,7 +14,7 @@
     (cdkDropListDropped)="onDrop($event)"
   >
     @for (task of column.tasks; track task.id) {
-    <div class="my-item" cdkDrag [cdkDragData]="task.name">
+    <div class="my-item" cdkDrag [cdkDragData]="task.name" [@taskAnim]="taskAnimationState">
       <app-task-card class="my-item" [task]="task" (editClick)="onEditClick(task)" (deleteClick)="onDeleteClick(task)"> </app-task-card>
       <!-- <div class="my-item" cdkDrag [cdkDragData]="task.name">
         {{ task.name }}        
