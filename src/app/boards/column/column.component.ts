@@ -96,13 +96,23 @@ export class ColumnComponent implements OnInit, OnDestroy {
   }
 
   addTask() {
-    this.stateService.setTaskContext(this.boardId, this.column.id);
-    this.router.navigateByUrl('/tasks/add');
+    // this.stateService.setTaskContext(this.boardId, this.column.id);
+    this.router.navigate(['/tasks/add'], {
+      queryParams: {
+        boardId: this.boardId,
+        columnId: this.column.id
+      }
+    });
   }
 
   editTask(task: Task) {
-    this.stateService.setTaskContext(this.boardId, this.column.id);
-    this.router.navigate([`/tasks/${task?.id}/edit`]);
+    // this.stateService.setTaskContext(this.boardId, this.column.id);
+    this.router.navigate([`/tasks/${task?.id}/edit`], {
+      queryParams: {
+        boardId: this.boardId,
+        columnId: this.column.id
+      }
+    });
   }
 
   onDeleteTask(task: Task) {

@@ -30,6 +30,7 @@ export class TaskService {
   }
 
   addTask(boardId: string, columnId: string, task: Task): Observable<Task> {
+    console.log("service:", task)
     return this.http
       .post<Task>(`${this.API_URL}/${boardId}/columns/${columnId}/tasks/`, task)
       .pipe(catchError(this.handleError('adding task')));

@@ -23,14 +23,13 @@ import { combineLatest, of, Subject, switchMap, takeUntil } from 'rxjs';
   templateUrl: './task-form.component.html',
   styleUrl: './task-form.component.scss',
 })
-export class TaskFormComponent implements OnInit, OnDestroy {
+export class TaskFormComponent implements OnInit {
   taskForm!: FormGroup;
-  editMode: boolean = false;
   boardId: string | null = null;
   columnId: string | null = null;
   taskId: string | null = null;
   task: Task | null = null;
-  priorityOptions = [null, "low", "medium", "high"]
+  priorityOptions = [null, 'low', 'medium', 'high'];
   unsubscribe$ = new Subject<void>();
 
   constructor(
@@ -44,46 +43,99 @@ export class TaskFormComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.initializeForm();
 
-    combineLatest([this.route.paramMap, this.stateService.currentTaskCtx])
+    this.route.queryParams
       .pipe(
         takeUntil(this.unsubscribe$),
-        switchMap(([paramMap, context]) => {
-          if (!context) return of(null);
+        switchMap((params) => {
+          const boardIdFromQuery = params['boardId'];
+          const columnIdFromQuery = params['columnId'];
+          if (boardIdFromQuery && columnIdFromQuery) {
+            this.boardId = boardIdFromQuery;
+            this.columnId = columnIdFromQuery;
+          } else {
+            return of(null);
+          }
 
-          const { boardId, columnId } = context;
-          this.boardId = boardId;
-          this.columnId = columnId;
-          this.taskId = paramMap.get('taskId');
-          console.log(this.boardId, this.columnId, this.taskId)
+          this.taskId = this.route.snapshot.paramMap.get('taskId');
 
-          return this.boardId && this.columnId && this.taskId
-            ? this.taskService.getTask(this.boardId, this.columnId, this.taskId)
-            : of(null);
+          if (this.boardId && this.columnId && this.taskId) {
+            return this.taskService
+              .getTask(this.boardId, this.columnId, this.taskId)
+              .pipe(takeUntil(this.unsubscribe$));
+          }
+          return of(null);
         })
       )
       .subscribe((task) => {
         this.task = task;
-        this.editMode = !!task;
         this.populateExistingData();
       });
   }
 
-  ngOnDestroy(): void {
-    this.stateService.clearTaskContext();
-    this.unsubscribe$.next();
-    this.unsubscribe$.complete();
-  }
+  // ngOnInit(): void {
+  //   this.initializeForm();
+
+  //   combineLatest([this.route.paramMap, this.stateService.currentTaskCtx])
+  //     .pipe(
+  //       takeUntil(this.unsubscribe$),
+  //       switchMap(([paramMap, context]) => {
+
+  //         if (!context || !context.boardId || !context.columnId) {
+  //           console.log('missing');
+
+  //           this.router.navigate(['../../'], { relativeTo: this.route });
+  //           return of(null);
+  //         }
+
+  //         const { boardId, columnId } = context;
+  //         this.boardId = boardId;
+  //         this.columnId = columnId;
+  //         this.taskId = paramMap.get('taskId');
+  //         console.log('on init: ', this.boardId, this.columnId, this.taskId);
+
+  //         return this.boardId && this.columnId && this.taskId
+  //           ? this.taskService.getTask(this.boardId, this.columnId, this.taskId)
+  //           : of(null);
+  //       })
+  //     )
+  //     .subscribe((task) => {
+  //       this.task = task;
+
+  //       this.populateExistingData();
+  //     });
+  // }
+
+  // ngOnDestroy(): void {
+  //   this.stateService.clearTaskContext();
+  //   this.unsubscribe$.next();
+  //   this.unsubscribe$.complete();
+  // }
 
   initializeForm(): void {
     this.taskForm = this.formBuilder.group({
-      name: new FormControl('', [Validators.required, Validators.minLength(3)]),
+      name: ['', [Validators.required, Validators.minLength(3)]],
+      description: [''],
+      priority: [''],
+      duedate: ['', this.dateNotInPast],
     });
+  }
+
+  dateNotInPast(control: FormControl): { [key: string]: boolean } | null {
+    const currentDate = new Date();
+    const inputDate = new Date(control.value);
+    if (inputDate < currentDate) {
+      return { dateInPast: true };
+    }
+    return null;
   }
 
   populateExistingData() {
     if (this.task) {
       this.taskForm.patchValue({
-        name: this.task?.name,
+        name: this.task.name,
+        description: this.task.description ?? '',
+        priority: this.task.priority ?? '',
+        duedate: this.task.duedate ?? '',
       });
     }
   }
@@ -93,29 +145,66 @@ export class TaskFormComponent implements OnInit, OnDestroy {
   }
 
   onSubmit(form: FormGroup<any>): void {
-    if (!this.boardId || !this.columnId) return;
-
-    const taskData = form.value;
-    if (this.editMode && this.taskId) {
-      this.taskService
-        .updateTask(this.boardId, this.columnId, this.taskId, taskData).pipe(takeUntil(this.unsubscribe$))
-        .subscribe(() => {
-          this.router.navigate([`/${this.boardId}`]);
-        });
-    } else {
-      this.taskService
-        .addTask(this.boardId, this.columnId, new Task(taskData.name)).pipe(takeUntil(this.unsubscribe$))
-        .subscribe(() => {
-          this.router.navigate([`/${this.boardId}`]);
-        });
+    if (!this.boardId || !this.columnId) {
+      console.error('Missing boardId or columnId');
+      return;
     }
+
+    const { name, description, priority, duedate } = form.value;
+
+    this.taskId
+      ? this.updateTask(name, description, priority, duedate)
+      : this.createTask(name, description, priority, duedate);
+  }
+
+  private updateTask(
+    name: string,
+    description: string,
+    priority: 'low' | 'medium' | 'high' | undefined,
+    duedate: string
+  ) {
+    this.taskService
+      .updateTask(this.boardId!, this.columnId!, this.taskId!, {
+        name,
+        description,
+        priority,
+        duedate,
+      })
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: () => this.router.navigate([`/${this.boardId}`]),
+        error: (err) => console.error('Task update failed', err),
+      });
+  }
+
+  private createTask(
+    name: string,
+    description: string,
+    priority: 'low' | 'medium' | 'high' | undefined,
+    duedate: string
+  ) {
+    const newTask = new Task({ name, description, priority, duedate });
+    this.taskService
+      .addTask(this.boardId!, this.columnId!, newTask)
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: () => this.router.navigate([`/${this.boardId}`]),
+        error: (err) => console.error('Adding task failed', err),
+      });
   }
 
   deleteTask() {
-    if (this.boardId && this.columnId && this.taskId) {
-      this.taskService
-        .deleteTask(this.boardId, this.columnId, this.taskId).pipe(takeUntil(this.unsubscribe$))
-        .subscribe((board) => {console.log(board);this.router.navigate([`/${this.boardId}`])});
+    if (!this.boardId || !this.columnId || !this.taskId) {
+      console.error('Cannot delete task - missing IDs');
+      return;
     }
+
+    this.taskService
+      .deleteTask(this.boardId, this.columnId, this.taskId)
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe((board) => {
+        console.log(board);
+        this.router.navigate([`/${this.boardId}`]);
+      });
   }
 }
