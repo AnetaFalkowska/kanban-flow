@@ -1,0 +1,16 @@
+.task-form-wrapper {
+  background: rgba(white, 0.75);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 30px;
+  border-radius: 8px;
+  max-height: 100%;
+  overflow: auto;
+}
+
+.bottom-section {
+    width: 100%;
+  display: flex;
+
+  justify-content: space-between;
+}

@@ -5,6 +5,32 @@
         <label idFor="borad-name">Task Name</label>
         <input type="text" id="borad-name" formControlName="name" />
       </div>
+      <div class="form-field">
+        <label idFor="description">Description</label>
+        <textarea
+          class="textarea"
+          id="description"
+        ></textarea>
+      </div>
+      <div class="bottom-section">
+        <div class="form-field">
+
+
+
+
+
+          <label idFor="priority">Priority</label>
+
+          <select id="priority">
+            @for (option of priorityOptions; track option) {<option [value]="option">{{ option }}</option>}
+          </select>
+
+        </div>
+        <div class="form-field">
+          <label idFor="duedate">Due Date</label>
+          <input type="date" id="duedate"/>
+        </div>
+      </div>     
   
       <div class="btns-container">
         @if (editMode) {<button (click)="deleteTask()" class="btn">Delete</button>}

@@ -30,6 +30,7 @@ export class TaskFormComponent implements OnInit, OnDestroy {
   columnId: string | null = null;
   taskId: string | null = null;
   task: Task | null = null;
+  priorityOptions = [null, "low", "medium", "high"]
   unsubscribe$ = new Subject<void>();
 
   constructor(
