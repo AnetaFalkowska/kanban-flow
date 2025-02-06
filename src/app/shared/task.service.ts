@@ -61,4 +61,13 @@ export class TaskService {
       )
       .pipe(catchError(this.handleError('deleting task')));
   }
+
+  moveTask(boardId: string,
+    columnId: string,
+    taskId: string,
+    targetColumnId: string,
+    newIndex:number
+  ): Observable<Task> {
+    return this.http.put<Task>(`${this.API_URL}/${boardId}/columns/${columnId}/tasks/${taskId}/move/${targetColumnId}`, {newIndex} )
+  }
 }

@@ -76,7 +76,7 @@ export class ColumnComponent implements OnInit, OnDestroy {
     this.unsubscribe$.complete();
   }
 
-  onDrop(event: CdkDragDrop<any>) {
+  onDrop(event: CdkDragDrop<{ tasks: Task[], columnId: string }>) {
     this.dropEmitter.emit(event);
   }
 

@@ -9,7 +9,7 @@
     cdkDropList
     
     #emptyList="cdkDropList"
-    [cdkDropListData]="column.tasks"
+    [cdkDropListData]="{ tasks: column.tasks, columnId: column.id }"
     class="tasks-container"
     (cdkDropListDropped)="onDrop($event)"
   >

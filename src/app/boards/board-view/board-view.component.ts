@@ -20,6 +20,8 @@ import {
 import { EditableHeaderComponent } from '../../editable-header/editable-header.component';
 import { ColumnService } from '../../shared/column.service';
 import { Column } from '../../shared/column.model';
+import { TaskService } from '../../shared/task.service';
+import { Task } from '../../shared/task.model';
 
 @Component({
   selector: 'app-board-view',
@@ -39,6 +41,7 @@ export class BoardViewComponent implements OnInit, OnDestroy {
   constructor(
     private readonly boardService: BoardService,
     private readonly columnService: ColumnService,
+    private readonly taskService: TaskService,
     private readonly route: ActivatedRoute,
     private readonly router: Router
   ) {}
@@ -61,22 +64,46 @@ export class BoardViewComponent implements OnInit, OnDestroy {
     this.unsubscribe$.complete();
   }
 
-  drop(event: CdkDragDrop<{ id: string; name: string }[]>) {
-    if (!event.previousContainer || !event.container) return;
+  drop(event: CdkDragDrop<{ tasks: Task[]; columnId: string }>) {
+    const sourceColumnId = event.previousContainer.data.columnId;
+    const targetColumnId = event.container.data.columnId;
+    const newIndex = event.currentIndex;
+    const task = event.previousContainer.data.tasks[event.previousIndex]
+
     if (event.previousContainer === event.container) {
       moveItemInArray(
-        event.container.data,
+        event.container.data.tasks,
         event.previousIndex,
         event.currentIndex
       );
     } else {
       transferArrayItem(
-        event.previousContainer.data,
-        event.container.data,
+        event.previousContainer.data.tasks,
+        event.container.data.tasks,
         event.previousIndex,
         event.currentIndex
       );
     }
+
+    this.movetask(
+      sourceColumnId,
+      task.id,
+      targetColumnId,
+      newIndex
+    );
+  }
+
+  movetask(
+    columnId: string,
+    taskId: string,
+    targetColumnId: string,
+    newIndex: number
+  ) {
+    this.taskService
+      .moveTask(this.board!.id, columnId, taskId, targetColumnId, newIndex)
+      .subscribe({
+        error: (err) => console.error('Failed to update board name:', err),
+      });
   }
 
   onUpdateBoardName(boardName: string) {
