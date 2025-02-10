@@ -30,7 +30,7 @@ export class TaskService {
   }
 
   addTask(boardId: string, columnId: string, task: Task): Observable<Task> {
-    console.log("service:", task)
+
     return this.http
       .post<Task>(`${this.API_URL}/${boardId}/columns/${columnId}/tasks/`, task)
       .pipe(catchError(this.handleError('adding task')));
@@ -42,6 +42,7 @@ export class TaskService {
     taskId: string,
     updatedFields: Partial<Task>
   ): Observable<Task> {
+
     return this.http
       .put<Task>(
         `${this.API_URL}/${boardId}/columns/${columnId}/tasks/${taskId}`,
@@ -55,6 +56,7 @@ export class TaskService {
     columnId: string,
     taskId: string
   ): Observable<void> {
+
     return this.http
       .delete<void>(
         `${this.API_URL}/${boardId}/columns/${columnId}/tasks/${taskId}`
@@ -63,11 +65,11 @@ export class TaskService {
   }
 
   moveTask(boardId: string,
-    columnId: string,
+    sourceColumnId: string,
     taskId: string,
     targetColumnId: string,
     newIndex:number
   ): Observable<Task> {
-    return this.http.put<Task>(`${this.API_URL}/${boardId}/columns/${columnId}/tasks/${taskId}/move/${targetColumnId}`, {newIndex} )
+    return this.http.put<Task>(`${this.API_URL}/${boardId}/columns/${sourceColumnId}/tasks/${taskId}/move/${targetColumnId}`, {newIndex} )
   }
 }

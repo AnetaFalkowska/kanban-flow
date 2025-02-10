@@ -38,8 +38,8 @@
     </div>
 
     <div class="btns-container">
-      @if (task) {<button (click)="deleteTask()" class="btn">Delete</button>}
-      <button routerLink="/" type="button" class="btn">Cancel</button>
+      @if (task) {<button (click)="deleteTask()" type="button" class="btn">Delete</button>}
+      <button [routerLink]="['/', boardId]" type="button" class="btn">Cancel</button>
 
       <button [disabled]="!isFormValid()" type="submit" class="btn align-end">
         Save

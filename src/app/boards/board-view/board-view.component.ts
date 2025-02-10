@@ -22,6 +22,7 @@ import { ColumnService } from '../../shared/column.service';
 import { Column } from '../../shared/column.model';
 import { TaskService } from '../../shared/task.service';
 import { Task } from '../../shared/task.model';
+import { StateService } from '../../shared/state.service';
 
 @Component({
   selector: 'app-board-view',
@@ -42,16 +43,22 @@ export class BoardViewComponent implements OnInit, OnDestroy {
     private readonly boardService: BoardService,
     private readonly columnService: ColumnService,
     private readonly taskService: TaskService,
+    private readonly stateService: StateService,
     private readonly route: ActivatedRoute,
     private readonly router: Router
   ) {}
 
   ngOnInit(): void {
+
     this.route.paramMap
       .pipe(
         map((paramMap: ParamMap) => paramMap.get('id')),
         switchMap((boardId) => {
-          return boardId ? this.boardService.getBoard(boardId) : of(undefined);
+          if (boardId) {
+            this.stateService.setBoardId(boardId);
+            return this.boardService.getBoard(boardId);
+          }
+          return of(undefined);
         }),
 
         takeUntil(this.unsubscribe$)
@@ -68,7 +75,7 @@ export class BoardViewComponent implements OnInit, OnDestroy {
     const sourceColumnId = event.previousContainer.data.columnId;
     const targetColumnId = event.container.data.columnId;
     const newIndex = event.currentIndex;
-    const task = event.previousContainer.data.tasks[event.previousIndex]
+    const task = event.previousContainer.data.tasks[event.previousIndex];
 
     if (event.previousContainer === event.container) {
       moveItemInArray(
@@ -85,22 +92,23 @@ export class BoardViewComponent implements OnInit, OnDestroy {
       );
     }
 
-    this.movetask(
-      sourceColumnId,
-      task.id,
-      targetColumnId,
-      newIndex
-    );
+    this.movetask(sourceColumnId, task.id, targetColumnId, newIndex);
   }
 
   movetask(
-    columnId: string,
+    sourceColumnId: string,
     taskId: string,
     targetColumnId: string,
     newIndex: number
   ) {
     this.taskService
-      .moveTask(this.board!.id, columnId, taskId, targetColumnId, newIndex)
+      .moveTask(
+        this.board!.id,
+        sourceColumnId,
+        taskId,
+        targetColumnId,
+        newIndex
+      )
       .subscribe({
         error: (err) => console.error('Failed to update board name:', err),
       });

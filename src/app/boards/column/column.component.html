@@ -15,7 +15,7 @@
   >
     @for (task of column.tasks; track task.id) {
     <div class="my-item" cdkDrag [cdkDragData]="task.name" [@taskAnim]="taskAnimationState">
-      <app-task-card class="my-item" [task]="task" (editClick)="editTask(task)" (deleteClick)="onDeleteTask(task)"> </app-task-card>
+      <app-task-card class="my-item" [task]="task" [columnId]="column.id" (editClick)="editTask(task)" (deleteClick)="onDeleteTask(task)"> </app-task-card>
       <!-- <div class="my-item" cdkDrag [cdkDragData]="task.name">
         {{ task.name }}        
       </div> -->

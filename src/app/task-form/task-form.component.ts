@@ -47,23 +47,17 @@ export class TaskFormComponent implements OnInit {
       .pipe(
         takeUntil(this.unsubscribe$),
         switchMap((params) => {
-          const boardIdFromQuery = params['boardId'];
-          const columnIdFromQuery = params['columnId'];
-          if (boardIdFromQuery && columnIdFromQuery) {
-            this.boardId = boardIdFromQuery;
-            this.columnId = columnIdFromQuery;
-          } else {
+          const taskContext = this.stateService.getTaskContext();
+          this.boardId = params['boardId'] ?? taskContext?.boardId ?? null;
+          this.columnId = params['columnId'] ?? taskContext?.columnId ?? null;
+          this.taskId = this.route.snapshot.paramMap.get('taskId');
+          if (!this.boardId || !this.columnId || !this.taskId) {
             return of(null);
           }
 
-          this.taskId = this.route.snapshot.paramMap.get('taskId');
-
-          if (this.boardId && this.columnId && this.taskId) {
-            return this.taskService
-              .getTask(this.boardId, this.columnId, this.taskId)
-              .pipe(takeUntil(this.unsubscribe$));
-          }
-          return of(null);
+          return this.taskService
+            .getTask(this.boardId, this.columnId, this.taskId)
+            .pipe(takeUntil(this.unsubscribe$));
         })
       )
       .subscribe((task) => {
@@ -72,44 +66,11 @@ export class TaskFormComponent implements OnInit {
       });
   }
 
-  // ngOnInit(): void {
-  //   this.initializeForm();
-
-  //   combineLatest([this.route.paramMap, this.stateService.currentTaskCtx])
-  //     .pipe(
-  //       takeUntil(this.unsubscribe$),
-  //       switchMap(([paramMap, context]) => {
-
-  //         if (!context || !context.boardId || !context.columnId) {
-  //           console.log('missing');
-
-  //           this.router.navigate(['../../'], { relativeTo: this.route });
-  //           return of(null);
-  //         }
-
-  //         const { boardId, columnId } = context;
-  //         this.boardId = boardId;
-  //         this.columnId = columnId;
-  //         this.taskId = paramMap.get('taskId');
-  //         console.log('on init: ', this.boardId, this.columnId, this.taskId);
-
-  //         return this.boardId && this.columnId && this.taskId
-  //           ? this.taskService.getTask(this.boardId, this.columnId, this.taskId)
-  //           : of(null);
-  //       })
-  //     )
-  //     .subscribe((task) => {
-  //       this.task = task;
-
-  //       this.populateExistingData();
-  //     });
-  // }
-
-  // ngOnDestroy(): void {
-  //   this.stateService.clearTaskContext();
-  //   this.unsubscribe$.next();
-  //   this.unsubscribe$.complete();
-  // }
+  ngOnDestroy(): void {
+    this.stateService.clearTaskContext();
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
+  }
 
   initializeForm(): void {
     this.taskForm = this.formBuilder.group({
@@ -163,6 +124,7 @@ export class TaskFormComponent implements OnInit {
     priority: 'low' | 'medium' | 'high' | undefined,
     duedate: string
   ) {
+
     this.taskService
       .updateTask(this.boardId!, this.columnId!, this.taskId!, {
         name,
@@ -202,9 +164,41 @@ export class TaskFormComponent implements OnInit {
     this.taskService
       .deleteTask(this.boardId, this.columnId, this.taskId)
       .pipe(takeUntil(this.unsubscribe$))
-      .subscribe((board) => {
-        console.log(board);
+      .subscribe(() => {
         this.router.navigate([`/${this.boardId}`]);
       });
   }
 }
+
+// ngOnInit(): void {
+//   this.initializeForm();
+
+//   combineLatest([this.route.paramMap, this.stateService.currentTaskCtx])
+//     .pipe(
+//       takeUntil(this.unsubscribe$),
+//       switchMap(([paramMap, context]) => {
+
+//         if (!context || !context.boardId || !context.columnId) {
+//           console.log('missing');
+
+//           this.router.navigate(['../../'], { relativeTo: this.route });
+//           return of(null);
+//         }
+
+//         const { boardId, columnId } = context;
+//         this.boardId = boardId;
+//         this.columnId = columnId;
+//         this.taskId = paramMap.get('taskId');
+//         console.log('on init: ', this.boardId, this.columnId, this.taskId);
+
+//         return this.boardId && this.columnId && this.taskId
+//           ? this.taskService.getTask(this.boardId, this.columnId, this.taskId)
+//           : of(null);
+//       })
+//     )
+//     .subscribe((task) => {
+//       this.task = task;
+
+//       this.populateExistingData();
+//     });
+// }
