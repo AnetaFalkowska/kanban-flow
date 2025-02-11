@@ -1,0 +1,22 @@
+
+::ng-deep .mat-mdc-dialog-surface {
+    background: rgba(white, 0.85) !important;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+  padding: 30px !important;
+  border-radius: 8px !important;
+  max-height: 100%;
+  overflow: auto;
+    
+  }
+
+  .form-field {
+    margin-bottom: 30px;
+  }
+
+  .bottom-section {
+    width: 100%;
+    display: flex;
+  
+    justify-content: space-between;
+  }

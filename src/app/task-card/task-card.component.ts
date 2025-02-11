@@ -24,25 +24,25 @@ export class TaskCardComponent {
   @Input() task?: Task;
   @Input() columnId?: string;
 
-  @Output() editClick:EventEmitter<void> = new EventEmitter<any>();
-  @Output() deleteClick:EventEmitter<void> = new EventEmitter<any>();
+  @Output() editClick: EventEmitter<void> = new EventEmitter<any>();
+  @Output() deleteClick: EventEmitter<void> = new EventEmitter<any>();
 
   readonly dialog = inject(MatDialog);
   private router = inject(Router);
 
-
-  constructor(private readonly stateService:StateService) {}
+  constructor(private readonly stateService: StateService) {}
 
   openDialog() {
-
-    if(this.columnId) this.stateService.setColumnId(this.columnId);
+    if (this.columnId) this.stateService.setColumnId(this.columnId);
 
     const dialogRef = this.dialog.open(TaskViewComponent, {
       data: { task: this.task },
     });
 
     dialogRef.afterClosed().subscribe((result) => {
-      this.router.navigate([`/tasks/${this.task?.id}/edit`]);
+      if (result === true) {
+        this.router.navigate([`/tasks/${this.task?.id}/edit`]);
+      }
     });
   }
 
