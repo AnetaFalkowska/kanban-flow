@@ -21,6 +21,11 @@
   padding:0 20px;
 }
 
+.add-column-btn {
+  text-wrap: wrap;
+  padding: 7px 12px;
+}
+
 .columns-container {
   flex-grow: 1;
   display: flex;
@@ -29,6 +34,12 @@
   app-column {
     flex: 1;
   }
+}
+
+app-editable-header {
+  font-size: 36px;
+  font-weight: 500; 
+  color: rgba(white, 0.85); 
 }
 
 /////

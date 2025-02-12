@@ -18,6 +18,7 @@ import { FormsModule, NgModel } from '@angular/forms';
 })
 export class EditableHeaderComponent {
   @Input() name: string = '';
+  @Input() boardStyle: boolean = false;
   editMode: boolean = false;
   tempName: string = '';
   showValidationErrors: boolean = false;

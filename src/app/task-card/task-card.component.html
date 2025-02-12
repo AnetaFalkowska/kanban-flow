@@ -1,8 +1,8 @@
 <div mat-button (click)="openDialog()" class="task-card">
-  <p class="task-text" (click)="onEditClick(); $event.stopPropagation()">{{ task?.name }}</p>
+  <p class="task-text">{{ task?.name }}</p>
   <div (click)="$event.stopPropagation()" class="task-item-actions">
     <div (click)="onDeleteClick()" class="task-item-actions-btn">
-      <i class="material-icons">delete</i>
+      <i class="material-icons-outlined">delete</i>
     </div>
   </div>
 </div>

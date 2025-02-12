@@ -1,43 +1,55 @@
 @if (!editMode) {
-<h2>{{ name }}</h2>
-<div (click)="$event.stopPropagation()" class="task-item-actions">
-  <div (click)="onEditClick()" class="task-item-actions-btn">
-    <i class="material-icons-outlined">edit</i>
-  </div>
-  <div (click)="onDeleteClick()" class="task-item-actions-btn">
-    <i class="material-icons">delete</i>
-  </div>
-</div>
+<p class="header-name" [ngClass]="{'board-header-name': boardStyle}" (click)="onEditClick()">{{ name }}</p>
 } @else {
-<div class="form-field">
-  <input
-    class="edit-name"
-    [(ngModel)]="tempName"
-    #nameField="ngModel"
-    (blur)="onSaveEdit(nameField)"
-    (keyup.enter)="onSaveEdit(nameField)"
-    (keydown.escape)="onCancelEdit()"
-    required
-    minlength="3"
-    autofocus
-  />
-  @if (showValidationErrors) {<ng-container
-    >@if (nameField.errors?.['required']) {
-    <p>Please enter title note</p>
-    } @if (nameField.errors?.['minlength']) {
-    <p>Title must be at least 3 characters</p>
-    }</ng-container
-  >}
-</div>
-<div (click)="$event.stopPropagation()" class="task-item-actions" >
-    <div (click)="onSaveEdit(nameField)" class="task-item-actions-btn" [class.editMode]="editMode">
+<div class="edit-mode" [ngClass]="{'board-edit-name': boardStyle}">
+  <div>
+    <input
+      class="edit-name"
+      [(ngModel)]="tempName"
+      #nameField="ngModel"
+      (blur)="onSaveEdit(nameField)"
+      (keyup.enter)="onSaveEdit(nameField)"
+      (keydown.escape)="onCancelEdit()"
+      required
+      minlength="3"
+      autofocus
+    />
+    @if (showValidationErrors) {<ng-container
+      >@if (nameField.errors?.['required']) {
+      <p class="error-message">Please enter title note</p>
+      } @if (nameField.errors?.['minlength']) {
+      <p class="error-message">Title must be at least 3 characters</p>
+      }</ng-container
+    >}
+  </div>
+  <div (click)="$event.stopPropagation()" class="header-actions">
+    <div
+      (click)="onSaveEdit(nameField)"
+      class="header-actions-btn"
+      [class.editMode]="editMode"
+    >
       <i class="material-icons-outlined">check</i>
     </div>
-    <div (click)="onCancelEdit()" class="task-item-actions-btn" [ngClass]="{ 'editMode': editMode }">
+    <div
+      (click)="onCancelEdit()"
+      class="header-actions-btn"
+      [ngClass]="{ editMode: editMode }"
+    >
       <i class="material-icons">close</i>
     </div>
   </div>
+</div>
 
+}
+
+@if (!editMode || (editMode && boardStyle)) {
+  <div
+  (click)="onDeleteClick(); $event.stopPropagation()"
+  class="delete-btn"
+  [ngClass]="{ 'board-delete-btn': boardStyle }"
+>
+  <i class="material-icons">delete</i>
+</div>
 }
 
 
