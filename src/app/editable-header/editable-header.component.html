@@ -1,8 +1,8 @@
 @if (!editMode) {
 <p class="header-name" [ngClass]="{'board-header-name': boardStyle}" (click)="onEditClick()">{{ name }}</p>
 } @else {
-<div class="edit-mode" [ngClass]="{'board-edit-name': boardStyle}">
-  <div>
+<div class="edit-mode" [ngClass]="{'board-edit-mode': boardStyle}">
+  <div class="edit-name-container">
     <input
       class="edit-name"
       [(ngModel)]="tempName"
@@ -12,6 +12,7 @@
       (keydown.escape)="onCancelEdit()"
       required
       minlength="3"
+      maxlength="25"
       autofocus
     />
     @if (showValidationErrors) {<ng-container
@@ -19,7 +20,9 @@
       <p class="error-message">Please enter title note</p>
       } @if (nameField.errors?.['minlength']) {
       <p class="error-message">Title must be at least 3 characters</p>
-      }</ng-container
+      } @if (nameField.errors?.['maxlength']) {
+        <p class="error-message">Title must not exceed 25 characters</p>
+        }</ng-container
     >}
   </div>
   <div (click)="$event.stopPropagation()" class="header-actions">
@@ -46,7 +49,7 @@
   <div
   (click)="openDialog(); $event.stopPropagation()"
   class="delete-btn"
-  [ngClass]="{ 'board-delete-btn': boardStyle }"
+  [ngClass]="{ 'delete-btn-column': !boardStyle, 'delete-btn-board': boardStyle }"
 >
   <i class="material-icons">delete</i>
 </div>

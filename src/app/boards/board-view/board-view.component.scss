@@ -1,24 +1,26 @@
-.board-view-wrapper {
-  height: 100%;
-  overflow-y: auto;
-}
-
 .board-container {
+  width:fit-content;
+  max-width: 90%;
+  min-width: 800px;
+  margin: auto;
   height: 100%;
   display: flex;
   flex-direction: column;
   background: rgba(black, 0.2);
   border-radius: 12px;
   padding: 12px;
+  overflow: auto;
 }
 
 .board-header {
-  display:flex;
+  display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 100%;  
+  width: 100%;
+  height: fit-content;
   margin: 8px 0 20px;
-  padding:0 20px;
+  padding: 0 20px;
+
 }
 
 .add-column-btn {
@@ -29,7 +31,8 @@
 .columns-container {
   flex-grow: 1;
   display: flex;
-  gap: 20px;
+  gap: 15px;
+  overflow-x: auto;
 
   app-column {
     flex: 1;
@@ -38,8 +41,8 @@
 
 app-editable-header {
   font-size: 36px;
-  font-weight: 500; 
-  color: rgba(white, 0.85); 
+  font-weight: 500;
+  color: rgba(white, 0.85);
 }
 
 /////

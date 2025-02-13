@@ -1,26 +1,24 @@
+
 .column-wrapper {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-
-  min-width: 300px;
+  min-width: 350px;
+  // max-width: 450px;
+  width: auto;
+  margin:auto;
   height: 100%;
   padding: 20px;
   border-radius: 12px;
   background-color: rgba(white, 0.45);
   backdrop-filter: blur(3px);
   text-align: center;
-
-  h3 {
-    margin: 0 0 16px;
-    font-size: 28px;
-    font-weight: 600;
-  }
 }
 
 .tasks-container {
   height: 100%;
   padding: 15px 0;
+  overflow-y: auto;
 }
 
 .cdk-drag-preview {
@@ -45,9 +43,9 @@
 }
 
 app-editable-header {
-  font-size: 36px;
-  font-weight: 400; 
-  color: rgba(black, 0.75); 
+  font-size: 30px;
+  font-weight: 500; 
+  color: rgba(black, 0.65); 
 }
 
 // .task-placeholder {

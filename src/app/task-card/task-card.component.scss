@@ -16,6 +16,8 @@
     margin-right:8px;
     font-size: 20px;
     cursor: pointer;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .task-item-actions-btn {
