@@ -12,6 +12,7 @@ export class DeleteConfirmationDialogComponent {
   readonly data = inject<{ name:string  }>(MAT_DIALOG_DATA);
 
   onConfirm() {
+    console.log('confirming', this.data.name);
     this.dialogRef.close();
   }
 }

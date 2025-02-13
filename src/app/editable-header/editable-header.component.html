@@ -44,7 +44,7 @@
 
 @if (!editMode || (editMode && boardStyle)) {
   <div
-  (click)="onDeleteClick(); $event.stopPropagation()"
+  (click)="openDialog(); $event.stopPropagation()"
   class="delete-btn"
   [ngClass]="{ 'board-delete-btn': boardStyle }"
 >

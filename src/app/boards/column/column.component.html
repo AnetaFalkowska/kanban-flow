@@ -2,7 +2,7 @@
   <app-editable-header
       [name]="column!.name"
       (saveEdit)="onUpdateColumnName($event)"
-      (deleteClick)="openDialog()"
+      (deleteClick)="deleteColumn()"
     />
 
   <div

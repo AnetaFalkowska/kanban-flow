@@ -4,11 +4,15 @@ import {
   Component,
   ElementRef,
   EventEmitter,
+  inject,
   Input,
   Output,
   ViewChild,
 } from '@angular/core';
 import { FormsModule, NgModel } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
+import { DeleteConfirmationDialogComponent } from '../delete-confirmation-dialog/delete-confirmation-dialog.component';
+
 
 @Component({
   selector: 'app-editable-header',
@@ -22,20 +26,29 @@ export class EditableHeaderComponent {
   editMode: boolean = false;
   tempName: string = '';
   showValidationErrors: boolean = false;
-
+  readonly dialog = inject(MatDialog);
 
   @Output() deleteClick: EventEmitter<void> = new EventEmitter<void>();
   @Output() saveEdit: EventEmitter<string> = new EventEmitter<string>();
 
+  
+  openDialog() {
+    const dialogRef = this.dialog.open(DeleteConfirmationDialogComponent, {
+      data: { name: this.boardStyle ? 'board' : 'column' },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result === true) {
+        this.deleteClick.emit();
+      }
+    });
+  }
 
   onEditClick() {
     this.tempName = this.name;
     this.editMode = true;
   }
 
-  onDeleteClick() {
-    this.deleteClick.emit();
-  }
 
   onSaveEdit(nameField: NgModel) {
     if (!this.editMode) return;
