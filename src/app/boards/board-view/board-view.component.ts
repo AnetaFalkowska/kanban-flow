@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { ColumnComponent } from '../column/column.component';
 import { Board } from '../../shared/board.model';
 import { BoardService } from '../../shared/board.service';
@@ -23,6 +23,7 @@ import { Column } from '../../shared/column.model';
 import { TaskService } from '../../shared/task.service';
 import { Task } from '../../shared/task.model';
 import { StateService } from '../../shared/state.service';
+import { animate, style, transition, trigger } from '@angular/animations';
 
 @Component({
   selector: 'app-board-view',
@@ -34,8 +35,20 @@ import { StateService } from '../../shared/state.service';
   ],
   templateUrl: './board-view.component.html',
   styleUrl: './board-view.component.scss',
+    animations: [
+    trigger('boardViewAnim', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'scale(0.85)' }),
+        animate(
+          '350ms 50ms ease-out',
+          style({ opacity: 1, transform: 'scale(1)' })
+        )
+      ])
+    ])
+  ],
 })
-export class BoardViewComponent implements OnInit, OnDestroy {
+
+export class BoardViewComponent implements AfterViewInit, OnDestroy {
   public board?: Board;
   private unsubscribe$ = new Subject<void>();
 
@@ -48,7 +61,7 @@ export class BoardViewComponent implements OnInit, OnDestroy {
     private readonly router: Router
   ) {}
 
-  ngOnInit(): void {
+  ngAfterViewInit(): void {
 
     this.route.paramMap
       .pipe(

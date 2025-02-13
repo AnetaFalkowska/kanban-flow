@@ -2,6 +2,7 @@ import {
   AfterViewInit,
   Component,
   EventEmitter,
+  inject,
   Input,
   OnDestroy,
   OnInit,
@@ -28,6 +29,8 @@ import { Subject, takeUntil } from 'rxjs';
 import { EditableHeaderComponent } from '../../editable-header/editable-header.component';
 import { ColumnService } from '../../shared/column.service';
 import { animate, style, transition, trigger } from '@angular/animations';
+import { MatDialog } from '@angular/material/dialog';
+import { DeleteConfirmationDialogComponent } from '../../delete-confirmation-dialog/delete-confirmation-dialog.component';
 
 @Component({
   selector: 'app-column',
@@ -55,6 +58,8 @@ export class ColumnComponent implements OnInit, OnDestroy {
   unsubscribe$ = new Subject<void>();
   taskAnimationState: 'add' | 'remove' | null = null;
 
+  readonly dialog = inject(MatDialog);
+
   constructor(
     private readonly taskService: TaskService,
     private readonly stateService: StateService,
@@ -62,6 +67,18 @@ export class ColumnComponent implements OnInit, OnDestroy {
     private readonly route: ActivatedRoute,
     private readonly router: Router
   ) {}
+
+  openDialog() {
+    const dialogRef = this.dialog.open(DeleteConfirmationDialogComponent, {
+      data: { name: 'column' },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result === true) {
+        this.deleteClick.emit();
+      }
+    });
+  }
 
   ngOnInit(): void {
     this.route.paramMap
@@ -76,7 +93,7 @@ export class ColumnComponent implements OnInit, OnDestroy {
     this.unsubscribe$.complete();
   }
 
-  onDrop(event: CdkDragDrop<{ tasks: Task[], columnId: string }>) {
+  onDrop(event: CdkDragDrop<{ tasks: Task[]; columnId: string }>) {
     this.dropEmitter.emit(event);
   }
 
@@ -91,17 +108,17 @@ export class ColumnComponent implements OnInit, OnDestroy {
     }
   }
 
-  deleteColumn() {
-    this.deleteClick.emit();
-  }
+  // deleteColumn() {
+  //   this.deleteClick.emit();
+  // }
 
   addTask() {
     // this.stateService.setTaskContext(this.boardId, this.column.id);
     this.router.navigate(['/tasks/add'], {
       queryParams: {
         boardId: this.boardId,
-        columnId: this.column.id
-      }
+        columnId: this.column.id,
+      },
     });
   }
 
@@ -110,8 +127,8 @@ export class ColumnComponent implements OnInit, OnDestroy {
     this.router.navigate([`/tasks/${task?.id}/edit`], {
       queryParams: {
         boardId: this.boardId,
-        columnId: this.column.id
-      }
+        columnId: this.column.id,
+      },
     });
   }
 

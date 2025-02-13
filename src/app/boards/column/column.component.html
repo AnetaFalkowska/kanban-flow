@@ -2,7 +2,7 @@
   <app-editable-header
       [name]="column!.name"
       (saveEdit)="onUpdateColumnName($event)"
-      (deleteClick)="deleteColumn()"
+      (deleteClick)="openDialog()"
     />
 
   <div
@@ -27,5 +27,6 @@
     <button (click)="addTask()" class="btn btn-small"><i class="material-icons-outlined">add</i>Add</button>
   </div>
 </div>
+
 
 <!-- <div class="task-placeholder" *cdkDragPlaceholder></div> -->
