@@ -1,4 +1,5 @@
 import {
+  AfterViewInit,
   Component,
   EventEmitter,
   Input,
@@ -16,27 +17,50 @@ import {
   DragDropModule,
 } from '@angular/cdk/drag-drop';
 import { TaskService } from '../../shared/task.service';
-import { ActivatedRoute, ParamMap, Router, RouterModule } from '@angular/router';
+import {
+  ActivatedRoute,
+  ParamMap,
+  Router,
+  RouterModule,
+} from '@angular/router';
 import { StateService } from '../../shared/state.service';
 import { Subject, takeUntil } from 'rxjs';
+import { EditableHeaderComponent } from '../../editable-header/editable-header.component';
+import { ColumnService } from '../../shared/column.service';
+import { animate, style, transition, trigger } from '@angular/animations';
 
 @Component({
   selector: 'app-column',
-  imports: [TaskCardComponent, DragDropModule, RouterModule],
+  imports: [
+    TaskCardComponent,
+    DragDropModule,
+    RouterModule,
+    EditableHeaderComponent,
+  ],
   templateUrl: './column.component.html',
   styleUrl: './column.component.scss',
+  animations: [
+    trigger('taskAnim', [
+      transition('remove => void', [
+        animate(150, style({ opacity: 0, height: 0 })),
+      ]),
+    ]),
+  ],
 })
 export class ColumnComponent implements OnInit, OnDestroy {
   @Input() column: Column = { id: '', name: '', tasks: [] };
-  @Output() dropEmitter = new EventEmitter<CdkDragDrop<Task[]>>();
+  @Output() dropEmitter = new EventEmitter<CdkDragDrop<any>>();
+  @Output() deleteClick = new EventEmitter<void>();
   boardId: string | null = null;
   unsubscribe$ = new Subject<void>();
+  taskAnimationState: 'add' | 'remove' | null = null;
 
   constructor(
-    private taskService: TaskService,
-    private stateService: StateService,
-    private route: ActivatedRoute,
-    private router: Router
+    private readonly taskService: TaskService,
+    private readonly stateService: StateService,
+    private readonly columnService: ColumnService,
+    private readonly route: ActivatedRoute,
+    private readonly router: Router
   ) {}
 
   ngOnInit(): void {
@@ -52,29 +76,61 @@ export class ColumnComponent implements OnInit, OnDestroy {
     this.unsubscribe$.complete();
   }
 
-  onDrop(e: CdkDragDrop<Task[]>) {
-    this.dropEmitter.emit(e);
+  onDrop(event: CdkDragDrop<{ tasks: Task[], columnId: string }>) {
+    this.dropEmitter.emit(event);
   }
 
-  onEditClick(task: Task) {
-    if (this.boardId) {
-      this.stateService.setTaskContext(this.boardId, this.column.id);
-      this.router.navigate([`/tasks/${task.id}/edit`]);
+  onUpdateColumnName(columnName: string) {
+    if (this.boardId && this.column && columnName !== this.column.name) {
+      this.columnService
+        .updateColumnName(this.boardId, this.column.id, columnName)
+        .pipe(takeUntil(this.unsubscribe$))
+        .subscribe({
+          error: (err) => console.error('Failed to update column name:', err),
+        });
     }
   }
 
-  onDeleteClick(task: Task) {
-    if (this.boardId) {
-      this.taskService.deleteTask(this.boardId, this.column.id, task.id);
-      this.stateService.clearTaskContext();
-    }
+  deleteColumn() {
+    this.deleteClick.emit();
   }
 
-  onAddTask() {
+  addTask() {
+    // this.stateService.setTaskContext(this.boardId, this.column.id);
+    this.router.navigate(['/tasks/add'], {
+      queryParams: {
+        boardId: this.boardId,
+        columnId: this.column.id
+      }
+    });
+  }
+
+  editTask(task: Task) {
+    // this.stateService.setTaskContext(this.boardId, this.column.id);
+    this.router.navigate([`/tasks/${task?.id}/edit`], {
+      queryParams: {
+        boardId: this.boardId,
+        columnId: this.column.id
+      }
+    });
+  }
+
+  onDeleteTask(task: Task) {
     if (this.boardId) {
-      console.log("from column: ", this.boardId, this.column)
-      this.stateService.setTaskContext(this.boardId, this.column.id);
-      this.router.navigate([`/tasks/add`]);
+      this.taskAnimationState = 'remove';
+      this.taskService
+        .deleteTask(this.boardId, this.column.id, task.id)
+        .pipe(takeUntil(this.unsubscribe$))
+        .subscribe({
+          next: () => {
+            this.column = {
+              ...this.column,
+              tasks: this.column.tasks.filter((t) => t.id !== task.id),
+            };
+            setTimeout(() => (this.taskAnimationState = null), 200);
+          },
+          error: (err) => console.error('Failed to delete task:', err),
+        });
     }
   }
 }

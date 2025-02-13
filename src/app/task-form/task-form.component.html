@@ -1,18 +1,49 @@
 <div class="task-form-wrapper container-sm">
-    <h2 class="is-bold">{{editMode ? "Edit Task":"New Task"}}</h2>
-    <form [formGroup]="taskForm" novalidate (ngSubmit)="onSubmit(taskForm)">
+  <h2 class="is-bold">{{ task ? "Edit Task" : "New Task" }}</h2>
+  <form [formGroup]="taskForm" novalidate (ngSubmit)="onSubmit(taskForm)">
+    <div class="form-field">
+      <label idFor="borad-name">Task Name</label>
+      <input type="text" id="borad-name" formControlName="name" />
+      @if (taskForm.get('taskName')?.touched &&
+      taskForm.get('taskName')?.errors) {<ng-container>
+        @if (taskForm.get('taskName')?.errors?.['required']) {
+        <p class="error-message">Value is required</p>
+        } </ng-container
+      >}
+    </div>
+    <div class="form-field">
+      <label idFor="description">Description</label>
+      <textarea
+        class="textarea"
+        id="description"
+        formControlName="description"
+      ></textarea>
+    </div>
+    <div class="bottom-section">
       <div class="form-field">
-        <label idFor="borad-name">Task Name</label>
-        <input type="text" id="borad-name" formControlName="name" />
+        <label idFor="priority">Priority</label>
+        <select id="priority" formControlName="priority">
+          @for (option of priorityOptions; track option) {
+          <option [value]="option">{{ option }}</option>
+          }
+        </select>
       </div>
-  
-      <div class="btns-container">
-        @if (editMode) {<button type="button" (click)="deleteTask()" class="btn">Delete</button>}
-        <button [routerLink]="['/', boardId]" type="button" class="btn">Cancel</button>
-  
-        <button [disabled]="!isFormValid()" type="submit" class="btn align-end">
-          Save
-        </button>
+      <div class="form-field" >
+        <label idFor="duedate">Due Date</label>
+        <input type="date" id="duedate" formControlName="duedate"/>
+        @if (taskForm.get('duedate')?.hasError('dateInPast')) {
+        <p class="error">The due date cannot be in the past.</p>
+        }
       </div>
-    </form>
-  </div>
+    </div>
+
+    <div class="btns-container">
+      @if (task) {<button (click)="deleteTask()" type="button" class="btn">Delete</button>}
+      <button [routerLink]="['/', boardId]" type="button" class="btn">Cancel</button>
+
+      <button [disabled]="!isFormValid()" type="submit" class="btn align-end">
+        Save
+      </button>
+    </div>
+  </form>
+</div>

@@ -1,17 +1,21 @@
 <div class="column-wrapper">
-  <h3>{{ column.name }}</h3>
+  <app-editable-header
+      [name]="column!.name"
+      (saveEdit)="onUpdateColumnName($event)"
+      (deleteClick)="deleteColumn()"
+    />
 
   <div
     cdkDropList
     
     #emptyList="cdkDropList"
-    [cdkDropListData]="column.tasks"
+    [cdkDropListData]="{ tasks: column.tasks, columnId: column.id }"
     class="tasks-container"
     (cdkDropListDropped)="onDrop($event)"
   >
     @for (task of column.tasks; track task.id) {
-    <div class="my-item" cdkDrag [cdkDragData]="task.name">
-      <app-task-card class="my-item" [task]="task" (editClick)="onEditClick(task)" (deleteClick)="onDeleteClick(task)"> </app-task-card>
+    <div class="my-item" cdkDrag [cdkDragData]="task.name" [@taskAnim]="taskAnimationState">
+      <app-task-card class="my-item" [task]="task" [columnId]="column.id" (editClick)="editTask(task)" (deleteClick)="onDeleteTask(task)"> </app-task-card>
       <!-- <div class="my-item" cdkDrag [cdkDragData]="task.name">
         {{ task.name }}        
       </div> -->
@@ -20,8 +24,9 @@
   </div>
 
   <div class="btns-container btns-centered">
-    <a (click)="onAddTask()" class="btn btn-small"><i class="material-icons-outlined">add</i>Add</a>
+    <button (click)="addTask()" class="btn btn-small"><i class="material-icons-outlined">add</i>Add</button>
   </div>
 </div>
+
 
 <!-- <div class="task-placeholder" *cdkDragPlaceholder></div> -->

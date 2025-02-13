@@ -2,31 +2,38 @@ import { Injectable } from '@angular/core';
 import { Board } from './board.model';
 import { BoardData } from '../../db-data';
 import { Task } from './task.model';
+import { BoardService } from './board.service';
+import { catchError, map, Observable, switchMap, throwError } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TaskService {
-  boards:Board[] = BoardData
-  
-  constructor() {}
+  private readonly API_URL = 'http://localhost:3000/api/boards';
 
-  
-  getTasks(boardId:string, columnId:string): Task[] | undefined {
-    const column = this.boards
-      ?.find((b) => b.id === boardId)
-      ?.columns.find((c) => c.id === columnId);
-    return column?.tasks;
+  handleError(action: string) {
+    return (error: any) => {
+      console.error(`Error ${action}: `, error);
+      return throwError(() => new Error(`Error ${action}}`));
+    };
   }
 
-  getTask(boardId: string, columnId: string, taskId: string): Task | undefined {
-    const tasks = this.getTasks(boardId, columnId);
-    return tasks?.find((t) => t.id === taskId);
+  constructor(private http: HttpClient) {}
+
+  getTask(boardId: string, columnId: string, taskId: string): Observable<Task> {
+    return this.http
+      .get<Task>(
+        `${this.API_URL}/${boardId}/columns/${columnId}/tasks/${taskId}`
+      )
+      .pipe(catchError(this.handleError('getting task')));
   }
 
-  addTask(boardId: string, columnId: string, task: Task): void {
-    const tasks = this.getTasks(boardId, columnId);
-    tasks?.push(task);
+  addTask(boardId: string, columnId: string, task: Task): Observable<Task> {
+
+    return this.http
+      .post<Task>(`${this.API_URL}/${boardId}/columns/${columnId}/tasks/`, task)
+      .pipe(catchError(this.handleError('adding task')));
   }
 
   updateTask(
@@ -34,20 +41,35 @@ export class TaskService {
     columnId: string,
     taskId: string,
     updatedFields: Partial<Task>
-  ):void {
-    const tasks = this.getTasks(boardId, columnId);
-    const updatedTask = tasks?.find((t) => t.id === taskId);
-    console.log(updatedFields)
-    if (updatedTask) Object.assign(updatedTask, updatedFields);
-    console.log(updatedTask)
+  ): Observable<Task> {
+
+    return this.http
+      .put<Task>(
+        `${this.API_URL}/${boardId}/columns/${columnId}/tasks/${taskId}`,
+        updatedFields
+      )
+      .pipe(catchError(this.handleError('updating task')));
   }
 
-  deleteTask(boardId: string, columnId: string, taskId: string):void {
-    const tasks = this.getTasks(boardId, columnId);
-    const removedTaskId = tasks?.findIndex((t) => t.id === taskId);
-    if (removedTaskId === -1) return;
-    if (removedTaskId !== undefined && removedTaskId !== -1) {
-      tasks?.splice(removedTaskId, 1);
-    }
+  deleteTask(
+    boardId: string,
+    columnId: string,
+    taskId: string
+  ): Observable<void> {
+
+    return this.http
+      .delete<void>(
+        `${this.API_URL}/${boardId}/columns/${columnId}/tasks/${taskId}`
+      )
+      .pipe(catchError(this.handleError('deleting task')));
+  }
+
+  moveTask(boardId: string,
+    sourceColumnId: string,
+    taskId: string,
+    targetColumnId: string,
+    newIndex:number
+  ): Observable<Task> {
+    return this.http.put<Task>(`${this.API_URL}/${boardId}/columns/${sourceColumnId}/tasks/${taskId}/move/${targetColumnId}`, {newIndex} )
   }
 }

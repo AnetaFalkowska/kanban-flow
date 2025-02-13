@@ -4,7 +4,7 @@ import { Task } from "./task.model";
 export class Column {
     id:string 
 
-    constructor(public name:string, public tasks:Task[] = [], public taskLimit?: number) {
+    constructor(public name:string, public tasks:Task[] = []) {
         this.id = uuidv4();
     }
 }

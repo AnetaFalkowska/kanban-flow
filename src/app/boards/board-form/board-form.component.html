@@ -1,0 +1,53 @@
+<div class="board-form-wrapper container-sm">
+  <h2 class="is-bold">New Board</h2>
+  <form [formGroup]="boardForm" novalidate (ngSubmit)="onSubmit()">
+    <div class="form-field">
+      <label idFor="borad-name">Board Name</label>
+      <input type="text" id="borad-name" formControlName="boardName" />
+      @if (boardForm.get('boardName')?.touched &&
+      boardForm.get('boardName')?.errors) {<ng-container>
+        @if (boardForm.get('boardName')?.errors?.['required']) {
+        <p class="error-message">Value is required</p>
+        } @if (boardForm.get('boardName')?.errors?.['minlength']) {
+        <p class="error-message">Value must be at least 3 characters long</p>
+        } </ng-container
+      >}
+    </div>
+    <div class="column-section">
+      <h4>Columns</h4>
+      <div formArrayName="columns">
+        @for (column of columns.controls; track column; let i =$index) {
+
+        <div class="form-field">
+          <div class="edit-column-actions">
+            <input [formControlName]="i" type="text" />
+            <button
+              [disabled]="columns.length === 1"
+              (click)="removeColumn(i)"
+              type="button"
+              class="btn btn-small"
+            >
+              Delete
+            </button>
+          </div>
+          @if (validateField(column)) {
+            <p class="error-message">Column Name is required</p>
+            }          
+        </div>
+
+
+        }
+      </div>
+      <button type="button" class="add-btn btn btn-small" (click)="addColumn()">
+        <i class="add-icon material-icons-outlined">add</i>Add Column
+      </button>
+    </div>
+
+    <div class="btns-container">
+      <button routerLink="" type="button" class="btn">Cancel</button>
+      <button [disabled]="!isFormValid()" type="submit" class="btn align-end">
+        Save
+      </button>
+    </div>
+  </form>
+</div>

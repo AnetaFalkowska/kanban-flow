@@ -11,20 +11,18 @@ a {
   text-decoration: none;
 }
 
-
 h1 {
   font-size: 48px;
 }
 
 h2 {
   font-size: 40px;
-  margin-bottom: 25px;
 }
 
 h1.is-bold,
 h2.is-bold {
-    font-weight: bold;
-    letter-spacing: -2px;
+  font-weight: bold;
+  letter-spacing: -2px;
 }
 
 h4 {
@@ -98,35 +96,53 @@ h4 {
 
   label {
     display: block;
-    margin-bottom:5px;
+    margin-bottom: 5px;
     font-weight: 500;
     color: #333;
   }
-
 }
 
 .error-message {
-  color: red;
+  color: rgba(255, 0, 0, 0.815);
   font-size: 14px;
+  letter-spacing: 0.5px;
+  font-weight: 400;
+  margin-top: 3px;
 }
 
-input {
+input,
+textarea,
+select {
   width: 100%;
   background: rgba(white, 0.9);
   display: block;
   box-sizing: border-box;
   padding: 10px;
- 
+
   border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 16px;
   font-family: inherit;
 
   &.input-sm {
-    width:200px;
+    width: 200px;
     font-size: 14px;
   }
-  
+
+  &.edit-name {
+    background: transparent;
+    color: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    padding: 0;
+    border: none;
+
+    &:hover,
+    &:focus {
+      background: transparent;
+    }
+  }
+
   &:hover {
     background: rgba(white, 0.95);
   }
@@ -142,6 +158,18 @@ input {
   }
 }
 
+textarea {
+  min-height: 100px;
+  resize: vertical;
+}
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+

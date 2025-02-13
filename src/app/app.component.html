@@ -3,8 +3,8 @@
     <h1>17:44</h1>
     <h2>15 January 2025</h2>
   </div>
-  <div class="content-section">
-    <router-outlet />
+  <div class="content-section" [@routeAnimations]="prepareRoute(outlet)">
+    <router-outlet #outlet="outlet"/>
   </div>
   <div class="bottom-section"><app-navbar></app-navbar></div>
 </div>
