@@ -1,0 +1,25 @@
+.calendar-wrapper {
+    
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-width: 350px;
+    max-width: 750px;
+    width: auto;
+    margin:auto;
+    height: 100%;
+    padding: 10px;
+
+    text-align: center;
+}
+
+.calendar-body {
+   
+    height: 100%;
+    padding: 15px 7px;
+    overflow-y: auto;
+    border-radius: 12px;
+    background-color: rgba(white, 0.45);
+    // backdrop-filter: blur(3px);
+
+}
