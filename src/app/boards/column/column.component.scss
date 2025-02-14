@@ -8,7 +8,7 @@
   width: auto;
   margin:auto;
   height: 100%;
-  padding: 20px;
+  padding: 10px;
   border-radius: 12px;
   background-color: rgba(white, 0.45);
   backdrop-filter: blur(3px);
@@ -17,8 +17,18 @@
 
 .tasks-container {
   height: 100%;
-  padding: 15px 0;
+  padding: 15px 7px;
   overflow-y: auto;
+
+  &::-webkit-scrollbar {
+    width: 5px;
+
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 4px;
+  }
 }
 
 .cdk-drag-preview {

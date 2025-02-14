@@ -8,7 +8,7 @@
   flex-direction: column;
   background: rgba(black, 0.2);
   border-radius: 12px;
-  padding: 12px;
+  padding: 12px 12px 6px;
   overflow: auto;
 }
 
@@ -33,6 +33,16 @@
   display: flex;
   gap: 15px;
   overflow-x: auto;
+  padding-bottom: 6px;
+
+  &::-webkit-scrollbar {
+    height: 8px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(black, 0.8);
+    border-radius: 4px;
+  }
 
   app-column {
     flex: 1;
