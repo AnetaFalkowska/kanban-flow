@@ -47,38 +47,51 @@ export class CalendarComponent implements OnInit, OnDestroy {
       events: calendarTasks.map(({ task, boardName, boardId, columnId }) => ({
         title: `${task.name} (${boardName})`,
         start: task.duedate,
-        backgroundColor: this.getPriorityColor(task.priority),
-        borderColor: this.getPriorityColor(task.priority),
+        backgroundColor: this.getPriorityColor(task.priority, task.duedate),
+        borderColor: this.getPriorityColor(task.priority, task.duedate),
         id: task.id,
         extendedProps: {
+          priority: task.priority,
           boardId,
           columnId,
         },
       })),
       eventStartEditable: true,
       droppable: true,
+      eventAllow: this.handleEventAllow.bind(this),
+      eventDragStop: this.handleEventDragStop.bind(this),
       eventDrop: this.handleEventDrop.bind(this),
       eventClick: this.handleEventClick.bind(this),
     };
   }
 
-  getPriorityColor(priority?: string) {
-    return priority === 'high'
-      ? 'red'
-      : priority === 'medium'
-      ? 'orange'
-      : 'green';
+  handleEventAllow(info: any): boolean {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    return info.start >= today;
   }
 
-  handleEventDrop(event: any) {
+  handleEventDragStop(info: any) {
 
-    const boardId = event.event.extendedProps.boardId;
-    const columnId = event.event.extendedProps.columnId;
-    const taskId = event.event.id; 
-    const newDueDate = event.event.start ? this.formatDate(event.event.start) : null;
- 
+    const eventDate = info.event.start;
+  
+    if (eventDate < info.view.currentStart) {
+      info.calendar.prev(); 
+    } else if (eventDate > info.view.currentEnd) {
+      info.calendar.next(); 
+    }
+  }
+
+  handleEventDrop(info: any) {
+    const { boardId, columnId, priority } = info.event.extendedProps;
+
+    const taskId = info.event.id;
+    const newDueDate = info.event.startStr
+
     if (!boardId || !columnId || !taskId || !newDueDate) return;
-
+    info.event.setProp('backgroundColor', this.getPriorityColor(priority, newDueDate));
+    info.event.setProp('borderColor', this.getPriorityColor(priority, newDueDate));
     this.taskService
       .updateTask(boardId, columnId, taskId, {
         duedate: newDueDate,
@@ -89,13 +102,20 @@ export class CalendarComponent implements OnInit, OnDestroy {
       });
   }
 
-  formatDate(date: Date): string {
-    return date.getFullYear() +
-    '-' + String(date.getMonth() + 1).padStart(2, '0') +
-    '-' + String(date.getDate()).padStart(2, '0');
-  }
-
   handleEventClick(event: any) {
     console.log(event.event.title);
+  }
+
+  getPriorityColor(priority: string, taskDate: string): string {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const taskDateFormatted = new Date(taskDate);
+    if (taskDateFormatted >= today) {
+      return priority === 'high'
+        ? 'red'
+        : priority === 'medium'
+        ? 'orange'
+        : 'green';
+    } else return 'gray';
   }
 }
