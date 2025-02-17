@@ -4,13 +4,14 @@
         <h2>Calendar</h2>
     </div>
     <div class="calendar-body">
-        <full-calendar [options]="calendarOptions">
+        <full-calendar #calendar [options]="calendarOptions">
 
             <ng-template #eventContent let-arg>
                 <!-- <b>{{arg.timeText}}</b> -->
                 <i>{{arg.event.title}}</i>
               </ng-template>
         </full-calendar>
+
     </div>
 </div>
 
