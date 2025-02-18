@@ -26,3 +26,21 @@
 
   
 }
+
+.task-wrapper {
+  display: flex;
+  justify-content: flex-start;
+  margin: 6px 3px;
+}
+
+.task-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-right: 4px;
+
+}
+
+.task-name-multi-month {
+  overflow: hidden;
+  margin: 2px;
+}

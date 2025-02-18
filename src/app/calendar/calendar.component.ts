@@ -26,10 +26,11 @@ export class CalendarComponent implements OnInit, OnDestroy {
   unsubscribe$ = new Subject<void>();
   readonly dialog = inject(MatDialog);
   private router = inject(Router);
-  
-  
 
-  constructor(private readonly taskService: TaskService, private readonly stateService:StateService) {}
+  constructor(
+    private readonly taskService: TaskService,
+    private readonly stateService: StateService
+  ) {}
 
   @ViewChild('calendar') calendarComponent!: FullCalendarComponent;
 
@@ -45,7 +46,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
     this.unsubscribe$.complete();
   }
 
-  openDialog(task:Task, boardId: string, columnId: string): void {
+  openDialog(task: Task, boardId: string, columnId: string): void {
     const dialogRef = this.dialog.open(TaskViewComponent, {
       data: { task, source: 'calendar' },
     });
@@ -55,7 +56,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
         this.stateService.setTaskContext(boardId, columnId);
         this.router.navigate([`/tasks/${task.id}/edit`]);
       }
-      if (result === "openBoard") {
+      if (result === 'openBoard') {
         this.router.navigate([`/${boardId}`]);
       }
     });
@@ -73,9 +74,9 @@ export class CalendarComponent implements OnInit, OnDestroy {
       plugins: [dayGridPlugin, interactionPlugin, multiMonthPlugin],
       initialView: 'dayGridMonth',
       firstDay: 1,
-      height: "auto",
+      height: 'auto',
       headerToolbar: {
-        left: 'prev,next today',  
+        left: 'prev,next today',
         center: 'title',
         right: 'dayGridMonth,multiMonthYear',
       },
@@ -89,11 +90,12 @@ export class CalendarComponent implements OnInit, OnDestroy {
         },
       },
       events: calendarTasks.map(({ task, boardName, boardId, columnId }) => ({
-        title: `${task.name} (${boardName})`,
+        title: task.name,
         start: task.duedate,
         id: task.id,
         extendedProps: {
           priority: task.priority,
+          boardName,
           boardId,
           columnId,
         },
@@ -146,8 +148,11 @@ export class CalendarComponent implements OnInit, OnDestroy {
 
     if (!boardId || !columnId || !taskId) return;
 
-    this.taskService.getTask(boardId, columnId, taskId).subscribe({next: (task) => {this.openDialog(task, boardId, columnId)}});
-    
+    this.taskService.getTask(boardId, columnId, taskId).subscribe({
+      next: (task) => {
+        this.openDialog(task, boardId, columnId);
+      },
+    });
   }
 
   getPriorityColor(priority: string, taskDate: string): string {
@@ -156,10 +161,10 @@ export class CalendarComponent implements OnInit, OnDestroy {
     const taskDateFormatted = new Date(taskDate);
     if (taskDateFormatted >= today) {
       return priority === 'high'
-        ? 'red'
+        ? 'crimson'
         : priority === 'medium'
-        ? 'orange'
-        : 'green';
+        ? 'lightsalmon'
+        : 'skyblue';
     } else return 'gray';
   }
 

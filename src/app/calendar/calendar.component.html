@@ -1,16 +1,12 @@
-
 <div class="calendar-wrapper">
-
-    <div class="calendar-body">
-        <full-calendar #calendar [options]="calendarOptions">
-
-            <ng-template #eventContent let-arg>
-                <!-- <b>{{arg.timeText}}</b> -->
-                <i>{{arg.event.title}}</i>
-              </ng-template>
-        </full-calendar>
-
-    </div>
+  <div class="calendar-body">
+    <full-calendar #calendar [options]="calendarOptions">      
+      <ng-template #eventContent let-arg>
+        @if (calendarComponent?.getApi()?.view?.type === 'dayGridMonth') {<div class="task-wrapper">
+          <div class="task-name">{{ arg.event.title }}</div>
+          <div>({{ arg.event.extendedProps.boardName }})</div>
+        </div>} @else {<div class="task-name-multi-month">{{ arg.event.title }}</div>}
+      </ng-template>
+    </full-calendar>
+  </div>
 </div>
-
-
