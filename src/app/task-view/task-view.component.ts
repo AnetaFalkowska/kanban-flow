@@ -14,11 +14,13 @@ import { Router } from '@angular/router';
 export class TaskViewComponent {
 
   readonly dialogRef = inject(MatDialogRef<TaskViewComponent>)
-  readonly data = inject<{ task: Task,  }>(MAT_DIALOG_DATA);
+  readonly data = inject<{ task: Task, source:string  }>(MAT_DIALOG_DATA);
   
 
   editTask() {
     this.dialogRef.close();    
   }
+
+
 
 }

@@ -32,15 +32,16 @@ export class TaskCardComponent {
 
   constructor(private readonly stateService: StateService) {}
 
-  openDialog() {
-    if (this.columnId) this.stateService.setColumnId(this.columnId);
+  openDialog() {   
 
     const dialogRef = this.dialog.open(TaskViewComponent, {
       data: { task: this.task },
     });
 
     dialogRef.afterClosed().subscribe((result) => {
-      if (result === true) {
+
+      if (result === true && this.columnId) {
+        this.stateService.setColumnId(this.columnId);
         this.router.navigate([`/tasks/${this.task?.id}/edit`]);
       }
     });
