@@ -94,13 +94,14 @@ export class CalendarComponent implements OnInit, OnDestroy {
         start: task.duedate,
         id: task.id,
         extendedProps: {
+          completed: task.completed,
           priority: task.priority,
           boardName,
           boardId,
           columnId,
         },
-        backgroundColor: this.getPriorityColor(task.priority, task.duedate),
-        borderColor: this.getPriorityColor(task.priority, task.duedate),
+        backgroundColor: this.getPriorityColor(task.completed, task.priority, task.duedate),
+        borderColor: this.getPriorityColor(task.completed, task.priority, task.duedate),
       })),
       eventStartEditable: true,
       droppable: true,
@@ -118,7 +119,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
   }
 
   handleEventDrop(info: any) {
-    const { boardId, columnId, priority } = info.event.extendedProps;
+    const { boardId, columnId, completed, priority } = info.event.extendedProps;
 
     const taskId = info.event.id;
     const newDueDate = info.event.startStr;
@@ -126,11 +127,11 @@ export class CalendarComponent implements OnInit, OnDestroy {
     if (!boardId || !columnId || !taskId || !newDueDate) return;
     info.event.setProp(
       'backgroundColor',
-      this.getPriorityColor(priority, newDueDate)
+      this.getPriorityColor(completed, priority, newDueDate)
     );
     info.event.setProp(
       'borderColor',
-      this.getPriorityColor(priority, newDueDate)
+      this.getPriorityColor(completed, priority, newDueDate)
     );
     this.taskService
       .updateTask(boardId, columnId, taskId, {
@@ -155,17 +156,24 @@ export class CalendarComponent implements OnInit, OnDestroy {
     });
   }
 
-  getPriorityColor(priority: string, taskDate: string): string {
+  getPriorityColor(completed:boolean, priority: "high" | "medium" | "low" | null , taskDate: string): string {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     const taskDateFormatted = new Date(taskDate);
-    if (taskDateFormatted >= today) {
-      return priority === 'high'
-        ? 'crimson'
-        : priority === 'medium'
-        ? 'lightsalmon'
-        : 'skyblue';
-    } else return 'gray';
+    const isFutureOrToday = taskDateFormatted >= today;
+
+    if (completed) {
+        return isFutureOrToday ? 'green' : 'gray';
+    }
+
+    const priorityColors: Record<"high" | "medium" | "low", string> = {
+        high: isFutureOrToday ? 'crimson' : '#ff6b7e',
+        medium: isFutureOrToday ? '#fe6639' : 'lightsalmon',
+        low: isFutureOrToday ? '#2aa0cd' : '#87ceeb'
+    };
+
+    return priorityColors[priority || "low"]
+    
   }
 
   // switchToYearView() {
