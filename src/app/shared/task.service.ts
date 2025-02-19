@@ -77,6 +77,7 @@ export class TaskService {
     taskId: string,
     updatedFields: Partial<Task>
   ): Observable<Task> {
+
     return this.http
       .put<Task>(
         `${this.API_URL}/${boardId}/columns/${columnId}/tasks/${taskId}`,

@@ -1,9 +1,17 @@
 <div mat-button (click)="openDialog()" class="task-card">
-  <p class="task-text">{{ task?.name }}</p>
+  <div class="task-item" [class.checked]="task?.completed">
+    <div
+      class="check-box"
+      (click)="toggleCompleted(); $event.stopPropagation()"
+    >
+      <span class="material-icons-outlined">check</span>
+    </div>
+    <p class="task-text">{{ task?.name }}</p>
+  </div>
+
   <div (click)="$event.stopPropagation()" class="task-item-actions">
     <div (click)="onDeleteClick()" class="task-item-actions-btn">
       <i class="material-icons-outlined">delete</i>
     </div>
   </div>
 </div>
-
