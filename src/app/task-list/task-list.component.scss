@@ -1,0 +1,39 @@
+.task-list-wrapper {
+    max-width: 800px;
+    max-height: 100%;
+    overflow-y: auto;
+    margin: auto;
+    padding: 10px;
+  
+    &::-webkit-scrollbar {
+      width: 5px;
+    }
+  
+    &::-webkit-scrollbar-thumb {
+      background: rgba(0, 0, 0, 0.4);
+      border-radius: 4px;
+    }
+  }
+  
+  .task-list-body {
+    height: 100%;
+    padding: 15px 7px;
+    border-radius: 12px;
+    background-color: rgba(white, 0.45);
+  }
+  
+  .task-wrapper {
+    display: flex;
+    justify-content: flex-start;
+  }
+  
+  .task-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-right: 4px;
+  }
+  
+  .board-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }

@@ -4,9 +4,9 @@ import { Router, RouterOutlet } from '@angular/router';
 import { FullCalendarModule } from '@fullcalendar/angular';
 import { FullCalendarComponent } from '@fullcalendar/angular';
 import { CalendarOptions } from '@fullcalendar/core';
-import multiMonthPlugin from '@fullcalendar/multimonth';
-import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
+import listPlugin from '@fullcalendar/list';
+import momentPlugin from '@fullcalendar/moment';
 import { TaskService } from '../shared/task.service';
 import { Subject, takeUntil } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
@@ -15,13 +15,22 @@ import { Task } from '../shared/task.model';
 import { StateService } from '../shared/state.service';
 
 @Component({
-  selector: 'app-calendar',
+  selector: 'app-task-list',
   imports: [CommonModule, RouterOutlet, FullCalendarModule],
-  templateUrl: './calendar.component.html',
-  styleUrl: './calendar.component.scss',
+  templateUrl: './task-list.component.html',
+  styleUrl: './task-list.component.scss',
 })
-export class CalendarComponent implements OnInit, OnDestroy {
-  calendarOptions!: CalendarOptions;
+export class TaskListComponent implements OnInit, OnDestroy {
+  
+  calendarOptions: CalendarOptions = {
+    plugins: [listPlugin, interactionPlugin,  momentPlugin],
+    initialView: 'listYear',
+    height: 'auto',
+    listDayFormat:{weekday: 'long'},
+    listDaySideFormat:'MMMM D, YYYY',
+    events: [],
+    eventClick: this.handleEventClick.bind(this),
+  };
   unsubscribe$ = new Subject<void>();
   readonly dialog = inject(MatDialog);
   private router = inject(Router);
@@ -35,9 +44,9 @@ export class CalendarComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.taskService.getTasksForCalendar();
-    this.taskService.tasksForCalendar$.subscribe((calendarTasks) =>
-      this.updateCalendarOptions(calendarTasks)
-    );
+    this.taskService
+      .getIncompleteTasksForList()
+      .subscribe((taskList) => this.updateCalendarOptions(taskList));
   }
 
   ngOnDestroy(): void {
@@ -70,24 +79,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
     }[]
   ): void {
     this.calendarOptions = {
-      plugins: [dayGridPlugin, interactionPlugin, multiMonthPlugin],
-      initialView: 'dayGridMonth',
-      firstDay: 1,
-      height: 'auto',
-      headerToolbar: {
-        left: 'prev,next today',
-        center: 'title',
-        right: 'dayGridMonth,multiMonthYear',
-      },
-      views: {
-        multiMonthYear: {
-          type: 'multiMonthYear',
-          duration: { months: 12 },
-          multiMonthMaxColumns: 3,
-          buttonText: 'year',
-          aspectRatio: 1.35,
-        },
-      },
+      ...this.calendarOptions, // Kopiujemy istniejące opcje
       events: calendarTasks.map(({ task, boardName, boardId, columnId }) => ({
         title: task.name,
         start: task.duedate,
@@ -99,47 +91,18 @@ export class CalendarComponent implements OnInit, OnDestroy {
           boardId,
           columnId,
         },
-        backgroundColor: this.getPriorityColor(task.completed, task.priority, task.duedate),
-        borderColor: this.getPriorityColor(task.completed, task.priority, task.duedate),
+        backgroundColor: this.getPriorityColor(
+          task.completed,
+          task.priority,
+          task.duedate
+        ),
+        borderColor: this.getPriorityColor(
+          task.completed,
+          task.priority,
+          task.duedate
+        ),
       })),
-      eventStartEditable: true,
-      droppable: true,
-      eventAllow: this.handleEventAllow.bind(this),
-      eventDrop: this.handleEventDrop.bind(this),
-      eventClick: this.handleEventClick.bind(this),
     };
-  }
-
-  handleEventAllow(info: any): boolean {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-    return info.start >= today;
-  }
-
-  handleEventDrop(info: any) {
-    const { boardId, columnId, completed, priority } = info.event.extendedProps;
-
-    const taskId = info.event.id;
-    const newDueDate = info.event.startStr;
-
-    if (!boardId || !columnId || !taskId || !newDueDate) return;
-    info.event.setProp(
-      'backgroundColor',
-      this.getPriorityColor(completed, priority, newDueDate)
-    );
-    info.event.setProp(
-      'borderColor',
-      this.getPriorityColor(completed, priority, newDueDate)
-    );
-    this.taskService
-      .updateTask(boardId, columnId, taskId, {
-        duedate: newDueDate,
-      })
-      .pipe(takeUntil(this.unsubscribe$))
-      .subscribe({
-        error: (err) => console.error('Task update failed', err),
-      });
   }
 
   handleEventClick(info: any) {
@@ -155,33 +118,26 @@ export class CalendarComponent implements OnInit, OnDestroy {
     });
   }
 
-  getPriorityColor(completed:boolean, priority: "high" | "medium" | "low" | null , taskDate: string): string {
-
-    if (completed) {
-      return 'gray';
-  }
+  getPriorityColor(
+    completed: boolean,
+    priority: 'high' | 'medium' | 'low' | null,
+    taskDate: string
+  ): string {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     const taskDateFormatted = new Date(taskDate);
+    const isFutureOrToday = taskDateFormatted >= today;
 
-
-
-    if (taskDateFormatted < today) {
-        return '#B63D2E';
+    if (completed) {
+      return isFutureOrToday ? 'green' : 'gray';
     }
 
-    const priorityColors = {
-        high: '#8E1B5C',
-        medium: '#D97706',
-        low: '#2A6F97'
-    } as const;
+    const priorityColors: Record<'high' | 'medium' | 'low', string> = {
+      high: isFutureOrToday ? 'crimson' : '#ff6b7e',
+      medium: isFutureOrToday ? '#fe6639' : 'lightsalmon',
+      low: isFutureOrToday ? '#2aa0cd' : '#87ceeb',
+    };
 
-    return priorityColors[priority || "low"]
-    
+    return priorityColors[priority || 'low'];
   }
-
-  // switchToYearView() {
-  //   let calendarApi = this.calendarComponent.getApi();
-  //   calendarApi.changeView('multiMonthYear');
-  // }
 }

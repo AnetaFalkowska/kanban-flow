@@ -6,6 +6,7 @@ import { BoardService } from './board.service';
 import {
   BehaviorSubject,
   catchError,
+  flatMap,
   map,
   Observable,
   throwError,
@@ -18,7 +19,7 @@ import { HttpClient } from '@angular/common/http';
 export class TaskService {
   private readonly API_URL = 'http://localhost:3000/api/boards';
   private tasksSubject$ = new BehaviorSubject<
-    { task: Task; boardName: string; boardId:string; columnId:string }[]
+    { task: Task; boardName: string; boardId: string; columnId: string }[]
   >([]);
   tasksForCalendar$ = this.tasksSubject$.asObservable();
 
@@ -36,18 +37,28 @@ export class TaskService {
       .get<Board[]>(this.API_URL)
       .pipe(
         map((boards) => {
-          let tasksWithDueDate: { task: Task; boardName: string; boardId:string; columnId:string }[] = [];
+          let tasksWithDueDate: {
+            task: Task;
+            boardName: string;
+            boardId: string;
+            columnId: string;
+          }[] = [];
 
           boards.forEach((board) => {
             board.columns.forEach((column) => {
               column.tasks.forEach((task) => {
                 if (task.duedate) {
-                  tasksWithDueDate.push({ task, boardName: board.name, boardId: board.id, columnId: column.id });
+                  tasksWithDueDate.push({
+                    task,
+                    boardName: board.name,
+                    boardId: board.id,
+                    columnId: column.id,
+                  });
                 }
               });
             });
           });
-           return tasksWithDueDate;
+          return tasksWithDueDate;
         }),
         catchError(this.handleError('getting tasks for calendar'))
       )
@@ -55,6 +66,36 @@ export class TaskService {
         next: (tasks) => this.tasksSubject$.next(tasks),
         error: (error) => console.error('Failed to load calendar tasks', error),
       });
+  }
+
+  getIncompleteTasksForList(): Observable<{ task: Task; boardName: string; boardId: string; columnId: string }[]> {
+    return this.http.get<Board[]>(this.API_URL).pipe(
+      map((boards) => {
+        if (!boards) return [];
+        let incompleteTasks: {
+          task: Task;
+          boardName: string;
+          boardId: string;
+          columnId: string;
+        }[] = [];
+        boards.forEach((board) => {
+          board.columns.forEach((column) => {
+            column.tasks.forEach((task) => {
+              if (!task.completed && task.duedate) {
+                incompleteTasks.push({
+                  task,
+                  boardName: board.name,
+                  boardId: board.id,
+                  columnId: column.id,
+                });
+              }
+            });
+          });
+        });
+        return incompleteTasks;
+      }),
+      catchError(this.handleError('getting incomplete tasks for list'))
+    );
   }
 
   getTask(boardId: string, columnId: string, taskId: string): Observable<Task> {
@@ -77,7 +118,6 @@ export class TaskService {
     taskId: string,
     updatedFields: Partial<Task>
   ): Observable<Task> {
-
     return this.http
       .put<Task>(
         `${this.API_URL}/${boardId}/columns/${columnId}/tasks/${taskId}`,

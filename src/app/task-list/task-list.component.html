@@ -1,0 +1,12 @@
+<div class="task-list-wrapper">
+    <div class="task-list-body">
+      <full-calendar #calendar [options]="calendarOptions">      
+        <ng-template #eventContent let-arg>
+          <div class="task-wrapper">
+            <div class="task-name">{{ arg.event.title }}</div>
+            <div class="board-name">({{ arg.event.extendedProps.boardName }})</div>
+          </div>
+        </ng-template>
+      </full-calendar>
+    </div>
+  </div>
