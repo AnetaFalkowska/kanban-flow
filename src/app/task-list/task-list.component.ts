@@ -1,6 +1,6 @@
 import { Component, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterOutlet } from '@angular/router';
+import { RouterOutlet } from '@angular/router';
 import { FullCalendarModule } from '@fullcalendar/angular';
 import { FullCalendarComponent } from '@fullcalendar/angular';
 import { CalendarOptions } from '@fullcalendar/core';
@@ -9,10 +9,7 @@ import listPlugin from '@fullcalendar/list';
 import momentPlugin from '@fullcalendar/moment';
 import { TaskService } from '../shared/task.service';
 import { Subject, takeUntil } from 'rxjs';
-import { MatDialog } from '@angular/material/dialog';
-import { TaskViewComponent } from '../task-view/task-view.component';
-import { Task } from '../shared/task.model';
-import { StateService } from '../shared/state.service';
+import { CalendarUtilsService } from '../shared/calendar-utils.service';
 
 @Component({
   selector: 'app-task-list',
@@ -21,29 +18,40 @@ import { StateService } from '../shared/state.service';
   styleUrl: './task-list.component.scss',
 })
 export class TaskListComponent implements OnInit, OnDestroy {
-  
   calendarOptions: CalendarOptions = {
-    plugins: [listPlugin, interactionPlugin,  momentPlugin],
+    plugins: [listPlugin, interactionPlugin, momentPlugin],
     initialView: 'listYear',
+    headerToolbar: {
+      left: 'prev,next today',
+      center: 'title',
+      right: 'listMonth,listYear',
+    },
+    views: {
+      listMonth: {
+        type: 'listMonth',
+        buttonText: 'month',
+      },
+      listYear: {
+        type: 'listYear',
+        buttonText: 'year',
+      },
+    },
     height: 'auto',
-    listDayFormat:{weekday: 'long'},
-    listDaySideFormat:'MMMM D, YYYY',
+    listDayFormat: { weekday: 'long' },
+    listDaySideFormat: 'MMMM D, YYYY',
     events: [],
     eventClick: this.handleEventClick.bind(this),
   };
   unsubscribe$ = new Subject<void>();
-  readonly dialog = inject(MatDialog);
-  private router = inject(Router);
 
   constructor(
     private readonly taskService: TaskService,
-    private readonly stateService: StateService
+    private readonly calendarUtilsService: CalendarUtilsService
   ) {}
 
   @ViewChild('calendar') calendarComponent!: FullCalendarComponent;
 
   ngOnInit(): void {
-    this.taskService.getTasksForCalendar();
     this.taskService
       .getIncompleteTasksForList()
       .subscribe((taskList) => this.updateCalendarOptions(taskList));
@@ -54,23 +62,7 @@ export class TaskListComponent implements OnInit, OnDestroy {
     this.unsubscribe$.complete();
   }
 
-  openDialog(task: Task, boardId: string, columnId: string): void {
-    const dialogRef = this.dialog.open(TaskViewComponent, {
-      data: { task, source: 'calendar' },
-    });
-
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result === true) {
-        this.stateService.setTaskContext(boardId, columnId);
-        this.router.navigate([`/tasks/${task.id}/edit`]);
-      }
-      if (result === 'openBoard') {
-        this.router.navigate([`/${boardId}`]);
-      }
-    });
-  }
-
-  updateCalendarOptions(
+  updateCalendarOptions( 
     calendarTasks: {
       task: any;
       boardName: string;
@@ -79,7 +71,7 @@ export class TaskListComponent implements OnInit, OnDestroy {
     }[]
   ): void {
     this.calendarOptions = {
-      ...this.calendarOptions, // Kopiujemy istniejące opcje
+      ...this.calendarOptions,
       events: calendarTasks.map(({ task, boardName, boardId, columnId }) => ({
         title: task.name,
         start: task.duedate,
@@ -106,16 +98,7 @@ export class TaskListComponent implements OnInit, OnDestroy {
   }
 
   handleEventClick(info: any) {
-    const { boardId, columnId } = info.event.extendedProps;
-    const taskId = info.event.id;
-
-    if (!boardId || !columnId || !taskId) return;
-
-    this.taskService.getTask(boardId, columnId, taskId).subscribe({
-      next: (task) => {
-        this.openDialog(task, boardId, columnId);
-      },
-    });
+    this.calendarUtilsService.handleEventClick(info);
   }
 
   getPriorityColor(
@@ -123,21 +106,10 @@ export class TaskListComponent implements OnInit, OnDestroy {
     priority: 'high' | 'medium' | 'low' | null,
     taskDate: string
   ): string {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const taskDateFormatted = new Date(taskDate);
-    const isFutureOrToday = taskDateFormatted >= today;
-
-    if (completed) {
-      return isFutureOrToday ? 'green' : 'gray';
-    }
-
-    const priorityColors: Record<'high' | 'medium' | 'low', string> = {
-      high: isFutureOrToday ? 'crimson' : '#ff6b7e',
-      medium: isFutureOrToday ? '#fe6639' : 'lightsalmon',
-      low: isFutureOrToday ? '#2aa0cd' : '#87ceeb',
-    };
-
-    return priorityColors[priority || 'low'];
+    return this.calendarUtilsService.getPriorityColor(
+      completed,
+      priority,
+      taskDate
+    );
   }
 }

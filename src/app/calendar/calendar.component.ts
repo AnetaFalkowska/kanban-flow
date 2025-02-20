@@ -1,6 +1,6 @@
-import { Component, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterOutlet } from '@angular/router';
+import { RouterOutlet } from '@angular/router';
 import { FullCalendarModule } from '@fullcalendar/angular';
 import { FullCalendarComponent } from '@fullcalendar/angular';
 import { CalendarOptions } from '@fullcalendar/core';
@@ -9,10 +9,7 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import { TaskService } from '../shared/task.service';
 import { Subject, takeUntil } from 'rxjs';
-import { MatDialog } from '@angular/material/dialog';
-import { TaskViewComponent } from '../task-view/task-view.component';
-import { Task } from '../shared/task.model';
-import { StateService } from '../shared/state.service';
+import { CalendarUtilsService } from '../shared/calendar-utils.service';
 
 @Component({
   selector: 'app-calendar',
@@ -23,12 +20,10 @@ import { StateService } from '../shared/state.service';
 export class CalendarComponent implements OnInit, OnDestroy {
   calendarOptions!: CalendarOptions;
   unsubscribe$ = new Subject<void>();
-  readonly dialog = inject(MatDialog);
-  private router = inject(Router);
 
   constructor(
     private readonly taskService: TaskService,
-    private readonly stateService: StateService
+    private readonly calendarUtilsService: CalendarUtilsService
   ) {}
 
   @ViewChild('calendar') calendarComponent!: FullCalendarComponent;
@@ -43,22 +38,6 @@ export class CalendarComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
-  }
-
-  openDialog(task: Task, boardId: string, columnId: string): void {
-    const dialogRef = this.dialog.open(TaskViewComponent, {
-      data: { task, source: 'calendar' },
-    });
-
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result === true) {
-        this.stateService.setTaskContext(boardId, columnId);
-        this.router.navigate([`/tasks/${task.id}/edit`]);
-      }
-      if (result === 'openBoard') {
-        this.router.navigate([`/${boardId}`]);
-      }
-    });
   }
 
   updateCalendarOptions(
@@ -99,8 +78,16 @@ export class CalendarComponent implements OnInit, OnDestroy {
           boardId,
           columnId,
         },
-        backgroundColor: this.getPriorityColor(task.completed, task.priority, task.duedate),
-        borderColor: this.getPriorityColor(task.completed, task.priority, task.duedate),
+        backgroundColor: this.getPriorityColor(
+          task.completed,
+          task.priority,
+          task.duedate
+        ),
+        borderColor: this.getPriorityColor(
+          task.completed,
+          task.priority,
+          task.duedate
+        ),
       })),
       eventStartEditable: true,
       droppable: true,
@@ -143,41 +130,19 @@ export class CalendarComponent implements OnInit, OnDestroy {
   }
 
   handleEventClick(info: any) {
-    const { boardId, columnId } = info.event.extendedProps;
-    const taskId = info.event.id;
-
-    if (!boardId || !columnId || !taskId) return;
-
-    this.taskService.getTask(boardId, columnId, taskId).subscribe({
-      next: (task) => {
-        this.openDialog(task, boardId, columnId);
-      },
-    });
+    this.calendarUtilsService.handleEventClick(info);
   }
 
-  getPriorityColor(completed:boolean, priority: "high" | "medium" | "low" | null , taskDate: string): string {
-
-    if (completed) {
-      return 'gray';
-  }
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const taskDateFormatted = new Date(taskDate);
-
-
-
-    if (taskDateFormatted < today) {
-        return '#B63D2E';
-    }
-
-    const priorityColors = {
-        high: '#8E1B5C',
-        medium: '#D97706',
-        low: '#2A6F97'
-    } as const;
-
-    return priorityColors[priority || "low"]
-    
+  getPriorityColor(
+    completed: boolean,
+    priority: 'high' | 'medium' | 'low' | null,
+    taskDate: string
+  ): string {
+    return this.calendarUtilsService.getPriorityColor(
+      completed,
+      priority,
+      taskDate
+    );
   }
 
   // switchToYearView() {
