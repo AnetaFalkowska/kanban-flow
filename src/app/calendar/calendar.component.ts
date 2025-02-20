@@ -91,6 +91,9 @@ export class CalendarComponent implements OnInit, OnDestroy {
       })),
       eventStartEditable: true,
       droppable: true,
+      eventDidMount: ({ el, event }: { el: HTMLElement, event: any }) => {
+        el.setAttribute('title', `Task: ${event.title} | Board: ${event.extendedProps.boardName}`);
+      },
       eventAllow: this.handleEventAllow.bind(this),
       eventDrop: this.handleEventDrop.bind(this),
       eventClick: this.handleEventClick.bind(this),

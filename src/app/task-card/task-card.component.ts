@@ -25,8 +25,7 @@ import { of, switchMap } from 'rxjs';
 export class TaskCardComponent {
   @Input() task?: Task;
   @Input() columnId?: string;
-
-  @Output() editClick: EventEmitter<void> = new EventEmitter<any>();
+  
   @Output() deleteClick: EventEmitter<void> = new EventEmitter<any>();
 
   readonly dialog = inject(MatDialog);
@@ -79,10 +78,6 @@ export class TaskCardComponent {
         },
         error: (err) => console.error('Error updating task:', err),
       });
-  }
-
-  onEditClick() {
-    this.editClick.emit();
   }
 
   onDeleteClick() {

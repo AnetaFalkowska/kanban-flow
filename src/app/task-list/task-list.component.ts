@@ -11,6 +11,7 @@ import { TaskService } from '../shared/task.service';
 import { Subject, takeUntil } from 'rxjs';
 import { CalendarUtilsService } from '../shared/calendar-utils.service';
 
+
 @Component({
   selector: 'app-task-list',
   imports: [CommonModule, RouterOutlet, FullCalendarModule],
@@ -40,7 +41,9 @@ export class TaskListComponent implements OnInit, OnDestroy {
     listDayFormat: { weekday: 'long' },
     listDaySideFormat: 'MMMM D, YYYY',
     events: [],
-    eventClick: this.handleEventClick.bind(this),
+    eventClick: (info: any) => {
+      this.calendarUtilsService.handleEventClick(info);
+    }
   };
   unsubscribe$ = new Subject<void>();
 
@@ -62,7 +65,7 @@ export class TaskListComponent implements OnInit, OnDestroy {
     this.unsubscribe$.complete();
   }
 
-  updateCalendarOptions( 
+  updateCalendarOptions(
     calendarTasks: {
       task: any;
       boardName: string;
@@ -77,39 +80,24 @@ export class TaskListComponent implements OnInit, OnDestroy {
         start: task.duedate,
         id: task.id,
         extendedProps: {
-          completed: task.completed,
-          priority: task.priority,
+          task,
           boardName,
           boardId,
           columnId,
         },
-        backgroundColor: this.getPriorityColor(
+        backgroundColor: this.calendarUtilsService.getPriorityColor(
           task.completed,
           task.priority,
           task.duedate
         ),
-        borderColor: this.getPriorityColor(
-          task.completed,
-          task.priority,
-          task.duedate
-        ),
+
       })),
     };
   }
 
-  handleEventClick(info: any) {
-    this.calendarUtilsService.handleEventClick(info);
-  }
-
-  getPriorityColor(
-    completed: boolean,
-    priority: 'high' | 'medium' | 'low' | null,
-    taskDate: string
-  ): string {
-    return this.calendarUtilsService.getPriorityColor(
-      completed,
-      priority,
-      taskDate
-    );
+  isTaskOverdue(taskDate: string): boolean {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return new Date(taskDate) < today;
   }
 }

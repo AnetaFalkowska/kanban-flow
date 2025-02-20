@@ -1,12 +1,24 @@
 <div class="task-list-wrapper">
-    <div class="task-list-body">
-      <full-calendar #calendar [options]="calendarOptions">      
-        <ng-template #eventContent let-arg>
-          <div class="task-wrapper">
-            <div class="task-name">{{ arg.event.title }}</div>
-            <div class="board-name">({{ arg.event.extendedProps.boardName }})</div>
+  <div class="task-list-body">
+    <full-calendar #calendar [options]="calendarOptions">
+      <ng-template #eventContent let-arg>
+        <div
+          class="task-wrapper"
+          [class.overdue]="isTaskOverdue(arg.event.extendedProps.task.duedate)"
+        >
+          <div class="task-name">{{ arg.event.title }}</div>
+          <div class="board-name">
+            ({{ arg.event.extendedProps.boardName }})
           </div>
-        </ng-template>
-      </full-calendar>
-    </div>
+        </div>
+      </ng-template>
+    </full-calendar>
   </div>
+</div>
+
+<!-- 
+  (click)="toggleCompleted(); $event.stopPropagation()" -->
+
+<!-- <ng-template #eventContent let-arg>
+    <app-task-card [task]="arg.event.extendedProps.task" [columnId]="arg.event.extendedProps.columnId"></app-task-card>
+  </ng-template> -->
