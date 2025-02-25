@@ -10,6 +10,17 @@ import { TaskViewComponent } from '../../shared/task-view/task-view.component';
   providedIn: 'root',
 })
 export class CalendarUtilsService {
+
+  private readonly priorityColors = {
+    high: '#1E3A5F',
+    medium: '#4682B4',
+    low: '#ADD8E6',
+    completed: 'gray',
+    overdue: '#B63D2E',
+  } as const;
+
+
+
   constructor(
     private readonly dialog: MatDialog,
     private readonly router: Router,
@@ -51,23 +62,24 @@ export class CalendarUtilsService {
     priority: 'high' | 'medium' | 'low' | null,
     taskDate: string
   ): string {
-    if (completed) {
-      return 'gray';
-    }
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const taskDateFormatted = new Date(taskDate);
+    if (completed) return this.priorityColors.completed;;
+    
+    const today = new Date().setHours(0, 0, 0, 0);
+    const taskDateFormatted = new Date(taskDate).setHours(0, 0, 0, 0);
 
-    if (taskDateFormatted < today) {
-      return '#B63D2E';
-    }
+    if (taskDateFormatted < today) return this.priorityColors.overdue
 
-    const priorityColors = {
-      high: '#8E1B5C',
-      medium: '#D97706',
-      low: '#2A6F97',
-    } as const;
+    return this.priorityColors[priority || 'low'];
+  }
 
-    return priorityColors[priority || 'low'];
+  getTextColor(
+    completed: boolean,
+    priority: 'high' | 'medium' | 'low' | null,
+    taskDate: string
+  ): string {
+    if (completed) return 'lightgray'
+    const today = new Date().setHours(0, 0, 0, 0);
+    const taskDateFormatted = new Date(taskDate).setHours(0, 0, 0, 0);
+    return taskDateFormatted >= today && (priority === 'low' || !priority) ? 'darkslategray' : 'white'
   }
 }

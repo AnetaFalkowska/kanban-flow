@@ -67,7 +67,10 @@ export class CalendarComponent implements OnInit, OnDestroy {
           aspectRatio: 1.35,
         },
       },
-      events: calendarTasks.map(({ task, boardName, boardId, columnId }) => ({
+      events: calendarTasks.map(({ task, boardName, boardId, columnId }) => {
+        const priorityColor = this.calendarUtilsService.getPriorityColor(task.completed, task.priority, task.duedate);
+                
+        return {
         title: task.name,
         start: task.duedate,
         id: task.id,
@@ -78,17 +81,12 @@ export class CalendarComponent implements OnInit, OnDestroy {
           boardId,
           columnId,
         },
-        backgroundColor: this.getPriorityColor(
-          task.completed,
+        backgroundColor: priorityColor,
+        borderColor: priorityColor,
+        textColor: this.calendarUtilsService.getTextColor(task.completed,
           task.priority,
-          task.duedate
-        ),
-        borderColor: this.getPriorityColor(
-          task.completed,
-          task.priority,
-          task.duedate
-        ),
-      })),
+          task.duedate)
+      }}),
       eventStartEditable: true,
       droppable: true,
       eventDidMount: ({ el, event }: { el: HTMLElement; event: any }) => {
@@ -99,7 +97,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
       },
       eventAllow: this.handleEventAllow.bind(this),
       eventDrop: this.handleEventDrop.bind(this),
-      eventClick: this.handleEventClick.bind(this),
+      eventClick: this.calendarUtilsService.handleEventClick.bind(this.calendarUtilsService)
     };
   }
 
@@ -119,11 +117,11 @@ export class CalendarComponent implements OnInit, OnDestroy {
     if (!boardId || !columnId || !taskId || !newDueDate) return;
     info.event.setProp(
       'backgroundColor',
-      this.getPriorityColor(completed, priority, newDueDate)
+      this.calendarUtilsService.getPriorityColor(completed, priority, newDueDate)
     );
     info.event.setProp(
       'borderColor',
-      this.getPriorityColor(completed, priority, newDueDate)
+      this.calendarUtilsService.getPriorityColor(completed, priority, newDueDate)
     );
     this.taskService
       .updateTask(boardId, columnId, taskId, {
@@ -133,22 +131,6 @@ export class CalendarComponent implements OnInit, OnDestroy {
       .subscribe({
         error: (err) => console.error('Task update failed', err),
       });
-  }
-
-  handleEventClick(info: any) {
-    this.calendarUtilsService.handleEventClick(info);
-  }
-
-  getPriorityColor(
-    completed: boolean,
-    priority: 'high' | 'medium' | 'low' | null,
-    taskDate: string
-  ): string {
-    return this.calendarUtilsService.getPriorityColor(
-      completed,
-      priority,
-      taskDate
-    );
   }
 
   // switchToYearView() {
