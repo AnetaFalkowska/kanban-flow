@@ -7,10 +7,9 @@ import { CalendarOptions } from '@fullcalendar/core';
 import interactionPlugin from '@fullcalendar/interaction';
 import listPlugin from '@fullcalendar/list';
 import momentPlugin from '@fullcalendar/moment';
-import { TaskService } from '../shared/task.service';
+import { TaskService } from '../../api/task.service';
 import { Subject, takeUntil } from 'rxjs';
-import { CalendarUtilsService } from '../shared/calendar-utils.service';
-
+import { CalendarUtilsService } from '../../core/services/calendar-utils.service';
 
 @Component({
   selector: 'app-task-list',
@@ -43,7 +42,7 @@ export class TaskListComponent implements OnInit, OnDestroy {
     events: [],
     eventClick: (info: any) => {
       this.calendarUtilsService.handleEventClick(info);
-    }
+    },
   };
   unsubscribe$ = new Subject<void>();
 
@@ -90,7 +89,6 @@ export class TaskListComponent implements OnInit, OnDestroy {
           task.priority,
           task.duedate
         ),
-
       })),
     };
   }

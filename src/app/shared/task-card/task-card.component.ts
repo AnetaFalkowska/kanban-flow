@@ -6,13 +6,13 @@ import {
   Input,
   Output,
 } from '@angular/core';
-import { Task } from '../shared/task.model';
+import { Task } from '../../api/task.model';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { TaskViewComponent } from '../task-view/task-view.component';
 import { Router } from '@angular/router';
-import { StateService } from '../shared/state.service';
-import { TaskService } from '../shared/task.service';
+import { StateService } from '../../core/services/state.service';
+import { TaskService } from '../../api/task.service';
 import { of, switchMap } from 'rxjs';
 
 @Component({
@@ -25,7 +25,7 @@ import { of, switchMap } from 'rxjs';
 export class TaskCardComponent {
   @Input() task?: Task;
   @Input() columnId?: string;
-  
+
   @Output() deleteClick: EventEmitter<void> = new EventEmitter<any>();
 
   readonly dialog = inject(MatDialog);

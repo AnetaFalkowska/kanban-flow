@@ -13,7 +13,6 @@ import { FormsModule, NgModel } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { DeleteConfirmationDialogComponent } from '../delete-confirmation-dialog/delete-confirmation-dialog.component';
 
-
 @Component({
   selector: 'app-editable-header',
   imports: [FormsModule, NgClass],
@@ -31,7 +30,6 @@ export class EditableHeaderComponent {
   @Output() deleteClick: EventEmitter<void> = new EventEmitter<void>();
   @Output() saveEdit: EventEmitter<string> = new EventEmitter<string>();
 
-  
   openDialog() {
     const dialogRef = this.dialog.open(DeleteConfirmationDialogComponent, {
       data: { name: this.boardStyle ? 'board' : 'column' },
@@ -48,7 +46,6 @@ export class EditableHeaderComponent {
     this.tempName = this.name;
     this.editMode = true;
   }
-
 
   onSaveEdit(nameField: NgModel) {
     if (!this.editMode) return;

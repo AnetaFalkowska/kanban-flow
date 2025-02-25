@@ -1,12 +1,12 @@
 import { Routes } from '@angular/router';
-import { DashboardComponent } from './boards/dashboard/dashboard.component';
-import { CalendarComponent } from './calendar/calendar.component';
-import { SettingsComponent } from './settings/settings.component';
-import { NotificationsComponent } from './notifications/notifications.component';
-import { BoardViewComponent } from './boards/board-view/board-view.component';
-import { BoardFormComponent } from './boards/board-form/board-form.component';
-import { TaskFormComponent } from './task-form/task-form.component';
-import { TaskListComponent } from './task-list/task-list.component';
+import { DashboardComponent } from './domain/dashboard/dashboard.component';
+import { CalendarComponent } from './domain/calendar/calendar.component';
+import { SettingsComponent } from './domain/settings/settings.component';
+import { NotificationsComponent } from './domain/notifications/notifications.component';
+import { BoardViewComponent } from './domain/dashboard/board-card/board-view/board-view.component';
+import { BoardFormComponent } from './domain/dashboard/board-form/board-form.component';
+import { TaskFormComponent } from './shared/task-form/task-form.component';
+import { TaskListComponent } from './domain/task-list/task-list.component';
 
 export const routes: Routes = [
   { path: '', component: DashboardComponent },

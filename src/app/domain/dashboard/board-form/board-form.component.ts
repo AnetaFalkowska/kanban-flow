@@ -8,9 +8,9 @@ import {
   FormArray,
   AbstractControl,
 } from '@angular/forms';
-import { BoardService } from '../../shared/board.service';
-import { Board } from '../../shared/board.model';
-import { Column } from '../../shared/column.model';
+import { BoardService } from '../../../api/board.service';
+import { Board } from '../../../api/board.model';
+import { Column } from '../../../api/column.model';
 import {
   ActivatedRoute,
   ParamMap,

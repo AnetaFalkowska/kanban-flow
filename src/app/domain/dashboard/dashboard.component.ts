@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { BoardCardComponent } from '../board-card/board-card.component';
-import { Board } from '../../shared/board.model';
-import { BoardService } from '../../shared/board.service';
+import { BoardCardComponent } from './board-card/board-card.component';
+import { Board } from '../../api/board.model';
+import { BoardService } from '../../api/board.service';
 import { RouterModule } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { animate, style, transition, trigger } from '@angular/animations';
@@ -23,7 +23,6 @@ import { animate, style, transition, trigger } from '@angular/animations';
   //   ])
   // ],
 })
-
 export class DashboardComponent implements OnInit, OnDestroy {
   boards: Board[] = [];
   private readonly unsubscribe$ = new Subject<void>();

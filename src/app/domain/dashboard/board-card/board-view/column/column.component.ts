@@ -7,26 +7,26 @@ import {
   OnInit,
   Output,
 } from '@angular/core';
-import { TaskCardComponent } from '../../task-card/task-card.component';
-import { Task } from '../../shared/task.model';
-import { Column } from '../../shared/column.model';
+import { TaskCardComponent } from '../../../../../shared/task-card/task-card.component';
+import { Task } from '../../../../../api/task.model';
+import { Column } from '../../../../../api/column.model';
 import {
   CdkDrag,
   CdkDragDrop,
   CdkDropList,
   DragDropModule,
 } from '@angular/cdk/drag-drop';
-import { TaskService } from '../../shared/task.service';
+import { TaskService } from '../../../../../api/task.service';
 import {
   ActivatedRoute,
   ParamMap,
   Router,
   RouterModule,
 } from '@angular/router';
-import { StateService } from '../../shared/state.service';
+import { StateService } from '../../../../../core/services/state.service';
 import { Subject, takeUntil } from 'rxjs';
-import { EditableHeaderComponent } from '../../editable-header/editable-header.component';
-import { ColumnService } from '../../shared/column.service';
+import { EditableHeaderComponent } from '../../../../../shared/editable-header/editable-header.component';
+import { ColumnService } from '../../../../../api/column.service';
 import { animate, style, transition, trigger } from '@angular/animations';
 
 @Component({
@@ -76,7 +76,7 @@ export class ColumnComponent implements OnInit, OnDestroy {
     this.unsubscribe$.complete();
   }
 
-  onDrop(event: CdkDragDrop<{ tasks: Task[], columnId: string }>) {
+  onDrop(event: CdkDragDrop<{ tasks: Task[]; columnId: string }>) {
     this.dropEmitter.emit(event);
   }
 
@@ -100,8 +100,8 @@ export class ColumnComponent implements OnInit, OnDestroy {
     this.router.navigate(['/tasks/add'], {
       queryParams: {
         boardId: this.boardId,
-        columnId: this.column.id
-      }
+        columnId: this.column.id,
+      },
     });
   }
 
@@ -110,8 +110,8 @@ export class ColumnComponent implements OnInit, OnDestroy {
     this.router.navigate([`/tasks/${task?.id}/edit`], {
       queryParams: {
         boardId: this.boardId,
-        columnId: this.column.id
-      }
+        columnId: this.column.id,
+      },
     });
   }
 

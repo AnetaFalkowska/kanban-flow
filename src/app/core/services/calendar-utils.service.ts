@@ -1,17 +1,15 @@
 import { inject, Injectable } from '@angular/core';
-import { TaskService } from './task.service';
+import { TaskService } from '../../api/task.service';
 import { StateService } from './state.service';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { Task } from './task.model';
-import { TaskViewComponent } from '../task-view/task-view.component';
+import { Task } from '../../api/task.model';
+import { TaskViewComponent } from '../../shared/task-view/task-view.component';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class CalendarUtilsService {
-
-
   constructor(
     private readonly dialog: MatDialog,
     private readonly router: Router,
@@ -19,8 +17,7 @@ export class CalendarUtilsService {
     private readonly stateService: StateService
   ) {}
 
-
-openDialog(task: Task, boardId: string, columnId: string): void {
+  openDialog(task: Task, boardId: string, columnId: string): void {
     const dialogRef = this.dialog.open(TaskViewComponent, {
       data: { task, source: 'calendar' },
     });
@@ -36,7 +33,6 @@ openDialog(task: Task, boardId: string, columnId: string): void {
     });
   }
 
-
   handleEventClick(info: any) {
     const { boardId, columnId } = info.event.extendedProps;
     const taskId = info.event.id;
@@ -50,28 +46,28 @@ openDialog(task: Task, boardId: string, columnId: string): void {
     });
   }
 
-  getPriorityColor(completed:boolean, priority: "high" | "medium" | "low" | null , taskDate: string): string {
-
+  getPriorityColor(
+    completed: boolean,
+    priority: 'high' | 'medium' | 'low' | null,
+    taskDate: string
+  ): string {
     if (completed) {
       return 'gray';
-  }
+    }
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     const taskDateFormatted = new Date(taskDate);
 
-
-
     if (taskDateFormatted < today) {
-        return '#B63D2E';
+      return '#B63D2E';
     }
 
     const priorityColors = {
-        high: '#8E1B5C',
-        medium: '#D97706',
-        low: '#2A6F97'
+      high: '#8E1B5C',
+      medium: '#D97706',
+      low: '#2A6F97',
     } as const;
 
-    return priorityColors[priority || "low"]
-    
+    return priorityColors[priority || 'low'];
   }
 }

@@ -1,6 +1,6 @@
-import { Board } from './app/shared/board.model';
-import { Column } from './app/shared/column.model';
-import { Task } from './app/shared/task.model';
+import { Board } from './app/api/board.model';
+import { Column } from './app/api/column.model';
+import { Task } from './app/api/task.model';
 
 export const BoardData = [
   {

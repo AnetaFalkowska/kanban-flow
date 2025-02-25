@@ -7,9 +7,9 @@ import { CalendarOptions } from '@fullcalendar/core';
 import multiMonthPlugin from '@fullcalendar/multimonth';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
-import { TaskService } from '../shared/task.service';
+import { TaskService } from '../../api/task.service';
 import { Subject, takeUntil } from 'rxjs';
-import { CalendarUtilsService } from '../shared/calendar-utils.service';
+import { CalendarUtilsService } from '../../core/services/calendar-utils.service';
 
 @Component({
   selector: 'app-calendar',
@@ -91,8 +91,11 @@ export class CalendarComponent implements OnInit, OnDestroy {
       })),
       eventStartEditable: true,
       droppable: true,
-      eventDidMount: ({ el, event }: { el: HTMLElement, event: any }) => {
-        el.setAttribute('title', `Task: ${event.title} | Board: ${event.extendedProps.boardName}`);
+      eventDidMount: ({ el, event }: { el: HTMLElement; event: any }) => {
+        el.setAttribute(
+          'title',
+          `Task: ${event.title} | Board: ${event.extendedProps.boardName}`
+        );
       },
       eventAllow: this.handleEventAllow.bind(this),
       eventDrop: this.handleEventDrop.bind(this),

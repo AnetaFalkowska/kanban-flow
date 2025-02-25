@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { Board } from '../../shared/board.model';
+import { Board } from '../../../api/board.model';
 import { RouterModule } from '@angular/router';
 
 @Component({

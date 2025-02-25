@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { TaskService } from '../shared/task.service';
+import { TaskService } from '../../api/task.service';
 import {
   FormBuilder,
   FormControl,
@@ -13,8 +13,8 @@ import {
   Router,
   RouterModule,
 } from '@angular/router';
-import { Task } from '../shared/task.model';
-import { StateService } from '../shared/state.service';
+import { Task } from '../../api/task.model';
+import { StateService } from '../../core/services/state.service';
 import { combineLatest, of, Subject, switchMap, takeUntil } from 'rxjs';
 
 @Component({
@@ -124,7 +124,6 @@ export class TaskFormComponent implements OnInit {
     priority: 'low' | 'medium' | 'high' | undefined,
     duedate: string
   ) {
-
     this.taskService
       .updateTask(this.boardId!, this.columnId!, this.taskId!, {
         name,
