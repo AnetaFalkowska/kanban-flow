@@ -15,11 +15,9 @@ export class CalendarUtilsService {
     high: '#1E3A5F',
     medium: '#4682B4',
     low: '#ADD8E6',
-    completed: 'gray',
+    completed: '#b0b0b0',
     overdue: '#B63D2E',
   } as const;
-
-
 
   constructor(
     private readonly dialog: MatDialog,
@@ -59,10 +57,11 @@ export class CalendarUtilsService {
 
   getPriorityColor(
     completed: boolean,
-    priority: 'high' | 'medium' | 'low' | null,
-    taskDate: string
+    priority: 'high' | 'medium' | 'low' | null | undefined,
+    taskDate: string | undefined
   ): string {
-    if (completed) return this.priorityColors.completed;;
+    if (completed) return this.priorityColors.completed;
+    if (!taskDate) return this.priorityColors.low;
     
     const today = new Date().setHours(0, 0, 0, 0);
     const taskDateFormatted = new Date(taskDate).setHours(0, 0, 0, 0);

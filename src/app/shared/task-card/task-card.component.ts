@@ -59,8 +59,7 @@ export class TaskCardComponent {
         switchMap((params) => {
           const boardId = params?.boardId;
           if (boardId && this.columnId && this.task) {
-            console.log(!this.task.completed);
-            return this.taskService.updateTask(
+              return this.taskService.updateTask(
               boardId,
               this.columnId,
               this.task.id,

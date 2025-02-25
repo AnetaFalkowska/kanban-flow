@@ -2,7 +2,7 @@
   <div class="calendar-body">
     <full-calendar #calendar [options]="calendarOptions">      
       <ng-template #eventContent let-arg>
-        @if (calendarComponent?.getApi()?.view?.type === 'dayGridMonth') {<div class="task-wrapper">
+        @if (calendarComponent.getApi().view.type === 'dayGridMonth') {<div class="task-wrapper">
           <div class="task-name">{{ arg.event.title }}</div>
           <div class="board-name">({{ arg.event.extendedProps.boardName }})</div>
         </div>} @else {<div class="task-name-multi-month">{{ arg.event.title }}</div>}

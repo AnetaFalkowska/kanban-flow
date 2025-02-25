@@ -28,6 +28,8 @@ import { Subject, takeUntil } from 'rxjs';
 import { EditableHeaderComponent } from '../../../../../shared/editable-header/editable-header.component';
 import { ColumnService } from '../../../../../api/column.service';
 import { animate, style, transition, trigger } from '@angular/animations';
+import { NgStyle } from '@angular/common';
+import { CalendarUtilsService } from '../../../../../core/services/calendar-utils.service';
 
 @Component({
   selector: 'app-column',
@@ -36,6 +38,7 @@ import { animate, style, transition, trigger } from '@angular/animations';
     DragDropModule,
     RouterModule,
     EditableHeaderComponent,
+    NgStyle
   ],
   templateUrl: './column.component.html',
   styleUrl: './column.component.scss',
@@ -59,6 +62,7 @@ export class ColumnComponent implements OnInit, OnDestroy {
     private readonly taskService: TaskService,
     private readonly stateService: StateService,
     private readonly columnService: ColumnService,
+    private readonly calendarUtilsService: CalendarUtilsService,
     private readonly route: ActivatedRoute,
     private readonly router: Router
   ) {}
@@ -132,5 +136,12 @@ export class ColumnComponent implements OnInit, OnDestroy {
           error: (err) => console.error('Failed to delete task:', err),
         });
     }
+  }
+
+  getPriorityColor(completed: boolean,
+    priority: 'high' | 'medium' | 'low' | null | undefined,
+    duedate: String | undefined) {
+
+      return this.calendarUtilsService.getPriorityColor(completed, priority, duedate as string | undefined)
   }
 }

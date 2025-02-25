@@ -1,6 +1,5 @@
 import { Component, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterOutlet } from '@angular/router';
 import { FullCalendarModule } from '@fullcalendar/angular';
 import { FullCalendarComponent } from '@fullcalendar/angular';
 import { CalendarOptions } from '@fullcalendar/core';
@@ -13,7 +12,7 @@ import { CalendarUtilsService } from '../../core/services/calendar-utils.service
 
 @Component({
   selector: 'app-task-list',
-  imports: [CommonModule, RouterOutlet, FullCalendarModule],
+  imports: [CommonModule, FullCalendarModule],
   templateUrl: './task-list.component.html',
   styleUrl: './task-list.component.scss',
 })

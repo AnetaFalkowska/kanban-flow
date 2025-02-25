@@ -14,8 +14,8 @@
     (cdkDropListDropped)="onDrop($event)"
   >
     @for (task of column.tasks; track task.id) {
-    <div class="my-item" cdkDrag [cdkDragData]="task.name" [@taskAnim]="taskAnimationState">
-      <app-task-card class="my-item" [task]="task" [columnId]="column.id" (editClick)="editTask(task)" (deleteClick)="onDeleteTask(task)"> </app-task-card>
+    <div class="task-card-wrapper" cdkDrag [cdkDragData]="task.name" [@taskAnim]="taskAnimationState" [ngStyle]="{'--priority-color': getPriorityColor(task.completed, task.priority, task.duedate)}">
+      <app-task-card [task]="task" [columnId]="column.id" (editClick)="editTask(task)" (deleteClick)="onDeleteTask(task)"> </app-task-card>
       <!-- <div class="my-item" cdkDrag [cdkDragData]="task.name">
         {{ task.name }}        
       </div> -->
