@@ -1,9 +1,11 @@
 import {
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   EventEmitter,
   inject,
   Input,
+  OnInit,
   Output,
 } from '@angular/core';
 import { Task } from '../../api/task.model';
@@ -22,7 +24,7 @@ import { of, switchMap } from 'rxjs';
   styleUrl: './task-card.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TaskCardComponent {
+export class TaskCardComponent implements OnInit {
   @Input() task?: Task;
   @Input() columnId?: string;
 
@@ -33,8 +35,13 @@ export class TaskCardComponent {
 
   constructor(
     private readonly stateService: StateService,
-    private readonly taskService: TaskService
+    private readonly taskService: TaskService,
+    private readonly cdr: ChangeDetectorRef
   ) {}
+
+  ngOnInit() {
+    console.log("from task card onInit: ", this.task?.completed)
+  }
 
   openDialog() {
     const dialogRef = this.dialog.open(TaskViewComponent, {
@@ -49,10 +56,13 @@ export class TaskCardComponent {
     });
   }
 
-  toggleCompleted() {
-    if (!this.task) return;
 
-    this.task.completed = !this.task.completed;
+  toggleCompleted() {
+
+    if (!this.task) return;
+    console.log( "this is from toggle method before changing completed: ", this.task.completed)
+
+    // this.task.completed = !this.task.completed;
 
     this.stateService.currentTaskCtx
       .pipe(
@@ -63,7 +73,7 @@ export class TaskCardComponent {
               boardId,
               this.columnId,
               this.task.id,
-              { completed: this.task.completed }
+              { completed: !this.task.completed }
             );
           }
           return of(null);
@@ -72,7 +82,9 @@ export class TaskCardComponent {
       .subscribe({
         next: (updatedTask) => {
           if (updatedTask) {
-            this.task = updatedTask;
+            this.task = {...updatedTask};
+            console.log("this is from toggle method subscribe next: ", this.task.completed)
+            this.cdr.markForCheck()
           }
         },
         error: (err) => console.error('Error updating task:', err),

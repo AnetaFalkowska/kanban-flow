@@ -141,7 +141,6 @@ export class ColumnComponent implements OnInit, OnDestroy {
   getPriorityColor(completed: boolean,
     priority: 'high' | 'medium' | 'low' | null | undefined,
     duedate: String | undefined) {
-
       return this.calendarUtilsService.getPriorityColor(completed, priority, duedate as string | undefined)
   }
 }
