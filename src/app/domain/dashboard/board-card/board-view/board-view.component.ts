@@ -47,7 +47,7 @@ import { animate, style, transition, trigger } from '@angular/animations';
     ]),
   ],
 })
-export class BoardViewComponent implements AfterViewInit, OnDestroy {
+export class BoardViewComponent implements OnInit, AfterViewInit, OnDestroy {
   public board?: Board;
   private unsubscribe$ = new Subject<void>();
 
@@ -59,6 +59,41 @@ export class BoardViewComponent implements AfterViewInit, OnDestroy {
     private readonly route: ActivatedRoute,
     private readonly router: Router
   ) {}
+
+  ngOnInit(): void {
+    this.stateService.taskCompletionChanges.subscribe(
+      ({ boardId, columnId, taskId, completed }) => {
+        if (!this.board || this.board.id !== boardId) return;
+
+        const columnIndex = this.board.columns.findIndex(
+          (col) => col.id === columnId
+        );
+        if (columnIndex === -1) return;
+
+        const taskIndex = this.board.columns[columnIndex].tasks.findIndex(
+          (t) => t.id === taskId
+        );
+        if (taskIndex === -1) return;
+
+        const updatedTask = {
+          ...this.board.columns[columnIndex].tasks[taskIndex],
+          completed,
+        };
+        const updatedColumn = {
+          ...this.board.columns[columnIndex],
+          tasks: this.board.columns[columnIndex].tasks.map((task, i) =>
+            i === taskIndex ? updatedTask : task
+          ),
+        };
+        this.board = {
+          ...this.board,
+          columns: this.board.columns.map((col, i) =>
+            i === columnIndex ? updatedColumn : col
+          ),
+        };
+      }
+    );
+  }
 
   ngAfterViewInit(): void {
     this.route.paramMap
@@ -87,7 +122,7 @@ export class BoardViewComponent implements AfterViewInit, OnDestroy {
     const targetColumnId = event.container.data.columnId;
     const newIndex = event.currentIndex;
     const task = event.previousContainer.data.tasks[event.previousIndex];
-    console.log("from drop: ", task)
+    console.log('from drop: ', task);
 
     if (event.previousContainer === event.container) {
       moveItemInArray(
@@ -120,23 +155,15 @@ export class BoardViewComponent implements AfterViewInit, OnDestroy {
         taskId,
         targetColumnId,
         newIndex
-      ).pipe(switchMap(()=> this.taskService.getTask(this.board!.id, targetColumnId, taskId)))
+      )
+      .pipe(
+        switchMap(() =>
+          this.taskService.getTask(this.board!.id, targetColumnId, taskId)
+        )
+      )
       .subscribe({
-        next: (updatedTask) => this.updateTaskInUI(updatedTask, targetColumnId),
         error: (err) => console.error('Failed to update board name:', err),
       });
-  }
-
-  updateTaskInUI(updatedTask: Task, columnId: string) {
-    if (!this.board) return;
-  
-    const column = this.board.columns.find(col => col.id === columnId);
-    if (!column) return;
-  
-    const taskIndex = column.tasks.findIndex(t => t.id === updatedTask.id);
-    if (taskIndex !== -1) {
-      column.tasks[taskIndex] = { ...updatedTask };
-    }
   }
 
   onUpdateBoardName(boardName: string) {

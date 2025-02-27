@@ -1,7 +1,6 @@
 <div mat-button (click)="openDialog()" class="task-card" [class.checked]="task?.completed">    
     <p class="task-text">{{ task?.name }}</p>
   <div (click)="$event.stopPropagation()" class="task-item-actions">
-    <p>{{task?.completed}}</p>
     <div
       class="check-box"
       (click)="toggleCompleted()"

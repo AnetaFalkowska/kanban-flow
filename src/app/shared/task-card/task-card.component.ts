@@ -22,11 +22,12 @@ import { of, switchMap } from 'rxjs';
   imports: [MatButtonModule, MatDialogModule],
   templateUrl: './task-card.component.html',
   styleUrl: './task-card.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  // changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TaskCardComponent implements OnInit {
   @Input() task?: Task;
   @Input() columnId?: string;
+  @Input() boardId?: string;
 
   @Output() deleteClick: EventEmitter<void> = new EventEmitter<any>();
 
@@ -35,12 +36,12 @@ export class TaskCardComponent implements OnInit {
 
   constructor(
     private readonly stateService: StateService,
-    private readonly taskService: TaskService,
-    private readonly cdr: ChangeDetectorRef
-  ) {}
+    private readonly taskService: TaskService
+  ) // private readonly cdr: ChangeDetectorRef
+  {}
 
   ngOnInit() {
-    console.log("from task card onInit: ", this.task?.completed)
+    console.log('from task card onInit: ', this.task?.completed);
   }
 
   openDialog() {
@@ -56,37 +57,25 @@ export class TaskCardComponent implements OnInit {
     });
   }
 
-
   toggleCompleted() {
 
-    if (!this.task) return;
-    console.log( "this is from toggle method before changing completed: ", this.task.completed)
+    if (!this.task || !this.columnId || !this.boardId) return;
 
-    // this.task.completed = !this.task.completed;
+    const newCompletedStatus = !this.task.completed;
 
-    this.stateService.currentTaskCtx
-      .pipe(
-        switchMap((params) => {
-          const boardId = params?.boardId;
-          if (boardId && this.columnId && this.task) {
-              return this.taskService.updateTask(
-              boardId,
-              this.columnId,
-              this.task.id,
-              { completed: !this.task.completed }
-            );
-          }
-          return of(null);
-        })
-      )
-      .subscribe({
-        next: (updatedTask) => {
-          if (updatedTask) {
-            this.task = {...updatedTask};
-            console.log("this is from toggle method subscribe next: ", this.task.completed)
-            this.cdr.markForCheck()
-          }
-        },
+    this.stateService.notifyTaskCompletionChange(
+      this.boardId,
+      this.columnId!,
+      this.task.id,
+      newCompletedStatus
+    );
+
+    this.taskService
+      .updateTask(this.boardId, this.columnId, this.task.id, {
+        completed: newCompletedStatus,
+      })
+      .subscribe({    
+        next: (updatedTask) => this.task = {...updatedTask},    
         error: (err) => console.error('Error updating task:', err),
       });
   }

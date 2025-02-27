@@ -9,6 +9,7 @@ import {
   flatMap,
   map,
   Observable,
+  tap,
   throwError,
 } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
@@ -18,10 +19,14 @@ import { HttpClient } from '@angular/common/http';
 })
 export class TaskService {
   private readonly API_URL = 'http://localhost:3000/api/boards';
-  private tasksSubject$ = new BehaviorSubject<
+  private tasksForCalendarSubject$ = new BehaviorSubject<
     { task: Task; boardName: string; boardId: string; columnId: string }[]
   >([]);
-  tasksForCalendar$ = this.tasksSubject$.asObservable();
+  tasksForCalendar$ = this.tasksForCalendarSubject$.asObservable();
+  private incompleteTasksSubject$ = new BehaviorSubject<
+  { task: Task; boardName: string; boardId: string; columnId: string }[]
+>([]);
+incompleteTasks$ = this.incompleteTasksSubject$.asObservable();
 
   handleError(action: string) {
     return (error: any) => {
@@ -63,13 +68,13 @@ export class TaskService {
         catchError(this.handleError('getting tasks for calendar'))
       )
       .subscribe({
-        next: (tasks) => this.tasksSubject$.next(tasks),
+        next: (tasks) => this.tasksForCalendarSubject$.next(tasks),
         error: (error) => console.error('Failed to load calendar tasks', error),
       });
   }
 
-  getIncompleteTasksForList(): Observable<{ task: Task; boardName: string; boardId: string; columnId: string }[]> {
-    return this.http.get<Board[]>(this.API_URL).pipe(
+  getIncompleteTasks(): void {
+    this.http.get<Board[]>(this.API_URL).pipe(
       map((boards) => {
         if (!boards) return [];
         let incompleteTasks: {
@@ -95,7 +100,10 @@ export class TaskService {
         return incompleteTasks;
       }),
       catchError(this.handleError('getting incomplete tasks for list'))
-    );
+    ).subscribe({
+      next: (tasks) => this.incompleteTasksSubject$.next(tasks),
+      error: (error) => console.error('Failed to load calendar tasks', error),
+    });
   }
 
   getTask(boardId: string, columnId: string, taskId: string): Observable<Task> {
@@ -135,7 +143,9 @@ export class TaskService {
       .delete<void>(
         `${this.API_URL}/${boardId}/columns/${columnId}/tasks/${taskId}`
       )
-      .pipe(catchError(this.handleError('deleting task')));
+      .pipe(    
+        tap(() => this.getIncompleteTasks()),
+        catchError(this.handleError('deleting task')));
   }
 
   moveTask(

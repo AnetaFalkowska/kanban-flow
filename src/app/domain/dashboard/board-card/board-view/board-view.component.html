@@ -16,6 +16,7 @@
       @for (column of board?.columns; track column.id ) {
       <app-column
         [column]="column"
+        [boardId]="board?.id"
         (dropEmitter)="drop($event)"
         (deleteClick)="onDeleteColumn(column.id)"
       ></app-column>

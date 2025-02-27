@@ -50,30 +50,22 @@ import { CalendarUtilsService } from '../../../../../core/services/calendar-util
     ]),
   ],
 })
-export class ColumnComponent implements OnInit, OnDestroy {
+export class ColumnComponent implements  OnDestroy {
   @Input() column: Column = { id: '', name: '', tasks: [] };
+  @Input() boardId?: string;
   @Output() dropEmitter = new EventEmitter<CdkDragDrop<any>>();
   @Output() deleteClick = new EventEmitter<void>();
-  boardId: string | null = null;
   unsubscribe$ = new Subject<void>();
   taskAnimationState: 'add' | 'remove' | null = null;
 
   constructor(
     private readonly taskService: TaskService,
-    private readonly stateService: StateService,
     private readonly columnService: ColumnService,
     private readonly calendarUtilsService: CalendarUtilsService,
     private readonly route: ActivatedRoute,
     private readonly router: Router
   ) {}
 
-  ngOnInit(): void {
-    this.route.paramMap
-      .pipe(takeUntil(this.unsubscribe$))
-      .subscribe((paramMap: ParamMap) => {
-        this.boardId = paramMap.get('id');
-      });
-  }
 
   ngOnDestroy(): void {
     this.unsubscribe$.next();
@@ -100,27 +92,28 @@ export class ColumnComponent implements OnInit, OnDestroy {
   }
 
   addTask() {
+    if (this.boardId && this.column.id) {
     // this.stateService.setTaskContext(this.boardId, this.column.id);
     this.router.navigate(['/tasks/add'], {
       queryParams: {
         boardId: this.boardId,
         columnId: this.column.id,
       },
-    });
+    })};
   }
 
   editTask(task: Task) {
-    // this.stateService.setTaskContext(this.boardId, this.column.id);
+    if (this.boardId && task.id && this.column.id) {
     this.router.navigate([`/tasks/${task?.id}/edit`], {
       queryParams: {
         boardId: this.boardId,
         columnId: this.column.id,
       },
-    });
+    });}
   }
 
   onDeleteTask(task: Task) {
-    if (this.boardId) {
+    if (this.boardId && task.id) {
       this.taskAnimationState = 'remove';
       this.taskService
         .deleteTask(this.boardId, this.column.id, task.id)

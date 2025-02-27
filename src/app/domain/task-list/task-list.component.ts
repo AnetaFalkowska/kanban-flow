@@ -9,10 +9,12 @@ import momentPlugin from '@fullcalendar/moment';
 import { TaskService } from '../../api/task.service';
 import { Subject, takeUntil } from 'rxjs';
 import { CalendarUtilsService } from '../../core/services/calendar-utils.service';
+import { TaskCardComponent } from '../../shared/task-card/task-card.component';
+
 
 @Component({
   selector: 'app-task-list',
-  imports: [CommonModule, FullCalendarModule],
+  imports: [CommonModule, FullCalendarModule, TaskCardComponent],
   templateUrl: './task-list.component.html',
   styleUrl: './task-list.component.scss',
 })
@@ -43,7 +45,7 @@ export class TaskListComponent implements OnInit, OnDestroy {
       this.calendarUtilsService.handleEventClick(info);
     },
   };
-  unsubscribe$ = new Subject<void>();
+  private unsubscribe$ = new Subject<void>();
 
   constructor(
     private readonly taskService: TaskService,
@@ -53,9 +55,10 @@ export class TaskListComponent implements OnInit, OnDestroy {
   @ViewChild('calendar') calendarComponent!: FullCalendarComponent;
 
   ngOnInit(): void {
-    this.taskService
-      .getIncompleteTasksForList()
-      .subscribe((taskList) => this.updateCalendarOptions(taskList));
+    this.taskService.getIncompleteTasks();
+    this.taskService.incompleteTasks$.pipe(takeUntil(this.unsubscribe$)).subscribe((taskList) =>
+      this.updateCalendarOptions(taskList)
+    );
   }
 
   ngOnDestroy(): void {
@@ -96,5 +99,18 @@ export class TaskListComponent implements OnInit, OnDestroy {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     return new Date(taskDate) < today;
+  }
+
+  onDeleteTask(props: any) {
+    console.log(props);
+    const { boardId, columnId, task } = props;
+    const taskId = task.id;
+
+    if (boardId && columnId && taskId) {
+      this.taskService
+        .deleteTask(boardId, columnId, taskId)
+        .pipe(takeUntil(this.unsubscribe$))
+        .subscribe();
+    }
   }
 }

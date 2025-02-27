@@ -1,7 +1,7 @@
 <div class="task-list-wrapper">
   <div class="task-list-body">
     <full-calendar #calendar [options]="calendarOptions">
-      <ng-template #eventContent let-arg>
+      <!-- <ng-template #eventContent let-arg>
         <div
           class="task-wrapper"
           [class.overdue]="isTaskOverdue(arg.event.extendedProps.task.duedate)"
@@ -11,7 +11,10 @@
             ({{ arg.event.extendedProps.boardName }})
           </div>
         </div>
-      </ng-template>
+      </ng-template> -->
+      <ng-template #eventContent let-arg>
+    <app-task-card (deleteClick)="onDeleteTask(arg.event.extendedProps)" [task]="arg.event.extendedProps.task" [boardId]="arg.event.extendedProps.boardId" [columnId]="arg.event.extendedProps.columnId"></app-task-card>
+  </ng-template>
     </full-calendar>
   </div>
 </div>
@@ -19,6 +22,4 @@
 <!-- 
   (click)="toggleCompleted(); $event.stopPropagation()" -->
 
-<!-- <ng-template #eventContent let-arg>
-    <app-task-card [task]="arg.event.extendedProps.task" [columnId]="arg.event.extendedProps.columnId"></app-task-card>
-  </ng-template> -->
+

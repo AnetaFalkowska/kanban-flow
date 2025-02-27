@@ -1,18 +1,32 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { Board } from '../../api/board.model';
+import { BoardService } from '../../api/board.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class StateService {
 
+
+  constructor(private boardService:BoardService) {}
+
   private currentTaskContext$ = new BehaviorSubject<{boardId:string | null, columnId:string | null} | null>(null)
+
+  private taskCompletionChanges$ = new Subject<{boardId:string, columnId:string, taskId:string, completed:boolean}>()
+
+  get taskCompletionChanges() {
+    return this.taskCompletionChanges$.asObservable()
+  }
 
   get currentTaskCtx() {
     return this.currentTaskContext$.asObservable()
   }
 
-  constructor() { }
+  notifyTaskCompletionChange(boardId:string, columnId:string, taskId:string, completed:boolean) {
+    this.taskCompletionChanges$.next({boardId, columnId, taskId, completed})
+  } 
+
 
   setTaskContext(boardId:string | null, columnId:string | null): void {
     this.currentTaskContext$.next({boardId, columnId})
