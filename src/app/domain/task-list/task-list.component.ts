@@ -12,19 +12,18 @@ import { CalendarUtilsService } from '../../core/services/calendar-utils.service
 import { TaskCardComponent } from '../../shared/task-card/task-card.component';
 import { animate, style, transition, trigger } from '@angular/animations';
 
-
 @Component({
   selector: 'app-task-list',
   imports: [CommonModule, FullCalendarModule, TaskCardComponent],
   templateUrl: './task-list.component.html',
   styleUrl: './task-list.component.scss',
   animations: [
-      trigger('taskAnim', [
-        transition('remove => void', [
-          animate(150, style({ opacity: 0, height: 0 })),
-        ]),
+    trigger('taskAnim', [
+      transition('remove => void', [
+        animate(150, style({ opacity: 0, height: 0 })),
       ]),
-    ],
+    ]),
+  ],
 })
 export class TaskListComponent implements OnInit, OnDestroy {
   calendarOptions: CalendarOptions = {
@@ -46,12 +45,10 @@ export class TaskListComponent implements OnInit, OnDestroy {
       },
     },
     height: 'auto',
+    displayEventTime: false,
     listDayFormat: { weekday: 'long' },
     listDaySideFormat: 'MMMM D, YYYY',
     events: [],
-    // eventClick: (info: any) => {
-    //   this.calendarUtilsService.handleEventClick(info);
-    // },
   };
   private unsubscribe$ = new Subject<void>();
 
@@ -64,9 +61,9 @@ export class TaskListComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.taskService.getIncompleteTasks();
-    this.taskService.incompleteTasks$.pipe(takeUntil(this.unsubscribe$)).subscribe((taskList) =>
-      this.updateCalendarOptions(taskList)
-    );
+    this.taskService.incompleteTasks$
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe((taskList) => this.updateCalendarOptions(taskList));
   }
 
   ngOnDestroy(): void {
@@ -100,6 +97,16 @@ export class TaskListComponent implements OnInit, OnDestroy {
           task.duedate
         ),
       })),
+      eventDidMount: function (info) {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const duedate = info.event.start && new Date(info.event.start)
+        const isCompleted = info.event.extendedProps['task'].completed
+    
+        if (duedate && duedate < today) {
+          info.el.style.backgroundColor = '#f6ceb2';
+        }
+      },
     };
   }
 
@@ -110,7 +117,6 @@ export class TaskListComponent implements OnInit, OnDestroy {
   }
 
   onDeleteTask(props: any) {
-    
     const { boardId, columnId, task } = props;
     const taskId = task.id;
 
@@ -122,8 +128,13 @@ export class TaskListComponent implements OnInit, OnDestroy {
     }
   }
 
-  toggleCompleted(event:any, completed:boolean) {
-    const {task} = event.extendedProps;
-    this.calendarUtilsService.updatePriorityColor(event, completed, task.priority, task.duedate)
+  toggleCompleted(event: any, completed: boolean) {
+    const { task } = event.extendedProps;
+    this.calendarUtilsService.updatePriorityColor(
+      event,
+      completed,
+      task.priority,
+      task.duedate
+    );
   }
 }

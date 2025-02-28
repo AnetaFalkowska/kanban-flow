@@ -11,18 +11,16 @@ import { TaskDialogService } from './task-dialog.service';
   providedIn: 'root',
 })
 export class CalendarUtilsService {
-
+  
   private readonly priorityColors = {
-    high: '#6A1B9A',
-    medium: '#AB47BC',
-    low: '#E1BEE7',
+    high: '#246c09',
+    medium: '#619c26',
+    low: '#aac865',
     completed: '#b0b0b0',
-    overdue: '#B63D2E',
+    overdue: '#e3622b',
   } as const;
 
-  constructor(
-    private readonly taskService: TaskService,
-  ) {}
+  constructor(private readonly taskService: TaskService) {}
 
   getPriorityColor(
     completed: boolean,
@@ -31,11 +29,11 @@ export class CalendarUtilsService {
   ): string {
     if (completed) return this.priorityColors.completed;
     if (!taskDate) return this.priorityColors.low;
-    
+
     const today = new Date().setHours(0, 0, 0, 0);
     const taskDateFormatted = new Date(taskDate).setHours(0, 0, 0, 0);
 
-    if (taskDateFormatted < today) return this.priorityColors.overdue
+    if (taskDateFormatted < today) return this.priorityColors.overdue;
 
     return this.priorityColors[priority || 'low'];
   }
@@ -45,21 +43,26 @@ export class CalendarUtilsService {
     priority: 'high' | 'medium' | 'low' | null,
     taskDate: string
   ): string {
-    if (completed) return 'lightgray'
+    if (completed) return 'lightgray';
     const today = new Date().setHours(0, 0, 0, 0);
     const taskDateFormatted = new Date(taskDate).setHours(0, 0, 0, 0);
-    return taskDateFormatted >= today && (priority === 'low' || !priority) ? 'darkslategray' : 'white'
+    return taskDateFormatted >= today && (priority === 'low' || !priority)
+      ? 'darkslategray'
+      : 'white';
   }
 
-  updatePriorityColor(event:any, completed:boolean, priority:'high' | 'medium' | 'low' | null, newDueDate:string) {
-    const updatedPriorityColor = this.getPriorityColor(completed, priority, newDueDate);
-        event.setProp(
-          'backgroundColor',
-          updatedPriorityColor
-        );
-        event.setProp(
-          'borderColor',
-          updatedPriorityColor
-        );
+  updatePriorityColor(
+    event: any,
+    completed: boolean,
+    priority: 'high' | 'medium' | 'low' | null,
+    newDueDate: string
+  ) {
+    const updatedPriorityColor = this.getPriorityColor(
+      completed,
+      priority,
+      newDueDate
+    );
+    event.setProp('backgroundColor', updatedPriorityColor);
+    event.setProp('borderColor', updatedPriorityColor);
   }
 }
