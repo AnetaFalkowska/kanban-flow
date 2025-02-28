@@ -58,3 +58,18 @@
 .notifications-tab .tab-tile::before {
   background: linear-gradient(45deg, #b8c4f5, #f7a1ab);
 }
+
+.badge {
+  position:absolute;
+  top:-5px;
+  right:-8px;
+  background-color: #d54b21;
+  color:white;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  font-size: 13px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

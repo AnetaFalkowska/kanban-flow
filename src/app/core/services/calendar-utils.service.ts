@@ -14,10 +14,14 @@ export class CalendarUtilsService {
   
   private readonly priorityColors = {
     high: '#246c09',
+    // high: '#122D52',
     medium: '#619c26',
+    // medium: '#2C4F7C',
     low: '#aac865',
+    // low: '#4A6FA5',
     completed: '#b0b0b0',
     overdue: '#e3622b',
+    // overdue: 'crimson',
   } as const;
 
   constructor(private readonly taskService: TaskService) {}

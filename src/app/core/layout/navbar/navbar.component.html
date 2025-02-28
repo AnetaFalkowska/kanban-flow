@@ -16,8 +16,9 @@
   </a>
   
   <a routerLink="notifications" class="notifications-tab tab">
-    <div class="tab-tile">
+    <div class="tab-tile notifications-tile">
       <span class="material-icons-outlined">notifications</span>
+      @if (overdueCount > 0) {<span class="badge">{{ overdueCount }}</span>}
     </div>
   </a>
 </div>
