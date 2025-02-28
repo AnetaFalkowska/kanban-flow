@@ -110,7 +110,7 @@ export class TaskListComponent implements OnInit, OnDestroy {
   }
 
   onDeleteTask(props: any) {
-    console.log(props);
+    
     const { boardId, columnId, task } = props;
     const taskId = task.id;
 
@@ -120,5 +120,10 @@ export class TaskListComponent implements OnInit, OnDestroy {
         .pipe(takeUntil(this.unsubscribe$))
         .subscribe();
     }
+  }
+
+  toggleCompleted(event:any, completed:boolean) {
+    const {task} = event.extendedProps;
+    this.calendarUtilsService.updatePriorityColor(event, completed, task.priority, task.duedate)
   }
 }

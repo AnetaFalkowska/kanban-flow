@@ -31,6 +31,7 @@ export class TaskCardComponent {
   @Input() source?: string;
 
   @Output() deleteClick: EventEmitter<void> = new EventEmitter<any>();
+  @Output() toggleClick: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   constructor(
     private readonly stateService: StateService,
@@ -48,7 +49,7 @@ export class TaskCardComponent {
 
   toggleCompleted() {
 
-    if (!this.task || !this.columnId || !this.boardId) return;
+    if (!this.task?.id || !this.columnId || !this.boardId) return;
 
     const newCompletedStatus = !this.task.completed;
 
@@ -64,7 +65,7 @@ export class TaskCardComponent {
         completed: newCompletedStatus,
       })
       .subscribe({    
-        next: (updatedTask) => this.task = {...updatedTask},    
+        next: (updatedTask) => {this.task = {...updatedTask}; this.toggleClick.emit(updatedTask.completed)},    
         error: (err) => console.error('Error updating task:', err),
       });
   }

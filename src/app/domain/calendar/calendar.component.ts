@@ -9,6 +9,7 @@ import interactionPlugin from '@fullcalendar/interaction';
 import { TaskService } from '../../api/task.service';
 import { Subject, takeUntil } from 'rxjs';
 import { CalendarUtilsService } from '../../core/services/calendar-utils.service';
+import { TaskDialogService } from '../../core/services/task-dialog.service';
 
 @Component({
   selector: 'app-calendar',
@@ -22,7 +23,8 @@ export class CalendarComponent implements OnInit, OnDestroy {
 
   constructor(
     private readonly taskService: TaskService,
-    private readonly calendarUtilsService: CalendarUtilsService
+    private readonly calendarUtilsService: CalendarUtilsService,
+    private readonly taskDialogService: TaskDialogService,
   ) {}
 
   @ViewChild('calendar') calendarComponent!: FullCalendarComponent;
@@ -96,8 +98,21 @@ export class CalendarComponent implements OnInit, OnDestroy {
       },
       eventAllow: this.handleEventAllow.bind(this),
       eventDrop: this.handleEventDrop.bind(this),
-      eventClick: this.calendarUtilsService.handleEventClick.bind(this.calendarUtilsService)
+      eventClick: this.handleEventClick.bind(this)
     };
+  }
+
+  handleEventClick(info: any) {
+    const { boardId, columnId } = info.event.extendedProps;
+    const taskId = info.event.id;
+
+    if (!boardId || !columnId || !taskId) return;
+
+    this.taskService.getTask(boardId, columnId, taskId).subscribe({
+      next: (task) => {
+        this.taskDialogService.openTaskDialog(task, boardId, columnId, 'calendar');
+      },
+    });
   }
 
   handleEventAllow(info: any): boolean {
@@ -114,14 +129,9 @@ export class CalendarComponent implements OnInit, OnDestroy {
     const newDueDate = info.event.startStr;
 
     if (!boardId || !columnId || !taskId || !newDueDate) return;
-    info.event.setProp(
-      'backgroundColor',
-      this.calendarUtilsService.getPriorityColor(completed, priority, newDueDate)
-    );
-    info.event.setProp(
-      'borderColor',
-      this.calendarUtilsService.getPriorityColor(completed, priority, newDueDate)
-    );
+
+    this.calendarUtilsService.updatePriorityColor(info.event, completed, priority, newDueDate)
+    
     this.taskService
       .updateTask(boardId, columnId, taskId, {
         duedate: newDueDate,

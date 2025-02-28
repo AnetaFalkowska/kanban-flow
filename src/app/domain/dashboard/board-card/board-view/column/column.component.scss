@@ -45,13 +45,15 @@ width: 420px;
 .task-card-wrapper::before {
   content:'';
   position:absolute;
-  top:50%;
-  transform: translateY(-50%);
-  left:5px;
-  height: 70%;
-  width: 4px;
+  // top:50%;
+  // transform: translateY(-50%);
+  top:0;
+  left:0;
+  height: 100%;
+  width: 8px;
   background: var(--priority-color, transparent);
-  border-radius: 2px;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
 }
 
 .cdk-drag-preview {

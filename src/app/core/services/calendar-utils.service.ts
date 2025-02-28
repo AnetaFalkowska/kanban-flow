@@ -21,23 +21,8 @@ export class CalendarUtilsService {
   } as const;
 
   constructor(
-    private readonly taskDialogService: TaskDialogService,
     private readonly taskService: TaskService,
   ) {}
-
-
-  handleEventClick(info: any) {
-    const { boardId, columnId } = info.event.extendedProps;
-    const taskId = info.event.id;
-
-    if (!boardId || !columnId || !taskId) return;
-
-    this.taskService.getTask(boardId, columnId, taskId).subscribe({
-      next: (task) => {
-        this.taskDialogService.openTaskDialog(task, boardId, columnId, 'calendar');
-      },
-    });
-  }
 
   getPriorityColor(
     completed: boolean,
@@ -64,5 +49,17 @@ export class CalendarUtilsService {
     const today = new Date().setHours(0, 0, 0, 0);
     const taskDateFormatted = new Date(taskDate).setHours(0, 0, 0, 0);
     return taskDateFormatted >= today && (priority === 'low' || !priority) ? 'darkslategray' : 'white'
+  }
+
+  updatePriorityColor(event:any, completed:boolean, priority:'high' | 'medium' | 'low' | null, newDueDate:string) {
+    const updatedPriorityColor = this.getPriorityColor(completed, priority, newDueDate);
+        event.setProp(
+          'backgroundColor',
+          updatedPriorityColor
+        );
+        event.setProp(
+          'borderColor',
+          updatedPriorityColor
+        );
   }
 }
