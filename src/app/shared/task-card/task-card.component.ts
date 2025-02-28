@@ -16,45 +16,34 @@ import { Router } from '@angular/router';
 import { StateService } from '../../core/services/state.service';
 import { TaskService } from '../../api/task.service';
 import { of, switchMap } from 'rxjs';
+import { TaskDialogService } from '../../core/services/task-dialog.service';
 
 @Component({
   selector: 'app-task-card',
   imports: [MatButtonModule, MatDialogModule],
   templateUrl: './task-card.component.html',
   styleUrl: './task-card.component.scss',
-  // changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TaskCardComponent implements OnInit {
+export class TaskCardComponent {
   @Input() task?: Task;
   @Input() columnId?: string;
   @Input() boardId?: string;
+  @Input() source?: string;
 
   @Output() deleteClick: EventEmitter<void> = new EventEmitter<any>();
 
-  readonly dialog = inject(MatDialog);
-  private router = inject(Router);
-
   constructor(
     private readonly stateService: StateService,
+    private readonly taskDialogService: TaskDialogService,
     private readonly taskService: TaskService
-  ) // private readonly cdr: ChangeDetectorRef
+  ) 
   {}
 
-  ngOnInit() {
-    console.log('from task card onInit: ', this.task?.completed);
-  }
 
   openDialog() {
-    const dialogRef = this.dialog.open(TaskViewComponent, {
-      data: { task: this.task },
-    });
-
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result === true && this.columnId) {
-        this.stateService.setColumnId(this.columnId);
-        this.router.navigate([`/tasks/${this.task?.id}/edit`]);
-      }
-    });
+    if (this.task) {
+      this.taskDialogService.openTaskDialog(this.task, this.boardId, this.columnId, this.source);
+    }
   }
 
   toggleCompleted() {

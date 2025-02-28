@@ -10,6 +10,7 @@ import { TaskService } from '../../api/task.service';
 import { Subject, takeUntil } from 'rxjs';
 import { CalendarUtilsService } from '../../core/services/calendar-utils.service';
 import { TaskCardComponent } from '../../shared/task-card/task-card.component';
+import { animate, style, transition, trigger } from '@angular/animations';
 
 
 @Component({
@@ -17,6 +18,13 @@ import { TaskCardComponent } from '../../shared/task-card/task-card.component';
   imports: [CommonModule, FullCalendarModule, TaskCardComponent],
   templateUrl: './task-list.component.html',
   styleUrl: './task-list.component.scss',
+  animations: [
+      trigger('taskAnim', [
+        transition('remove => void', [
+          animate(150, style({ opacity: 0, height: 0 })),
+        ]),
+      ]),
+    ],
 })
 export class TaskListComponent implements OnInit, OnDestroy {
   calendarOptions: CalendarOptions = {
@@ -41,9 +49,9 @@ export class TaskListComponent implements OnInit, OnDestroy {
     listDayFormat: { weekday: 'long' },
     listDaySideFormat: 'MMMM D, YYYY',
     events: [],
-    eventClick: (info: any) => {
-      this.calendarUtilsService.handleEventClick(info);
-    },
+    // eventClick: (info: any) => {
+    //   this.calendarUtilsService.handleEventClick(info);
+    // },
   };
   private unsubscribe$ = new Subject<void>();
 

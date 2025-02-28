@@ -5,6 +5,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { Task } from '../../api/task.model';
 import { TaskViewComponent } from '../../shared/task-view/task-view.component';
+import { TaskDialogService } from './task-dialog.service';
 
 @Injectable({
   providedIn: 'root',
@@ -12,35 +13,18 @@ import { TaskViewComponent } from '../../shared/task-view/task-view.component';
 export class CalendarUtilsService {
 
   private readonly priorityColors = {
-    high: '#1E3A5F',
-    medium: '#4682B4',
-    low: '#ADD8E6',
+    high: '#6A1B9A',
+    medium: '#AB47BC',
+    low: '#E1BEE7',
     completed: '#b0b0b0',
     overdue: '#B63D2E',
   } as const;
 
   constructor(
-    private readonly dialog: MatDialog,
-    private readonly router: Router,
+    private readonly taskDialogService: TaskDialogService,
     private readonly taskService: TaskService,
-    private readonly stateService: StateService
   ) {}
 
-  openDialog(task: Task, boardId: string, columnId: string): void {
-    const dialogRef = this.dialog.open(TaskViewComponent, {
-      data: { task, source: 'calendar' },
-    });
-
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result === true) {
-        this.stateService.setTaskContext(boardId, columnId);
-        this.router.navigate([`/tasks/${task.id}/edit`]);
-      }
-      if (result === 'openBoard') {
-        this.router.navigate([`/${boardId}`]);
-      }
-    });
-  }
 
   handleEventClick(info: any) {
     const { boardId, columnId } = info.event.extendedProps;
@@ -50,7 +34,7 @@ export class CalendarUtilsService {
 
     this.taskService.getTask(boardId, columnId, taskId).subscribe({
       next: (task) => {
-        this.openDialog(task, boardId, columnId);
+        this.taskDialogService.openTaskDialog(task, boardId, columnId, 'calendar');
       },
     });
   }

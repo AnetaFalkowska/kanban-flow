@@ -1,5 +1,6 @@
 
 ::ng-deep .mat-mdc-dialog-surface {
+  min-width: 400px;
     background: rgba(white, 0.85) !important;
   backdrop-filter: blur(10px);
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
@@ -16,7 +17,14 @@
 
   .bottom-section {
     width: 100%;
-    display: flex;
-  
+    display: flex;  
     justify-content: space-between;
+  }
+
+  .task-name {
+    margin-bottom: 20px;
+  }
+
+  .go-to-board {
+    margin-right: 8px;
   }
