@@ -2,15 +2,16 @@ import { Injectable } from '@angular/core';
 import { Board } from './board.model';
 import { BoardData } from '../../db-data';
 import { Column } from './column.model';
-import { catchError, map, Observable, switchMap, throwError } from 'rxjs';
+import { catchError, map, Observable, switchMap, tap, throwError } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+import { TaskService } from './task.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class BoardService {
   private readonly API_URL = 'http://localhost:3000/api/boards';
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private taskService:TaskService) {}
 
   handleError(action: string) {
     return (error: any) => {
@@ -48,6 +49,8 @@ export class BoardService {
   deleteBoard(id: string): Observable<void> {
     return this.http
       .delete<void>(`${this.API_URL}/${id}`)
-      .pipe(catchError(this.handleError('deleting board')));
+      .pipe(
+        tap(() => {this.taskService.countOverdueTasks()}),
+        catchError(this.handleError('deleting board')));
   }
 }

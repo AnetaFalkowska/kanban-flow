@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RouterModule, RouterOutlet } from '@angular/router';
 import { NavbarComponent } from "./core/layout/navbar/navbar.component";
 import { animate, style, transition, trigger } from '@angular/animations';

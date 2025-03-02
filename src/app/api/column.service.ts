@@ -1,14 +1,15 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { catchError, Observable, throwError } from 'rxjs';
+import { catchError, Observable, tap, throwError } from 'rxjs';
 import { Column } from './column.model';
+import { TaskService } from './task.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ColumnService {
   private readonly API_URL = 'http://localhost:3000/api/boards';
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private taskService:TaskService) {}
 
   handleError(action: string) {
     return (error: any) => {
@@ -42,6 +43,8 @@ export class ColumnService {
   deleteColumn(boardId: string, columnId: string): Observable<void> {
     return this.http
       .delete<void>(`${this.API_URL}/${boardId}/columns/${columnId}`)
-      .pipe(catchError(this.handleError('deleting column')));
+      .pipe(
+        tap(() => {this.taskService.countOverdueTasks()}),
+        catchError(this.handleError('deleting column')));
   }
 }

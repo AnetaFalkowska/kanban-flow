@@ -9,6 +9,8 @@ import {
   flatMap,
   map,
   Observable,
+  Subject,
+  take,
   tap,
   throwError,
 } from 'rxjs';
@@ -24,9 +26,11 @@ export class TaskService {
   >([]);
   tasksForCalendar$ = this.tasksForCalendarSubject$.asObservable();
   private incompleteTasksSubject$ = new BehaviorSubject<
-  { task: Task; boardName: string; boardId: string; columnId: string }[]
->([]);
-incompleteTasks$ = this.incompleteTasksSubject$.asObservable();
+    { task: Task; boardName: string; boardId: string; columnId: string }[]
+  >([]);
+  incompleteTasks$ = this.incompleteTasksSubject$.asObservable();
+  private overdueTasksCountSubject$ = new Subject<number>();
+  overdueTasksCount$ = this.overdueTasksCountSubject$.asObservable();
 
   handleError(action: string) {
     return (error: any) => {
@@ -74,35 +78,85 @@ incompleteTasks$ = this.incompleteTasksSubject$.asObservable();
   }
 
   getIncompleteTasks(): void {
-    this.http.get<Board[]>(this.API_URL).pipe(
-      map((boards) => {
-        if (!boards) return [];
-        let incompleteTasks: {
-          task: Task;
-          boardName: string;
-          boardId: string;
-          columnId: string;
-        }[] = [];
-        boards.forEach((board) => {
-          board.columns.forEach((column) => {
-            column.tasks.forEach((task) => {
-              if (!task.completed && task.duedate) {
-                incompleteTasks.push({
-                  task,
-                  boardName: board.name,
-                  boardId: board.id,
-                  columnId: column.id,
-                });
-              }
+    this.http
+      .get<Board[]>(this.API_URL)
+      .pipe(
+        map((boards) => {
+          if (!boards) return [];
+          let incompleteTasks: {
+            task: Task;
+            boardName: string;
+            boardId: string;
+            columnId: string;
+          }[] = [];
+          boards.forEach((board) => {
+            board.columns.forEach((column) => {
+              column.tasks.forEach((task) => {
+                if (!task.completed && task.duedate) {
+                  incompleteTasks.push({
+                    task,
+                    boardName: board.name,
+                    boardId: board.id,
+                    columnId: column.id,
+                  });
+                }
+              });
             });
           });
-        });
-        return incompleteTasks;
-      }),
-      catchError(this.handleError('getting incomplete tasks for list'))
-    ).subscribe({
-      next: (tasks) => this.incompleteTasksSubject$.next(tasks),
-      error: (error) => console.error('Failed to load calendar tasks', error),
+          return incompleteTasks;
+        }),
+        catchError(this.handleError('getting incomplete tasks for list'))
+      )
+      .subscribe({
+        next: (tasks) => this.incompleteTasksSubject$.next(tasks),
+        error: (error) => console.error('Failed to load calendar tasks', error),
+      });
+  }
+
+  countOverdueTasks(): void {
+    this.http
+      .get<Board[]>(this.API_URL)
+      .pipe(
+        map((boards) => {
+          if (!boards) return 0;
+          let overdueTasksCount: number = 0;
+          boards.forEach((board) => {
+            board.columns.forEach((column) => {
+              column.tasks.forEach((task) => {
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+
+                if (
+                  !task.completed &&
+                  task.duedate &&
+                  new Date(task.duedate.toString()) < today
+                ) {
+                  overdueTasksCount++;
+                }
+              });
+            });
+          });
+          return overdueTasksCount;
+        }),
+        catchError(this.handleError('getting incomplete tasks for list'))
+      )
+      .subscribe({
+        next: (overdueTasksCount) =>
+          this.overdueTasksCountSubject$.next(overdueTasksCount),
+        error: (error) => console.error('Failed to count overdue tasks', error),
+      });
+  }
+
+  recalculateOverdueTasks(): void {
+    this.incompleteTasks$.pipe(take(1)).subscribe((tasks) => {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+  
+      const overdueTasksCount = tasks.filter((t) => {
+        return t.task.duedate && new Date(t.task.duedate.toString()) < today;
+      }).length;
+  
+      this.overdueTasksCountSubject$.next(overdueTasksCount);
     });
   }
 
@@ -131,7 +185,9 @@ incompleteTasks$ = this.incompleteTasksSubject$.asObservable();
         `${this.API_URL}/${boardId}/columns/${columnId}/tasks/${taskId}`,
         updatedFields
       )
-      .pipe(catchError(this.handleError('updating task')));
+      .pipe(
+        tap(() => {this.countOverdueTasks()}),
+        catchError(this.handleError('updating task')));
   }
 
   deleteTask(
@@ -139,13 +195,14 @@ incompleteTasks$ = this.incompleteTasksSubject$.asObservable();
     columnId: string,
     taskId: string
   ): Observable<void> {
-    return this.http
+        return this.http
       .delete<void>(
         `${this.API_URL}/${boardId}/columns/${columnId}/tasks/${taskId}`
       )
-      .pipe(    
-        tap(() => this.getIncompleteTasks()),
-        catchError(this.handleError('deleting task')));
+      .pipe(
+        tap(() => {this.getIncompleteTasks(); this.recalculateOverdueTasks()}),
+        catchError(this.handleError('deleting task'))
+      );
   }
 
   moveTask(

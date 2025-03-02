@@ -10,20 +10,14 @@ import { TaskService } from '../../api/task.service';
 import { Subject, takeUntil } from 'rxjs';
 import { CalendarUtilsService } from '../../core/services/calendar-utils.service';
 import { TaskCardComponent } from '../../shared/task-card/task-card.component';
-import { animate, style, transition, trigger } from '@angular/animations';
+
 
 @Component({
   selector: 'app-task-list',
   imports: [CommonModule, FullCalendarModule, TaskCardComponent],
   templateUrl: './task-list.component.html',
   styleUrl: './task-list.component.scss',
-  animations: [
-    trigger('taskAnim', [
-      transition('remove => void', [
-        animate(150, style({ opacity: 0, height: 0 })),
-      ]),
-    ]),
-  ],
+  
 })
 export class TaskListComponent implements OnInit, OnDestroy {
   calendarOptions: CalendarOptions = {
@@ -51,6 +45,7 @@ export class TaskListComponent implements OnInit, OnDestroy {
     events: [],
   };
   private unsubscribe$ = new Subject<void>();
+  taskAnimationState: 'remove' | null = null;
 
   constructor(
     private readonly taskService: TaskService,
@@ -121,6 +116,7 @@ export class TaskListComponent implements OnInit, OnDestroy {
     const taskId = task.id;
 
     if (boardId && columnId && taskId) {
+
       this.taskService
         .deleteTask(boardId, columnId, taskId)
         .pipe(takeUntil(this.unsubscribe$))
