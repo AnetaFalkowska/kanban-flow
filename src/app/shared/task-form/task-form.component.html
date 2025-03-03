@@ -28,18 +28,28 @@
           }
         </select>
       </div>
-      <div class="form-field" >
+      <div class="form-field">
         <label idFor="duedate">Due Date</label>
-        <input type="date" id="duedate" formControlName="duedate"/>
+        <input type="date" id="duedate" formControlName="duedate" />
         @if (taskForm.get('duedate')?.hasError('dateInPast')) {
         <p class="error">The due date cannot be in the past.</p>
         }
       </div>
     </div>
+    @if (task) {
+    <div class="form-field checkbox">
+      <label idFor="completed">Completed</label>
+      <input type="checkbox" id="completed" formControlName="completed" />
+    </div>
+    }
 
     <div class="btns-container">
-      @if (task) {<button (click)="deleteTask()" type="button" class="btn">Delete</button>}
-      <button [routerLink]="['/', boardId]" type="button" class="btn">Cancel</button>
+      @if (task) {<button (click)="deleteTask()" type="button" class="btn">
+        Delete</button
+      >}
+      <button [routerLink]="['/', boardId]" type="button" class="btn">
+        Cancel
+      </button>
 
       <button [disabled]="!isFormValid()" type="submit" class="btn align-end">
         Save

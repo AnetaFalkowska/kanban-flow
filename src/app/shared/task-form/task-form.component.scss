@@ -14,3 +14,18 @@
 
   justify-content: space-between;
 }
+
+.checkbox {
+  display: flex;
+  align-items:baseline;
+  gap: 10px;
+  
+
+  & input {
+    display: flex;
+
+height: 16px;
+width: 16px;
+  }
+}
+

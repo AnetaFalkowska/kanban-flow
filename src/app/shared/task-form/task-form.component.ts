@@ -78,6 +78,7 @@ export class TaskFormComponent implements OnInit {
       description: [''],
       priority: [''],
       duedate: ['', this.dateNotInPast],
+      completed: [false],
     });
   }
 
@@ -97,6 +98,7 @@ export class TaskFormComponent implements OnInit {
         description: this.task.description ?? '',
         priority: this.task.priority ?? '',
         duedate: this.task.duedate ?? '',
+        completed: this.task.completed ?? false,
       });
     }
   }
@@ -111,10 +113,10 @@ export class TaskFormComponent implements OnInit {
       return;
     }
 
-    const { name, description, priority, duedate } = form.value;
+    const { name, description, priority, duedate, completed } = form.value;
 
     this.taskId
-      ? this.updateTask(name, description, priority, duedate)
+      ? this.updateTask(name, description, priority, duedate, completed)
       : this.createTask(name, description, priority, duedate);
   }
 
@@ -122,7 +124,8 @@ export class TaskFormComponent implements OnInit {
     name: string,
     description: string,
     priority: 'low' | 'medium' | 'high' | undefined,
-    duedate: string
+    duedate: string,
+    completed: boolean
   ) {
     this.taskService
       .updateTask(this.boardId!, this.columnId!, this.taskId!, {
@@ -130,6 +133,7 @@ export class TaskFormComponent implements OnInit {
         description,
         priority,
         duedate,
+        completed
       })
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
