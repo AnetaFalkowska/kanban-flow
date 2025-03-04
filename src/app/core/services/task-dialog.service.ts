@@ -24,7 +24,8 @@ export class TaskDialogService {
         this.stateService.setTaskContext(boardId, columnId);
         this.router.navigate([`/tasks/${task.id}/edit`]);
       }
-      if (result === 'openBoard') {
+      if (result === 'openBoard' && boardId && columnId) {
+        this.stateService.setHighlightedTask(columnId, task.id)
         this.router.navigate([`/${boardId}`]);
       }
     });

@@ -1,5 +1,7 @@
 import {
   AfterViewInit,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   EventEmitter,
   Input,
@@ -24,11 +26,11 @@ import {
   RouterModule,
 } from '@angular/router';
 import { StateService } from '../../../../../core/services/state.service';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject, take, takeUntil } from 'rxjs';
 import { EditableHeaderComponent } from '../../../../../shared/editable-header/editable-header.component';
 import { ColumnService } from '../../../../../api/column.service';
 import { animate, style, transition, trigger } from '@angular/animations';
-import { NgStyle } from '@angular/common';
+import { NgClass, NgStyle } from '@angular/common';
 import { CalendarUtilsService } from '../../../../../core/services/calendar-utils.service';
 
 @Component({
@@ -38,7 +40,8 @@ import { CalendarUtilsService } from '../../../../../core/services/calendar-util
     DragDropModule,
     RouterModule,
     EditableHeaderComponent,
-    NgStyle
+    NgStyle,
+    NgClass,
   ],
   templateUrl: './column.component.html',
   styleUrl: './column.component.scss',
@@ -50,9 +53,11 @@ import { CalendarUtilsService } from '../../../../../core/services/calendar-util
     ]),
   ],
 })
-export class ColumnComponent implements  OnDestroy {
+export class ColumnComponent implements OnDestroy, OnInit {
   @Input() column: Column = { id: '', name: '', tasks: [] };
   @Input() boardId?: string;
+  highlightedTaskId: string | null = null;
+  highlightedColumnId: string | null = null;
   @Output() dropEmitter = new EventEmitter<CdkDragDrop<any>>();
   @Output() deleteClick = new EventEmitter<void>();
   unsubscribe$ = new Subject<void>();
@@ -62,14 +67,34 @@ export class ColumnComponent implements  OnDestroy {
     private readonly taskService: TaskService,
     private readonly columnService: ColumnService,
     private readonly calendarUtilsService: CalendarUtilsService,
+    private readonly stateService: StateService,
     private readonly route: ActivatedRoute,
-    private readonly router: Router
+    private readonly router: Router,
+    private cdr: ChangeDetectorRef
   ) {}
 
+  ngOnInit(): void {
+    this.stateService.highlightedTask
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe((highlight) => {
+        if (highlight) {
+          this.highlightedTaskId = highlight.taskId;
+          this.highlightedColumnId = highlight.columnId;
+        }
+      });
+  }
 
   ngOnDestroy(): void {
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
+  }
+
+  highlightTask(taskId: string, columnId: string) {
+    return {
+      highlighted:
+        taskId === this.highlightedTaskId &&
+        columnId === this.highlightedColumnId,
+    };
   }
 
   onDrop(event: CdkDragDrop<{ tasks: Task[]; columnId: string }>) {
@@ -93,23 +118,25 @@ export class ColumnComponent implements  OnDestroy {
 
   addTask() {
     if (this.boardId && this.column.id) {
-    // this.stateService.setTaskContext(this.boardId, this.column.id);
-    this.router.navigate(['/tasks/add'], {
-      queryParams: {
-        boardId: this.boardId,
-        columnId: this.column.id,
-      },
-    })};
+      // this.stateService.setTaskContext(this.boardId, this.column.id);
+      this.router.navigate(['/tasks/add'], {
+        queryParams: {
+          boardId: this.boardId,
+          columnId: this.column.id,
+        },
+      });
+    }
   }
 
   editTask(task: Task) {
     if (this.boardId && task.id && this.column.id) {
-    this.router.navigate([`/tasks/${task?.id}/edit`], {
-      queryParams: {
-        boardId: this.boardId,
-        columnId: this.column.id,
-      },
-    });}
+      this.router.navigate([`/tasks/${task?.id}/edit`], {
+        queryParams: {
+          boardId: this.boardId,
+          columnId: this.column.id,
+        },
+      });
+    }
   }
 
   onDeleteTask(task: Task) {
@@ -131,9 +158,15 @@ export class ColumnComponent implements  OnDestroy {
     }
   }
 
-  getPriorityColor(completed: boolean,
+  getPriorityColor(
+    completed: boolean,
     priority: 'high' | 'medium' | 'low' | null | undefined,
-    duedate: String | undefined) {
-      return this.calendarUtilsService.getPriorityColor(completed, priority, duedate as string | undefined)
+    duedate: String | undefined
+  ) {
+    return this.calendarUtilsService.getPriorityColor(
+      completed,
+      priority,
+      duedate as string | undefined
+    );
   }
 }

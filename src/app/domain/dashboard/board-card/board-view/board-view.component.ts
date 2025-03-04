@@ -1,4 +1,10 @@
-import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectorRef,
+  Component,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
 import { ColumnComponent } from './column/column.component';
 import { Board } from '../../../../api/board.model';
 import { BoardService } from '../../../../api/board.service';
@@ -8,7 +14,7 @@ import {
   Router,
   RouterModule,
 } from '@angular/router';
-import { map, of, Subject, switchMap, takeUntil } from 'rxjs';
+import { map, of, Subject, switchMap, take, takeUntil } from 'rxjs';
 import {
   CdkDragDrop,
   moveItemInArray,
@@ -57,10 +63,13 @@ export class BoardViewComponent implements OnInit, AfterViewInit, OnDestroy {
     private readonly taskService: TaskService,
     private readonly stateService: StateService,
     private readonly route: ActivatedRoute,
-    private readonly router: Router
+    private readonly router: Router,
+
   ) {}
 
   ngOnInit(): void {
+
+
     this.stateService.taskCompletionChanges.subscribe(
       ({ boardId, columnId, taskId, completed }) => {
         if (!this.board || this.board.id !== boardId) return;
@@ -96,6 +105,7 @@ export class BoardViewComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
+
     this.route.paramMap
       .pipe(
         map((paramMap: ParamMap) => paramMap.get('id')),

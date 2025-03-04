@@ -1,29 +1,49 @@
 <div class="column-wrapper">
   <app-editable-header
-      [name]="column!.name"
-      (saveEdit)="onUpdateColumnName($event)"
-      (deleteClick)="deleteColumn()"
-    />
+    [name]="column!.name"
+    (saveEdit)="onUpdateColumnName($event)"
+    (deleteClick)="deleteColumn()"
+  />
 
   <div
     cdkDropList
-    
     #emptyList="cdkDropList"
     [cdkDropListData]="{ tasks: column.tasks, columnId: column.id }"
     class="tasks-container"
     (cdkDropListDropped)="onDrop($event)"
   >
     @for (task of column.tasks; track task.id) {
-    <div class="task-card-wrapper" cdkDrag [cdkDragData]="task.name" [@taskAnim]="taskAnimationState" [ngStyle]="{'--priority-color': getPriorityColor(task.completed, task.priority, task.duedate)}">
-      <app-task-card [task]="task" [columnId]="column.id" [boardId]="boardId" (editClick)="editTask(task)" (deleteClick)="onDeleteTask(task)"> </app-task-card>
+    <div
+      class="task-card-wrapper"
+      cdkDrag
+      [cdkDragData]="task.name"
+      [@taskAnim]="taskAnimationState"
+      [ngStyle]="{
+        '--priority-color': getPriorityColor(
+          task.completed,
+          task.priority,
+          task.duedate
+        )
+      }"
+      [ngClass]="highlightTask(task.id, column.id)"
+    >
+      <app-task-card
+        [task]="task"
+        [columnId]="column.id"
+        [boardId]="boardId"
+        (editClick)="editTask(task)"
+        (deleteClick)="onDeleteTask(task)"
+      >
+      </app-task-card>
     </div>
     }
   </div>
 
   <div class="btns-container btns-centered">
-    <button (click)="addTask()" class="btn btn-small"><i class="material-icons-outlined">add</i>Add</button>
+    <button (click)="addTask()" class="btn btn-small">
+      <i class="material-icons-outlined">add</i>Add
+    </button>
   </div>
 </div>
-
 
 <!-- <div class="task-placeholder" *cdkDragPlaceholder></div> -->

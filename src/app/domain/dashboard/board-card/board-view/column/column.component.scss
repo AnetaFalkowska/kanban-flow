@@ -77,6 +77,21 @@ width: 420px;
 //   background-color: aqua;
 }
 
+.highlighted {
+  animation: fadeOut 1s forwards;
+  animation-delay: 2s;
+  background: rgba(white, 0.95);
+}
+
+@keyframes fadeOut {
+  from {
+    background: rgba(white, 0.95);
+  }
+  to {
+    background: rgba(white, 0.35);
+  }
+}
+
 app-editable-header {
   font-size: 30px;
   font-weight: 500; 

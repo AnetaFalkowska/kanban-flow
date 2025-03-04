@@ -1,26 +1,24 @@
-
-  <div class="board-container" @boardViewAnim>
-    <div class="board-header">
-      @if (board) {<app-editable-header
-        [boardStyle]="true"
-        [name]="board.name"
-        (saveEdit)="onUpdateBoardName($event)"
-        (deleteClick)="onDeleteBoard()"
-      />}
-      <button (click)="onAddColumn()" class="btn add-column-btn">
-        <i class="material-icons-outlined">add</i>Add Column
-      </button>
-    </div>
-
-    <div class="columns-container" cdkDropListGroup>
-      @for (column of board?.columns; track column.id ) {
-      <app-column
-        [column]="column"
-        [boardId]="board?.id"
-        (dropEmitter)="drop($event)"
-        (deleteClick)="onDeleteColumn(column.id)"
-      ></app-column>
-      }
-    </div>
+<div class="board-container" @boardViewAnim>
+  <div class="board-header">
+    @if (board) {<app-editable-header
+      [boardStyle]="true"
+      [name]="board.name"
+      (saveEdit)="onUpdateBoardName($event)"
+      (deleteClick)="onDeleteBoard()"
+    />}
+    <button (click)="onAddColumn()" class="btn add-column-btn">
+      <i class="material-icons-outlined">add</i>Add Column
+    </button>
   </div>
 
+  <div class="columns-container" cdkDropListGroup>
+    @for (column of board?.columns; track column.id ) {
+    <app-column
+      [column]="column"
+      [boardId]="board?.id"
+      (dropEmitter)="drop($event)"
+      (deleteClick)="onDeleteColumn(column.id)"
+    ></app-column>
+    }
+  </div>
+</div>
