@@ -22,7 +22,9 @@ export class TaskDialogService {
     dialogRef.afterClosed().subscribe((result) => {
       if (result === true && boardId && columnId) {
         this.stateService.setTaskContext(boardId, columnId);
-        this.router.navigate([`/tasks/${task.id}/edit`]);
+        this.router.navigate([`/tasks/${task.id}/edit`], {
+          queryParams: { source }
+        });
       }
       if (result === 'openBoard' && boardId && columnId) {
         this.stateService.setHighlightedTask(columnId, task.id)

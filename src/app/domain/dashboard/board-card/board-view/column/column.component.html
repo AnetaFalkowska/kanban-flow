@@ -26,6 +26,7 @@
         )
       }"
       [ngClass]="highlightTask(task.id, column.id)"
+      [id]="'task-' + task.id"
     >
       <app-task-card
         [task]="task"

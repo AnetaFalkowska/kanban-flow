@@ -80,6 +80,7 @@ export class ColumnComponent implements OnDestroy, OnInit {
         if (highlight) {
           this.highlightedTaskId = highlight.taskId;
           this.highlightedColumnId = highlight.columnId;
+          this.scrollToHighlightedTask();
         }
       });
   }
@@ -87,6 +88,18 @@ export class ColumnComponent implements OnDestroy, OnInit {
   ngOnDestroy(): void {
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
+  }
+
+  scrollToHighlightedTask() {
+    if (!this.highlightedTaskId) return;
+    setTimeout(() => {
+      const taskElement = document.getElementById(
+        `task-${this.highlightedTaskId}`
+      );
+      if (taskElement) {
+        taskElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }, 200);
   }
 
   highlightTask(taskId: string, columnId: string) {

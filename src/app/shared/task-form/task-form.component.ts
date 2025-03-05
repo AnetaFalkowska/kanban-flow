@@ -30,6 +30,7 @@ export class TaskFormComponent implements OnInit {
   taskId: string | null = null;
   task: Task | null = null;
   priorityOptions = [null, 'low', 'medium', 'high'];
+  source:string | null = null
   unsubscribe$ = new Subject<void>();
 
   constructor(
@@ -50,6 +51,8 @@ export class TaskFormComponent implements OnInit {
           const taskContext = this.stateService.getTaskContext();
           this.boardId = params['boardId'] ?? taskContext?.boardId ?? null;
           this.columnId = params['columnId'] ?? taskContext?.columnId ?? null;
+          this.source = params['source'] ?? null;
+          console.log(this.source)
           this.taskId = this.route.snapshot.paramMap.get('taskId');
           if (!this.boardId || !this.columnId || !this.taskId) {
             return of(null);
@@ -156,6 +159,13 @@ export class TaskFormComponent implements OnInit {
         next: () => this.router.navigate([`/${this.boardId}`]),
         error: (err) => console.error('Adding task failed', err),
       });
+  }
+
+  onCancel() {
+    console.log(this.source)
+    if (this.source) {
+      this.router.navigate([`/${this.source}`])
+    } else this.router.navigate([`/${this.boardId}`])
   }
 
   deleteTask() {
