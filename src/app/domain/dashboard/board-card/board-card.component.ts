@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { Board } from '../../../api/board.model';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-board-card',
@@ -10,4 +10,11 @@ import { RouterModule } from '@angular/router';
 })
 export class BoardCardComponent {
   @Input() board?: Board;
+
+  constructor(private readonly router:Router) {
+  }
+
+  openBoard() {
+    this.router.navigate([`/${this.board?.id}`]);
+  }
 }

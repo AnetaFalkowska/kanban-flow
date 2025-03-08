@@ -4,7 +4,7 @@
     <p class="board-card-subtitle">Tasks:</p>
     <ul class="tasks-list">
       @for (column of board?.columns; track column.id) {
-      <li [routerLink]="board?.id" >
+      <li (click)="openBoard()">
         <p class="task-category">{{ column.name }}</p>
         <span class="task-count">{{ column.tasks.length }}</span>
       </li>
