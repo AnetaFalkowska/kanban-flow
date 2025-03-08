@@ -11,7 +11,7 @@ import { environment } from "../../../src/environments/environment"
   providedIn: 'root',
 })
 export class BoardService {
-  private readonly API_URL = environment.apiUrl + '/api/boards';
+  private readonly API_URL = environment.apiUrl + 'api/boards';
   constructor(private http: HttpClient, private taskService:TaskService) {}
 
   handleError(action: string) {

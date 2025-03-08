@@ -15,12 +15,13 @@ import {
   throwError,
 } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TaskService {
-  private readonly API_URL = 'http://localhost:3000/api/boards';
+  private readonly API_URL = environment.apiUrl + 'api/boards';
   private tasksForCalendarSubject$ = new BehaviorSubject<
     { task: Task; boardName: string; boardId: string; columnId: string }[]
   >([]);

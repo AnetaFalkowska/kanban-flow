@@ -3,12 +3,13 @@ import { Injectable } from '@angular/core';
 import { catchError, Observable, tap, throwError } from 'rxjs';
 import { Column } from './column.model';
 import { TaskService } from './task.service';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ColumnService {
-  private readonly API_URL = 'http://localhost:3000/api/boards';
+  private readonly API_URL = environment.apiUrl + 'api/boards';
   constructor(private http: HttpClient, private taskService:TaskService) {}
 
   handleError(action: string) {
