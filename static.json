@@ -1,0 +1,6 @@
+{
+    "root": "dist/kanban-flow",
+    "routes": {
+      "/**": "index.html"
+    }
+  }
