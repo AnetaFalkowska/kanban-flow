@@ -9,7 +9,7 @@ import interactionPlugin from '@fullcalendar/interaction';
 import { TaskService } from '../../api/task.service';
 import { Subject, takeUntil } from 'rxjs';
 import { CalendarUtilsService } from '../../core/services/calendar-utils.service';
-import { TaskDialogService } from '../../core/services/task-dialog.service';
+import { DialogService } from '../../core/services/dialog.service';
 
 @Component({
   selector: 'app-calendar',
@@ -24,7 +24,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
   constructor(
     private readonly taskService: TaskService,
     private readonly calendarUtilsService: CalendarUtilsService,
-    private readonly taskDialogService: TaskDialogService,
+    private readonly dialogService: DialogService
   ) {}
 
   @ViewChild('calendar') calendarComponent!: FullCalendarComponent;
@@ -69,25 +69,32 @@ export class CalendarComponent implements OnInit, OnDestroy {
         },
       },
       events: calendarTasks.map(({ task, boardName, boardId, columnId }) => {
-        const priorityColor = this.calendarUtilsService.getPriorityColor(task.completed, task.priority, task.duedate);
-                
-        return {
-        title: task.name,
-        start: task.duedate,
-        id: task.id,
-        extendedProps: {
-          completed: task.completed,
-          priority: task.priority,
-          boardName,
-          boardId,
-          columnId,
-        },
-        backgroundColor: priorityColor,
-        borderColor: priorityColor,
-        textColor: this.calendarUtilsService.getTextColor(task.completed,
+        const priorityColor = this.calendarUtilsService.getPriorityColor(
+          task.completed,
           task.priority,
-          task.duedate)
-      }}),
+          task.duedate
+        );
+
+        return {
+          title: task.name,
+          start: task.duedate,
+          id: task.id,
+          extendedProps: {
+            completed: task.completed,
+            priority: task.priority,
+            boardName,
+            boardId,
+            columnId,
+          },
+          backgroundColor: priorityColor,
+          borderColor: priorityColor,
+          textColor: this.calendarUtilsService.getTextColor(
+            task.completed,
+            task.priority,
+            task.duedate
+          ),
+        };
+      }),
       eventStartEditable: true,
       droppable: true,
       eventDidMount: ({ el, event }: { el: HTMLElement; event: any }) => {
@@ -98,7 +105,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
       },
       eventAllow: this.handleEventAllow.bind(this),
       eventDrop: this.handleEventDrop.bind(this),
-      eventClick: this.handleEventClick.bind(this)
+      eventClick: this.handleEventClick.bind(this),
     };
   }
 
@@ -110,7 +117,12 @@ export class CalendarComponent implements OnInit, OnDestroy {
 
     this.taskService.getTask(boardId, columnId, taskId).subscribe({
       next: (task) => {
-        this.taskDialogService.openTaskDialog(task, boardId, columnId, 'calendar');
+        this.dialogService.openTaskDialog(
+          task,
+          boardId,
+          columnId,
+          'calendar'
+        );
       },
     });
   }
@@ -130,8 +142,13 @@ export class CalendarComponent implements OnInit, OnDestroy {
 
     if (!boardId || !columnId || !taskId || !newDueDate) return;
 
-    this.calendarUtilsService.updatePriorityColor(info.event, completed, priority, newDueDate)
-    
+    this.calendarUtilsService.updatePriorityColor(
+      info.event,
+      completed,
+      priority,
+      newDueDate
+    );
+
     this.taskService
       .updateTask(boardId, columnId, taskId, {
         duedate: newDueDate,

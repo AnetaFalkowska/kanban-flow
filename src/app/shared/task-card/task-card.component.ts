@@ -16,7 +16,7 @@ import { Router } from '@angular/router';
 import { StateService } from '../../core/services/state.service';
 import { TaskService } from '../../api/task.service';
 import { of, switchMap } from 'rxjs';
-import { TaskDialogService } from '../../core/services/task-dialog.service';
+import { DialogService } from '../../core/services/dialog.service';
 
 @Component({
   selector: 'app-task-card',
@@ -35,20 +35,22 @@ export class TaskCardComponent {
 
   constructor(
     private readonly stateService: StateService,
-    private readonly taskDialogService: TaskDialogService,
+    private readonly dialogService: DialogService,
     private readonly taskService: TaskService
-  ) 
-  {}
-
+  ) {}
 
   openDialog() {
     if (this.task) {
-      this.taskDialogService.openTaskDialog(this.task, this.boardId, this.columnId, this.source);
+      this.dialogService.openTaskDialog(
+        this.task,
+        this.boardId,
+        this.columnId,
+        this.source
+      );
     }
   }
 
   toggleCompleted() {
-
     if (!this.task?.id || !this.columnId || !this.boardId) return;
 
     const newCompletedStatus = !this.task.completed;
@@ -64,8 +66,11 @@ export class TaskCardComponent {
       .updateTask(this.boardId, this.columnId, this.task.id, {
         completed: newCompletedStatus,
       })
-      .subscribe({    
-        next: (updatedTask) => {this.task = {...updatedTask}; this.toggleClick.emit(updatedTask.completed)},    
+      .subscribe({
+        next: (updatedTask) => {
+          this.task = { ...updatedTask };
+          this.toggleClick.emit(updatedTask.completed);
+        },
         error: (err) => console.error('Error updating task:', err),
       });
   }

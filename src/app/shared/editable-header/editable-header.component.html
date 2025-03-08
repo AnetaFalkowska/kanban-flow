@@ -7,7 +7,6 @@
       class="edit-name"
       [(ngModel)]="tempName"
       #nameField="ngModel"
-      (blur)="onSaveEdit(nameField)"
       (keyup.enter)="onSaveEdit(nameField)"
       (keydown.escape)="onCancelEdit()"
       required
@@ -45,11 +44,11 @@
 
 }
 
-@if (!editMode || (editMode && boardStyle)) {
+@if (!editMode && !boardStyle) {
   <div
   (click)="openDialog(); $event.stopPropagation()"
-  class="delete-btn"
-  [ngClass]="{ 'delete-btn-column': !boardStyle, 'delete-btn-board': boardStyle }"
+  class="delete-btn delete-btn-column"
+  
 >
   <i class="material-icons">delete</i>
 </div>

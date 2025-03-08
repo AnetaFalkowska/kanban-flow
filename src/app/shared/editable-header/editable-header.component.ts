@@ -12,6 +12,7 @@ import {
 import { FormsModule, NgModel } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { DeleteConfirmationDialogComponent } from '../delete-confirmation-dialog/delete-confirmation-dialog.component';
+import { DialogService } from '../../core/services/dialog.service';
 
 @Component({
   selector: 'app-editable-header',
@@ -25,21 +26,19 @@ export class EditableHeaderComponent {
   editMode: boolean = false;
   tempName: string = '';
   showValidationErrors: boolean = false;
-  readonly dialog = inject(MatDialog);
+
+  constructor(
+    private readonly dialog: MatDialog,
+    private readonly dialogService: DialogService
+  ) {}
 
   @Output() deleteClick: EventEmitter<void> = new EventEmitter<void>();
   @Output() saveEdit: EventEmitter<string> = new EventEmitter<string>();
 
   openDialog() {
-    const dialogRef = this.dialog.open(DeleteConfirmationDialogComponent, {
-      data: { name: this.boardStyle ? 'board' : 'column' },
-    });
-
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result === true) {
-        this.deleteClick.emit();
-      }
-    });
+    this.dialogService.openConfirmationDialog('column', () =>
+      this.deleteClick.emit()
+    );
   }
 
   onEditClick() {
@@ -49,6 +48,7 @@ export class EditableHeaderComponent {
 
   onSaveEdit(nameField: NgModel) {
     if (!this.editMode) return;
+
     if (nameField.invalid) {
       this.showValidationErrors = true;
       return;
@@ -61,7 +61,7 @@ export class EditableHeaderComponent {
   }
 
   onCancelEdit() {
-    this.editMode = false;
     this.showValidationErrors = false;
+    this.editMode = false;
   }
 }

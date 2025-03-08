@@ -4,11 +4,12 @@ import { Router } from '@angular/router';
 import { StateService } from './state.service';
 import { Task } from '../../api/task.model';
 import { TaskViewComponent } from '../../shared/task-view/task-view.component';
+import { DeleteConfirmationDialogComponent } from '../../shared/delete-confirmation-dialog/delete-confirmation-dialog.component';
 
 @Injectable({
   providedIn: 'root'
 })
-export class TaskDialogService {
+export class DialogService {
 
   constructor(private readonly dialog: MatDialog,
       private readonly router: Router,
@@ -31,5 +32,19 @@ export class TaskDialogService {
         this.router.navigate([`/${boardId}`]);
       }
     });
+  }
+
+  openConfirmationDialog(name:string, onConfirm: () => void) {
+ 
+      const dialogRef = this.dialog.open(DeleteConfirmationDialogComponent, {
+        data: { name },
+      });
+  
+      dialogRef.afterClosed().subscribe((result) => {
+        if (result === true) {
+          onConfirm();
+        }
+      });
+    
   }
 }

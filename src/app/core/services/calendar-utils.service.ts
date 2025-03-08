@@ -5,13 +5,12 @@ import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { Task } from '../../api/task.model';
 import { TaskViewComponent } from '../../shared/task-view/task-view.component';
-import { TaskDialogService } from './task-dialog.service';
+import { DialogService } from './dialog.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CalendarUtilsService {
-  
   private readonly priorityColors = {
     high: '#246c09',
     // high: '#122D52',

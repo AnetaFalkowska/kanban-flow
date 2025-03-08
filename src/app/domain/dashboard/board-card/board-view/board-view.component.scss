@@ -23,9 +23,25 @@
 
 }
 
+.header-btns-container {
+  display: flex;
+  gap: 2px;
+
+}
+
 .add-column-btn {
   text-wrap: wrap;
   padding: 7px 12px;
+  border-top-right-radius: 0% ;
+  border-bottom-right-radius: 0% ;
+}
+
+.delete-board-btn {
+  padding: 7px 14px 7px 10px;
+  border-top-right-radius: 50% ;
+  border-bottom-right-radius: 50% ;
+  border-top-left-radius: 0% ;
+  border-bottom-left-radius: 0% ;
 }
 
 .columns-container {
@@ -50,4 +66,3 @@ app-editable-header {
   font-weight: 500;
   color: rgba(white, 0.85);
 }
-

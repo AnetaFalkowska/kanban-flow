@@ -4,11 +4,19 @@
       [boardStyle]="true"
       [name]="board.name"
       (saveEdit)="onUpdateBoardName($event)"
-      (deleteClick)="onDeleteBoard()"
     />}
-    <button (click)="onAddColumn()" class="btn add-column-btn">
-      <i class="material-icons-outlined">add</i>Add Column
-    </button>
+    <div class="header-btns-container">
+      <button (click)="onAddColumn()" class="btn add-column-btn">
+        <i class="material-icons-outlined">add</i>Add Column
+      </button>
+      <button
+        (click)="openDialog(); $event.stopPropagation()"
+        class="btn delete-board-btn"
+      >
+        <i class="material-icons">delete</i>
+      </button>
+      
+    </div>
   </div>
 
   <div class="columns-container" cdkDropListGroup>

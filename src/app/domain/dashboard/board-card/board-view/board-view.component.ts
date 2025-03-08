@@ -30,6 +30,9 @@ import { TaskService } from '../../../../api/task.service';
 import { Task } from '../../../../api/task.model';
 import { StateService } from '../../../../core/services/state.service';
 import { animate, style, transition, trigger } from '@angular/animations';
+import { DeleteConfirmationDialogComponent } from '../../../../shared/delete-confirmation-dialog/delete-confirmation-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogService } from '../../../../core/services/dialog.service';
 
 @Component({
   selector: 'app-board-view',
@@ -64,12 +67,10 @@ export class BoardViewComponent implements OnInit, AfterViewInit, OnDestroy {
     private readonly stateService: StateService,
     private readonly route: ActivatedRoute,
     private readonly router: Router,
-
+    private readonly dialogService: DialogService
   ) {}
 
   ngOnInit(): void {
-
-
     this.stateService.taskCompletionChanges.subscribe(
       ({ boardId, columnId, taskId, completed }) => {
         if (!this.board || this.board.id !== boardId) return;
@@ -105,7 +106,6 @@ export class BoardViewComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-
     this.route.paramMap
       .pipe(
         map((paramMap: ParamMap) => paramMap.get('id')),
@@ -225,5 +225,11 @@ export class BoardViewComponent implements OnInit, AfterViewInit, OnDestroy {
         },
         error: (err) => console.error('Failed to delete column:', err),
       });
+  }
+
+  openDialog() {
+    this.dialogService.openConfirmationDialog('board', () =>
+      this.onDeleteBoard()
+    );
   }
 }
