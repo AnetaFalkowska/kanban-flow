@@ -1,10 +1,10 @@
-<a [routerLink]="board?.id" class="board-card-link">
+<a [routerLink]="['/', board?.id]" class="board-card-link">
   <div class="board-card">
     <h3 class="board-card-title">{{board?.name}}</h3>
     <p class="board-card-subtitle">Tasks:</p>
     <ul class="tasks-list">
       @for (column of board?.columns; track column.id) {
-      <li (click)="openBoard()">
+      <li>
         <p class="task-category">{{ column.name }}</p>
         <span class="task-count">{{ column.tasks.length }}</span>
       </li>

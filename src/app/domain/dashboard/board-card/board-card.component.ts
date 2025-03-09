@@ -11,10 +11,4 @@ import { Router, RouterModule } from '@angular/router';
 export class BoardCardComponent {
   @Input() board?: Board;
 
-  constructor(private readonly router:Router) {
-  }
-
-  openBoard() {
-    this.router.navigate([`/${this.board?.id}`]);
-  }
 }
