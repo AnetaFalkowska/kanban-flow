@@ -1,11 +1,9 @@
 {
-    "root": "dist/kanban-flow/browser",
-    "routes": {
-      "/**": "index.html"
-    },
-    "headers": {
-    "/**/*.css": {
-      "Content-Type": "text/css"
-    }
-  }
+  "root": "dist/kanban-flow/browser",
+  "routes": {
+    "/**": "index.html"
+  },
+  "clean_urls": true,
+  "https_only": true
 }
+

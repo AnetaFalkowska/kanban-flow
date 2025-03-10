@@ -17,7 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/kanban-flow/browser",
+            "outputPath": "dist/kanban-flow",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": ["zone.js"],
