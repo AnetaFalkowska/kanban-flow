@@ -2,7 +2,7 @@
   <h2 class="is-bold">{{ task ? "Edit Task" : "New Task" }}</h2>
   <form [formGroup]="taskForm" novalidate (ngSubmit)="onSubmit(taskForm)">
     <div class="form-field">
-      <label idFor="borad-name">Task Name</label>
+      <label idFor="borad-name">Task Name<span class="reqiured">(required)</span></label>
       <input type="text" id="borad-name" formControlName="name" />
 
       @if (taskForm.get('name')?.touched &&

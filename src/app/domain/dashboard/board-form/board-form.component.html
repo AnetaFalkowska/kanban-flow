@@ -2,7 +2,7 @@
   <h2 class="is-bold">New Board</h2>
   <form [formGroup]="boardForm" novalidate (ngSubmit)="onSubmit()">
     <div class="form-field">
-      <label idFor="borad-name">Board Name</label>
+      <label idFor="borad-name">Board Name<span class="reqiured">(required)</span></label>
       <input type="text" id="borad-name" formControlName="boardName" />
       @if (boardForm.get('boardName')?.touched &&
       boardForm.get('boardName')?.errors) {<ng-container>
