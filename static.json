@@ -4,6 +4,11 @@
     "/**": "index.html"
   },
   "clean_urls": true,
-  "https_only": true
+  "https_only": true,
+  "headers": {
+    "/**/*.css": {
+      "Content-Type": "text/css"
+    }
+  }
 }
 
