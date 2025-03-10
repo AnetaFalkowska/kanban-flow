@@ -152,11 +152,11 @@ export class TaskService {
     this.incompleteTasks$.pipe(take(1)).subscribe((tasks) => {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
-  
+
       const overdueTasksCount = tasks.filter((t) => {
         return t.task.duedate && new Date(t.task.duedate.toString()) < today;
       }).length;
-  
+
       this.overdueTasksCountSubject$.next(overdueTasksCount);
     });
   }
@@ -173,17 +173,68 @@ export class TaskService {
     return this.http
       .post<Task>(`${this.API_URL}/${boardId}/columns/${columnId}/tasks/`, task)
       .pipe(
-        tap(() => {const today = new Date();
-          today.setHours(0, 0, 0, 0);
+        // tap(() => {
+        //   const today = new Date();
+        //   today.setHours(0, 0, 0, 0);
 
-          if (
-            !task.completed &&
-            task.duedate &&
-            new Date(task.duedate.toString()) < today
-          ) {
-            this.countOverdueTasks();
-          }}),
-        catchError(this.handleError('adding task')));
+        //   if (
+        //     !task.completed &&
+        //     task.duedate &&
+        //     new Date(task.duedate.toString()) < today
+        //   ) {
+        //     this.countOverdueTasks();
+        //   }
+        // }),
+        catchError(this.handleError('adding task'))
+      );
+  }
+
+  restoreTask(
+    boardId: string,
+    columnId: string,
+    task: Task,
+    index: number,
+    source: string
+  ): Observable<Task> {
+    return this.http
+      .post<Task>(
+        `${this.API_URL}/${boardId}/columns/${columnId}/tasks/${task.id}/restore`,
+        { task, index }
+      )
+      .pipe(
+        tap(() => {
+          const today = new Date();
+          today.setHours(0, 0, 0, 0);
+          if (source === 'board-view') {
+            if (
+              !task.completed &&
+              task.duedate &&
+              new Date(task.duedate.toString()) < today
+            ) {
+              this.countOverdueTasks();
+            }
+          }
+
+          if (source === 'task-list') {
+            if (task.duedate && new Date(task.duedate.toString()) < today) {
+              this.recalculateOverdueTasks();
+            }
+            this.getIncompleteTasks();
+          }
+
+          if (source === 'calendar') {
+            if (
+              !task.completed &&
+              task.duedate &&
+              new Date(task.duedate.toString()) < today
+            ) {
+              this.countOverdueTasks();
+            }
+            this.getTasksForCalendar();
+          }
+        }),
+        catchError(this.handleError('restoring task'))
+      );
   }
 
   updateTask(
@@ -198,8 +249,11 @@ export class TaskService {
         updatedFields
       )
       .pipe(
-        tap(() => {this.countOverdueTasks()}),
-        catchError(this.handleError('updating task')));
+        tap(() => {
+          this.countOverdueTasks();
+        }),
+        catchError(this.handleError('updating task'))
+      );
   }
 
   deleteTask(
@@ -207,12 +261,15 @@ export class TaskService {
     columnId: string,
     taskId: string
   ): Observable<void> {
-        return this.http
+    return this.http
       .delete<void>(
         `${this.API_URL}/${boardId}/columns/${columnId}/tasks/${taskId}`
       )
       .pipe(
-        tap(() => {this.getIncompleteTasks(); this.recalculateOverdueTasks()}),
+        tap(() => {
+          this.getIncompleteTasks();
+          this.recalculateOverdueTasks();
+        }),
         catchError(this.handleError('deleting task'))
       );
   }

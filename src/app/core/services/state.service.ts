@@ -27,7 +27,7 @@ export class StateService {
     taskId: string;
   } | null>(null);
 
-  private lastDeletedTask: { boardId: string, columnId: string, task: Task} | null = null;
+  private lastDeletedTask: { boardId: string, columnId: string, index:number, task: Task} | null = null;
 
   get taskCompletionChanges() {
     return this.taskCompletionChanges$.asObservable();
@@ -86,8 +86,8 @@ export class StateService {
     this.highlightedTask$.next(null);
   }
 
-  setLastDeletedTask(boardId: string, columnId: string, task: Task) {
-    this.lastDeletedTask = { boardId, columnId, task };
+  setLastDeletedTask(boardId: string, columnId: string, index:number, task: Task) {
+    this.lastDeletedTask = { boardId, columnId, index, task };
   }
 
   getLastDeletedTask() {

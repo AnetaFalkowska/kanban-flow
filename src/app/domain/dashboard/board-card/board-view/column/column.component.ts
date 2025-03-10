@@ -161,16 +161,32 @@ export class ColumnComponent implements OnDestroy, OnInit {
         .pipe(takeUntil(this.unsubscribe$))
         .subscribe({
           next: () => {
-            if (this.boardId && this.column.id)
-            {this.stateService.setLastDeletedTask(this.boardId, this.column.id, task)}
-            this.column = {
-              ...this.column,
-              tasks: this.column.tasks.filter((t) => t.id !== task.id),
-            };
+            if (this.boardId && this.column.id) {
+              const index = this.column.tasks.findIndex(
+                (t) => t.id === task.id
+              );
+              if (index !== -1) {
+                this.stateService.setLastDeletedTask(
+                  this.boardId,
+                  this.column.id,
+                  index,
+                  task
+                );
+              }
+              this.column = {
+                ...this.column,
+                tasks: this.column.tasks.filter((t) => t.id !== task.id),
+              };
+            }
             setTimeout(() => (this.taskAnimationState = null), 200);
-            this.notificationService.openSnackBar("Task deleted", "Undo", 3000, () => {
-              this.restoreTask()})
-
+            this.notificationService.openSnackBar(
+              'Task deleted',
+              'Undo',
+              3000,
+              () => {
+                this.restoreTask();
+              }
+            );
           },
           error: (err) => console.error('Failed to delete task:', err),
         });
@@ -179,16 +195,25 @@ export class ColumnComponent implements OnDestroy, OnInit {
 
   restoreTask() {
     const lastDeletedTask = this.stateService.getLastDeletedTask();
+
     if (lastDeletedTask && this.boardId) {
       this.taskService
-        .addTask(lastDeletedTask.boardId, lastDeletedTask.columnId, lastDeletedTask.task)
+        .restoreTask(
+          lastDeletedTask.boardId,
+          lastDeletedTask.columnId,
+          lastDeletedTask.task,
+          lastDeletedTask.index,          
+          "board-view"
+        )
         .pipe(takeUntil(this.unsubscribe$))
         .subscribe((restoredTask) => {
-
           if (this.column.id === lastDeletedTask.columnId) {
+            const updatedTasks = [...this.column.tasks]; 
+            updatedTasks.splice(lastDeletedTask.index, 0, restoredTask);
+          
             this.column = {
               ...this.column,
-              tasks: [...this.column.tasks, restoredTask], 
+              tasks: updatedTasks,
             };
           }
           this.stateService.clearLastDeletedTask();
