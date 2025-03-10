@@ -16,6 +16,7 @@ export class DialogService {
       private readonly stateService: StateService) { }
 
   openTaskDialog(task: Task, boardId?: string, columnId?: string, source?: string): void {
+    
     const dialogRef = this.dialog.open(TaskViewComponent, {
       data: { task, source },
     });

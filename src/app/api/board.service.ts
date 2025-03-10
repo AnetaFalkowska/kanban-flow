@@ -12,7 +12,7 @@ import { environment } from "../../../src/environments/environment"
 })
 export class BoardService {
   private readonly API_URL = environment.apiUrl + 'api/boards';
-  constructor(private http: HttpClient, private taskService:TaskService) {console.log("API_URL:", this.API_URL)}
+  constructor(private http: HttpClient, private taskService:TaskService) {}
 
   handleError(action: string) {
     return (error: any) => {

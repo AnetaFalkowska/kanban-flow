@@ -71,6 +71,7 @@ export class BoardViewComponent implements OnInit, AfterViewInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    
     this.stateService.taskCompletionChanges.subscribe(
       ({ boardId, columnId, taskId, completed }) => {
         if (!this.board || this.board.id !== boardId) return;
