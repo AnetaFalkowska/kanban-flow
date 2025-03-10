@@ -32,6 +32,7 @@ import { ColumnService } from '../../../../../api/column.service';
 import { animate, style, transition, trigger } from '@angular/animations';
 import { NgClass, NgStyle } from '@angular/common';
 import { CalendarUtilsService } from '../../../../../core/services/calendar-utils.service';
+import { NotificationService } from '../../../../../core/services/notification.service';
 
 @Component({
   selector: 'app-column',
@@ -70,7 +71,7 @@ export class ColumnComponent implements OnDestroy, OnInit {
     private readonly stateService: StateService,
     private readonly route: ActivatedRoute,
     private readonly router: Router,
-    private cdr: ChangeDetectorRef
+    private readonly notificationService: NotificationService
   ) {}
 
   ngOnInit(): void {
@@ -160,13 +161,37 @@ export class ColumnComponent implements OnDestroy, OnInit {
         .pipe(takeUntil(this.unsubscribe$))
         .subscribe({
           next: () => {
+            if (this.boardId && this.column.id)
+            {this.stateService.setLastDeletedTask(this.boardId, this.column.id, task)}
             this.column = {
               ...this.column,
               tasks: this.column.tasks.filter((t) => t.id !== task.id),
             };
             setTimeout(() => (this.taskAnimationState = null), 200);
+            this.notificationService.openSnackBar("Task deleted", "Undo", 3000, () => {
+              this.restoreTask()})
+
           },
           error: (err) => console.error('Failed to delete task:', err),
+        });
+    }
+  }
+
+  restoreTask() {
+    const lastDeletedTask = this.stateService.getLastDeletedTask();
+    if (lastDeletedTask && this.boardId) {
+      this.taskService
+        .addTask(lastDeletedTask.boardId, lastDeletedTask.columnId, lastDeletedTask.task)
+        .pipe(takeUntil(this.unsubscribe$))
+        .subscribe((restoredTask) => {
+
+          if (this.column.id === lastDeletedTask.columnId) {
+            this.column = {
+              ...this.column,
+              tasks: [...this.column.tasks, restoredTask], 
+            };
+          }
+          this.stateService.clearLastDeletedTask();
         });
     }
   }

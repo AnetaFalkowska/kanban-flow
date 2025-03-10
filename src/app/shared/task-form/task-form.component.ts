@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { TaskService } from '../../api/task.service';
 import {
   FormBuilder,
@@ -15,12 +15,12 @@ import {
 } from '@angular/router';
 import { Task } from '../../api/task.model';
 import { StateService } from '../../core/services/state.service';
-import { combineLatest, of, Subject, switchMap, takeUntil } from 'rxjs';
-import { JsonPipe } from '@angular/common';
+import { of, Subject, switchMap, takeUntil } from 'rxjs';
+
 
 @Component({
   selector: 'app-task-form',
-  imports: [ReactiveFormsModule, RouterModule, JsonPipe],
+  imports: [ReactiveFormsModule, RouterModule],
   templateUrl: './task-form.component.html',
   styleUrl: './task-form.component.scss',
 })

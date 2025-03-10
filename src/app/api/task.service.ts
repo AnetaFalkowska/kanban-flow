@@ -172,7 +172,18 @@ export class TaskService {
   addTask(boardId: string, columnId: string, task: Task): Observable<Task> {
     return this.http
       .post<Task>(`${this.API_URL}/${boardId}/columns/${columnId}/tasks/`, task)
-      .pipe(catchError(this.handleError('adding task')));
+      .pipe(
+        tap(() => {const today = new Date();
+          today.setHours(0, 0, 0, 0);
+
+          if (
+            !task.completed &&
+            task.duedate &&
+            new Date(task.duedate.toString()) < today
+          ) {
+            this.countOverdueTasks();
+          }}),
+        catchError(this.handleError('adding task')));
   }
 
   updateTask(

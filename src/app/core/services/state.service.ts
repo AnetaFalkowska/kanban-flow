@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { Board } from '../../api/board.model';
 import { BoardService } from '../../api/board.service';
+import { Task } from '../../api/task.model';
 
 @Injectable({
   providedIn: 'root',
@@ -25,6 +26,8 @@ export class StateService {
     columnId: string;
     taskId: string;
   } | null>(null);
+
+  private lastDeletedTask: { boardId: string, columnId: string, task: Task} | null = null;
 
   get taskCompletionChanges() {
     return this.taskCompletionChanges$.asObservable();
@@ -77,5 +80,21 @@ export class StateService {
 
   setHighlightedTask(columnId: string, taskId: string) {
     this.highlightedTask$.next({ columnId, taskId });
+  }
+
+  clearHighlightedTask():void {
+    this.highlightedTask$.next(null);
+  }
+
+  setLastDeletedTask(boardId: string, columnId: string, task: Task) {
+    this.lastDeletedTask = { boardId, columnId, task };
+  }
+
+  getLastDeletedTask() {
+    return this.lastDeletedTask;
+  }
+
+  clearLastDeletedTask() {
+    this.lastDeletedTask = null;
   }
 }
