@@ -36,7 +36,7 @@ export class EditableHeaderComponent {
   @Output() saveEdit: EventEmitter<string> = new EventEmitter<string>();
 
   openDialog() {
-    this.dialogService.openConfirmationDialog('column', () =>
+    this.dialogService.openConfirmationDialog(`column ${this.name}`, () =>
       this.deleteClick.emit()
     );
   }

@@ -229,7 +229,7 @@ export class BoardViewComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   openDialog() {
-    this.dialogService.openConfirmationDialog('board', () =>
+    this.dialogService.openConfirmationDialog(`board ${this.board?.name}`, () =>
       this.onDeleteBoard()
     );
   }
