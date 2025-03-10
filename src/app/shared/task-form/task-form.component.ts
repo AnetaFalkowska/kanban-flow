@@ -140,7 +140,9 @@ export class TaskFormComponent implements OnInit {
       })
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
-        next: () => this.router.navigate([`/${this.boardId}`]),
+        next: () => {if (this.source) {
+          this.router.navigate([`/${this.source}`]);
+        } else this.router.navigate([`/${this.boardId}`]);},
         error: (err) => console.error('Task update failed', err),
       });
   }
@@ -156,13 +158,14 @@ export class TaskFormComponent implements OnInit {
       .addTask(this.boardId!, this.columnId!, newTask)
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
-        next: () => this.router.navigate([`/${this.boardId}`]),
+        next: () => {if (this.source) {
+          this.router.navigate([`/${this.source}`]);
+        } else this.router.navigate([`/${this.boardId}`]);},
         error: (err) => console.error('Adding task failed', err),
       });
   }
 
   onCancel() {
-    console.log(this.source);
     if (this.source) {
       this.router.navigate([`/${this.source}`]);
     } else this.router.navigate([`/${this.boardId}`]);
@@ -177,8 +180,9 @@ export class TaskFormComponent implements OnInit {
     this.taskService
       .deleteTask(this.boardId, this.columnId, this.taskId)
       .pipe(takeUntil(this.unsubscribe$))
-      .subscribe(() => {
-        this.router.navigate([`/${this.boardId}`]);
+      .subscribe(() => {if (this.source) {
+        this.router.navigate([`/${this.source}`]);
+      } else this.router.navigate([`/${this.boardId}`]);
       });
   }
 }
