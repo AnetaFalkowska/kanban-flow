@@ -4,6 +4,7 @@ import {
   Component,
   ElementRef,
   EventEmitter,
+  HostListener,
   inject,
   Input,
   Output,
@@ -20,7 +21,7 @@ import { DialogService } from '../../core/services/dialog.service';
   templateUrl: './editable-header.component.html',
   styleUrl: './editable-header.component.scss',
 })
-export class EditableHeaderComponent {
+export class EditableHeaderComponent implements AfterViewChecked {
   @Input() name: string = '';
   @Input() boardStyle: boolean = false;
   editMode: boolean = false;
@@ -34,6 +35,30 @@ export class EditableHeaderComponent {
 
   @Output() deleteClick: EventEmitter<void> = new EventEmitter<void>();
   @Output() saveEdit: EventEmitter<string> = new EventEmitter<string>();
+
+  @HostListener('document:mousedown', ['$event'])
+  onClickOutside(event: MouseEvent) {
+    if (this.editMode && !this.isClickInsideInput(event)) {
+      this.onCancelEdit();
+    }
+  }
+
+  ngAfterViewChecked(): void {
+    if (this.editMode) {
+      setTimeout(() => {
+        const inputElement = document.querySelector('.edit-name') as HTMLInputElement;
+        if (inputElement) {
+          inputElement.focus(); 
+        }
+      }, 0); 
+    }
+  }
+
+  isClickInsideInput(event: MouseEvent): boolean {
+    const clickedElement = event.target as HTMLElement;
+    const nameInput = document.querySelector('.edit-mode');
+    return nameInput?.contains(clickedElement) ?? false;
+  }
 
   openDialog() {
     this.dialogService.openConfirmationDialog(`column ${this.name}`, () =>

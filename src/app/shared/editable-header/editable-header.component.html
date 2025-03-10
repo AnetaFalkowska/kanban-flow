@@ -9,6 +9,7 @@
       #nameField="ngModel"
       (keyup.enter)="onSaveEdit(nameField)"
       (keydown.escape)="onCancelEdit()"
+      (blur)="onCancelEdit()"
       required
       minlength="3"
       maxlength="25"
