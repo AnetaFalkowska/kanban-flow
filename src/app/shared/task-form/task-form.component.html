@@ -4,12 +4,18 @@
     <div class="form-field">
       <label idFor="borad-name">Task Name</label>
       <input type="text" id="borad-name" formControlName="name" />
-      @if (taskForm.get('taskName')?.touched &&
-      taskForm.get('taskName')?.errors) {<ng-container>
-        @if (taskForm.get('taskName')?.errors?.['required']) {
+
+      @if (taskForm.get('name')?.touched &&
+      taskForm.get('name')?.errors) {<ng-container>
+        @if (taskForm.get('name')?.errors?.['required']) {
         <p class="error-message">Value is required</p>
-        } </ng-container
+        } 
+        @if (taskForm.get('name')?.errors?.['minlength']) {
+          <p class="error-message">Value should be at least 3 characters long</p>
+          }</ng-container
       >}
+
+      
     </div>
     <div class="form-field">
       <label idFor="description">Description</label>
@@ -32,7 +38,7 @@
         <label idFor="duedate">Due Date</label>
         <input type="date" id="duedate" formControlName="duedate" />
         @if (taskForm.get('duedate')?.hasError('dateInPast')) {
-        <p class="error">The due date cannot be in the past.</p>
+        <p class="error-message">The due date cannot be in the past.</p>
         }
       </div>
     </div>

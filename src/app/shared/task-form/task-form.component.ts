@@ -16,10 +16,11 @@ import {
 import { Task } from '../../api/task.model';
 import { StateService } from '../../core/services/state.service';
 import { combineLatest, of, Subject, switchMap, takeUntil } from 'rxjs';
+import { JsonPipe } from '@angular/common';
 
 @Component({
   selector: 'app-task-form',
-  imports: [ReactiveFormsModule, RouterModule],
+  imports: [ReactiveFormsModule, RouterModule, JsonPipe],
   templateUrl: './task-form.component.html',
   styleUrl: './task-form.component.scss',
 })
@@ -30,7 +31,7 @@ export class TaskFormComponent implements OnInit {
   taskId: string | null = null;
   task: Task | null = null;
   priorityOptions = [null, 'low', 'medium', 'high'];
-  source:string | null = null
+  source: string | null = null;
   unsubscribe$ = new Subject<void>();
 
   constructor(
@@ -52,7 +53,6 @@ export class TaskFormComponent implements OnInit {
           this.boardId = params['boardId'] ?? taskContext?.boardId ?? null;
           this.columnId = params['columnId'] ?? taskContext?.columnId ?? null;
           this.source = params['source'] ?? null;
-          console.log(this.source)
           this.taskId = this.route.snapshot.paramMap.get('taskId');
           if (!this.boardId || !this.columnId || !this.taskId) {
             return of(null);
@@ -136,7 +136,7 @@ export class TaskFormComponent implements OnInit {
         description,
         priority,
         duedate,
-        completed
+        completed,
       })
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
@@ -162,10 +162,10 @@ export class TaskFormComponent implements OnInit {
   }
 
   onCancel() {
-    console.log(this.source)
+    console.log(this.source);
     if (this.source) {
-      this.router.navigate([`/${this.source}`])
-    } else this.router.navigate([`/${this.boardId}`])
+      this.router.navigate([`/${this.source}`]);
+    } else this.router.navigate([`/${this.boardId}`]);
   }
 
   deleteTask() {
