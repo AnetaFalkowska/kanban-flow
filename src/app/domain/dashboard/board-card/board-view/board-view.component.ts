@@ -33,6 +33,7 @@ import { animate, style, transition, trigger } from '@angular/animations';
 import { DeleteConfirmationDialogComponent } from '../../../../shared/delete-confirmation-dialog/delete-confirmation-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogService } from '../../../../core/services/dialog.service';
+import { NotificationService } from '../../../../core/services/notification.service';
 
 @Component({
   selector: 'app-board-view',
@@ -67,7 +68,8 @@ export class BoardViewComponent implements OnInit, AfterViewInit, OnDestroy {
     private readonly stateService: StateService,
     private readonly route: ActivatedRoute,
     private readonly router: Router,
-    private readonly dialogService: DialogService
+    private readonly dialogService: DialogService,
+    private readonly notificationService: NotificationService
   ) {}
 
   ngOnInit(): void {
@@ -191,8 +193,8 @@ export class BoardViewComponent implements OnInit, AfterViewInit, OnDestroy {
       .deleteBoard(this.board.id)
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
-        next: () => this.router.navigateByUrl('/'),
-        error: (err) => console.error('Failed to delete board:', err),
+        next: () => {this.notificationService.openSnackBar('Board deleted', undefined, 2000), this.router.navigateByUrl('/')},
+        error: (err) => {this.notificationService.openSnackBar('Failed to delete board', undefined, 2000), console.error('Failed to delete board:', err)},
       });
   }
 
@@ -218,13 +220,14 @@ export class BoardViewComponent implements OnInit, AfterViewInit, OnDestroy {
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
         next: () => {
+          this.notificationService.openSnackBar('Column deleted', undefined, 2000)
           this.board = {
             id: this.board!.id,
             name: this.board!.name,
             columns: this.board!.columns.filter((col) => col.id !== columnId),
           };
         },
-        error: (err) => console.error('Failed to delete column:', err),
+        error: (err) => {this.notificationService.openSnackBar('Failed to delete column', undefined, 2000); console.error('Failed to delete column:', err)},
       });
   }
 

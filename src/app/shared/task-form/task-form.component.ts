@@ -16,7 +16,7 @@ import {
 import { Task } from '../../api/task.model';
 import { StateService } from '../../core/services/state.service';
 import { of, Subject, switchMap, takeUntil } from 'rxjs';
-
+import { NotificationService } from '../../core/services/notification.service';
 
 @Component({
   selector: 'app-task-form',
@@ -39,7 +39,8 @@ export class TaskFormComponent implements OnInit {
     private taskService: TaskService,
     private stateService: StateService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private notificationService: NotificationService
   ) {}
 
   ngOnInit(): void {
@@ -140,10 +141,24 @@ export class TaskFormComponent implements OnInit {
       })
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
-        next: () => {if (this.source) {
-          this.router.navigate([`/${this.source}`]);
-        } else this.router.navigate([`/${this.boardId}`]);},
-        error: (err) => console.error('Task update failed', err),
+        next: () => {
+          this.notificationService.openSnackBar(
+            'Task updated',
+            undefined,
+            2000
+          );
+          if (this.source) {
+            this.router.navigate([`/${this.source}`]);
+          } else this.router.navigate([`/${this.boardId}`]);
+        },
+        error: (err) => {
+          this.notificationService.openSnackBar(
+            'Task update failed',
+            undefined,
+            2000
+          );
+          console.error('Task update failed', err);
+        },
       });
   }
 
@@ -158,9 +173,12 @@ export class TaskFormComponent implements OnInit {
       .addTask(this.boardId!, this.columnId!, newTask)
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
-        next: () => {if (this.source) {
-          this.router.navigate([`/${this.source}`]);
-        } else this.router.navigate([`/${this.boardId}`]);},
+        next: (task) => {
+          this.stateService.setHighlightedTask(this.columnId!, task.id )
+          if (this.source) {
+            this.router.navigate([`/${this.source}`]);
+          } else this.router.navigate([`/${this.boardId}`]);
+        },
         error: (err) => console.error('Adding task failed', err),
       });
   }
@@ -180,9 +198,25 @@ export class TaskFormComponent implements OnInit {
     this.taskService
       .deleteTask(this.boardId, this.columnId, this.taskId)
       .pipe(takeUntil(this.unsubscribe$))
-      .subscribe(() => {if (this.source) {
-        this.router.navigate([`/${this.source}`]);
-      } else this.router.navigate([`/${this.boardId}`]);
+      .subscribe({
+        next: () => {
+          this.notificationService.openSnackBar(
+            'Task deleted',
+            undefined,
+            2000
+          );
+          if (this.source) {
+            this.router.navigate([`/${this.source}`]);
+          } else this.router.navigate([`/${this.boardId}`]);
+        },
+        error: (err) => {
+          this.notificationService.openSnackBar(
+            'Failed to delete task',
+            undefined,
+            2000
+          );
+          console.error('Failed to delete task', err);
+        },
       });
   }
 }

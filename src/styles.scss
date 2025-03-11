@@ -1,4 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
+@use "@angular/material" as mat;
 @import url("https://cdn.jsdelivr.net/gh/jgthms/minireset.css@master/minireset.min.css");
 @import url("https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,100..900&display=swap");
 
@@ -23,7 +24,7 @@ h1.is-bold,
 h2.is-bold {
   font-weight: bold;
   letter-spacing: -2px;
-  margin-bottom: 20px;;
+  margin-bottom: 20px;
 }
 
 h4 {
@@ -175,18 +176,22 @@ body {
 
 :root {
   --fc-list-event-hover-bg-color: rgba(255, 255, 255, 0.55);
+  @include mat.snack-bar-overrides(
+    (
+      container-color: #333,
+      supporting-text-color: white,
+      button-color: #FFFF99,
+    )
+  );
 }
 
 .reqiured {
   font-size: 14px;
   font-weight: 400;
-  margin-left:4px;
+  margin-left: 4px;
 }
 
-// .custom-snackbar {
-//   bottom: 100px !important;
-//   left: 10% !important;
-//   transform: translateX(-50%); 
-// }
-
-
+.custom-snackbar {
+  max-width: 300px !important;
+  width: 300px !important;
+}

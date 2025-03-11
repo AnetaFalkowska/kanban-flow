@@ -89,6 +89,7 @@ export class ColumnComponent implements OnDestroy, OnInit {
   ngOnDestroy(): void {
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
+    this.stateService.clearHighlightedTask();
   }
 
   scrollToHighlightedTask() {

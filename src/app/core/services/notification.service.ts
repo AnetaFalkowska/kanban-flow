@@ -15,7 +15,7 @@ export class NotificationService {
       duration: duration,
       horizontalPosition: 'end', 
       verticalPosition: 'bottom', 
-      // panelClass: ['custom-snackbar'] 
+      panelClass: ['custom-snackbar'],
     })
     snackBarRef.onAction().subscribe(() => {
       if (action === "Undo" && undoCallback) {

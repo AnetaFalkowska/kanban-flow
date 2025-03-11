@@ -80,7 +80,8 @@ width: 420px;
 .highlighted {
   animation: fadeOut 1s forwards;
   animation-delay: 2s;
-  background: rgba(white, 0.95);
+  background-color: #FFFF99;
+  // background: rgba(white, 0.95);
 }
 
 @keyframes fadeOut {
