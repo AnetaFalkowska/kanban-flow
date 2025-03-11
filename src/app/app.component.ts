@@ -11,6 +11,7 @@ import {
 } from '@angular/animations';
 import { AsyncPipe, DatePipe } from '@angular/common';
 import { map, Observable, timer } from 'rxjs';
+import { TaskService } from './api/task.service';
 
 const baseStyles = style({
   position: 'absolute',
@@ -28,11 +29,24 @@ const baseStyles = style({
 })
 export class AppComponent implements OnInit {
   title = 'kanban-flow';
-
   dateTime!: Observable<Date>
 
+  constructor(private taskService:TaskService) {
+
+  }
+
 ngOnInit() {
-  this.dateTime = timer(0,1000).pipe(map(()=> {return new Date()}))
+  this.dateTime = timer(0, 1000).pipe(
+    map(() => {
+      const now = new Date();
+
+      if (now.getHours() === 0 && now.getMinutes() === 0 && now.getSeconds() === 0) {
+        this.taskService.countOverdueTasks();
+      }
+      
+      return now;
+    })
+  );
 }
 
   prepareRoute(outlet: RouterOutlet) {
