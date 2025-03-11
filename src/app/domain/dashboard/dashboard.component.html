@@ -1,15 +1,19 @@
 <!-- <div>{{boards | json}}</div> -->
 <div class="dashboard-wrapper">
+  
   <div class="container">
-    <h1 class="title">Your Boards</h1>
+    <div class="dashboard-header">
+      <h1 class="title">Your Boards</h1>
+      <div class="btns-container btns-centered">
+        <a routerLink="add" class="btn"
+          ><i class="material-icons-outlined">add</i>Add</a
+        >
+      </div>
+    </div>
     <div class="boardcards-container">
       @for (board of boards; track board.id) {
-        <app-board-card [board]="board"></app-board-card>
+      <app-board-card [board]="board"></app-board-card>
       }
-    </div>
-    <div class="btns-container btns-centered">
-      <a routerLink="add" class="btn"><i class="material-icons-outlined">add</i>Add</a>
-      
     </div>
   </div>
 </div>
