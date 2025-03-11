@@ -50,7 +50,7 @@
     }
 
     <div class="btns-container">
-      @if (task) {<button (click)="deleteTask()" type="button" class="btn">
+      @if (task) {<button (click)="openDialog(); $event.stopPropagation()" type="button" class="btn">
         Delete</button
       >}
       <button (click)="onCancel()" type="button" class="btn">

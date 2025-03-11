@@ -17,6 +17,7 @@ import { Task } from '../../api/task.model';
 import { StateService } from '../../core/services/state.service';
 import { of, Subject, switchMap, takeUntil } from 'rxjs';
 import { NotificationService } from '../../core/services/notification.service';
+import { DialogService } from '../../core/services/dialog.service';
 
 @Component({
   selector: 'app-task-form',
@@ -40,7 +41,8 @@ export class TaskFormComponent implements OnInit {
     private stateService: StateService,
     private router: Router,
     private route: ActivatedRoute,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private dialogService: DialogService
   ) {}
 
   ngOnInit(): void {
@@ -187,6 +189,15 @@ export class TaskFormComponent implements OnInit {
     if (this.source) {
       this.router.navigate([`/${this.source}`]);
     } else this.router.navigate([`/${this.boardId}`]);
+  }
+
+
+
+
+  openDialog() {
+    this.dialogService.openConfirmationDialog(`task ${this.task?.name}`, () =>
+      this.deleteTask()
+    );
   }
 
   deleteTask() {
