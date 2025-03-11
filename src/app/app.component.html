@@ -1,7 +1,7 @@
 <div class="app-wrapper">
   <div class="top-section">
-    <h1>17:44</h1>
-    <h2>15 January 2025</h2>
+    <h1>{{dateTime | async | date:"HH:mm"}}</h1>
+    <h2>{{dateTime | async | date:"d LLL y"}}</h2>
   </div>
   <div class="content-section" [@routeAnimations]="prepareRoute(outlet)">
     <router-outlet #outlet="outlet"/>

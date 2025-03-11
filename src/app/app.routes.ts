@@ -9,11 +9,11 @@ import { TaskFormComponent } from './shared/task-form/task-form.component';
 import { TaskListComponent } from './domain/task-list/task-list.component';
 
 export const routes: Routes = [
-  { path: '', component: DashboardComponent },
+  { path: '', component: DashboardComponent, data: {tab:1} },
   { path: 'add', component: BoardFormComponent },
-  { path: 'calendar', component: CalendarComponent },
+  { path: 'calendar', component: CalendarComponent, data: {tab:2} },
   { path: 'settings', component: SettingsComponent },
-  { path: 'notifications', component: TaskListComponent },
+  { path: 'notifications', component: TaskListComponent, data: {tab:3} },
   { path: ':id', component: BoardViewComponent },
   { path: ':id/edit', component: BoardFormComponent },
   { path: 'tasks/add', component: TaskFormComponent },
