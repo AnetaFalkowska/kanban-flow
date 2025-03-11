@@ -36,7 +36,7 @@ export class TaskService {
     }[]
   >([]);
   incompleteTasks$ = this.incompleteTasksSubject$.asObservable();
-  private overdueTasksCountSubject$ = new Subject<number>();
+  private overdueTasksCountSubject$ = new BehaviorSubject<number>(0);
   overdueTasksCount$ = this.overdueTasksCountSubject$.asObservable();
 
   handleError(action: string) {
@@ -205,13 +205,14 @@ export class TaskService {
               task.duedate &&
               new Date(task.duedate.toString()) < today
             ) {
-              this.countOverdueTasks();
+              const currentCount = this.overdueTasksCountSubject$.getValue()
+              this.overdueTasksCountSubject$.next(currentCount + 1)
             }
           }
           if (source === 'task-list') {
             this.getIncompleteTasks();
             if (task.duedate && new Date(task.duedate.toString()) < today) {
-              this.recalculateOverdueTasks();
+              this.countOverdueTasks();
             }
           }
           // if (source === 'calendar') {
@@ -251,7 +252,8 @@ export class TaskService {
   deleteTask(
     boardId: string,
     columnId: string,
-    taskId: string
+    taskId: string,
+    source?: string,
   ): Observable<void> {
     return this.http
       .delete<void>(
@@ -259,8 +261,8 @@ export class TaskService {
       )
       .pipe(
         tap(() => {
-          this.getIncompleteTasks();
-          this.recalculateOverdueTasks();
+          if (source === "task-list") this.getIncompleteTasks();
+          this.countOverdueTasks();
         }),
         catchError(this.handleError('deleting task'))
       );

@@ -121,7 +121,7 @@ export class TaskListComponent implements OnInit, OnDestroy {
 
     if (boardId && columnId && taskId) {
       this.taskService
-        .deleteTask(boardId, columnId, taskId)
+        .deleteTask(boardId, columnId, taskId, 'task-list')
         .pipe(takeUntil(this.unsubscribe$))
         .subscribe({
           next: () =>
