@@ -162,63 +162,48 @@ export class ColumnComponent implements OnDestroy, OnInit {
         .subscribe({
           next: () => {
             if (this.boardId && this.column.id) {
-              const index = this.column.tasks.findIndex(
+              const taskIndex = this.column.tasks.findIndex(
                 (t) => t.id === task.id
               );
-              if (index !== -1) {
-                this.stateService.setLastDeletedTask(
-                  this.boardId,
-                  this.column.id,
-                  index,
-                  task
-                );
-              }
+              this.stateService.storeDeletedTaskAndShowUndoSnackbar(
+                this.boardId,
+                this.column.id,
+                taskIndex,
+                task,
+                'board-view',
+                this.restoreTaskInUI.bind(this)
+              );
               this.column = {
                 ...this.column,
                 tasks: this.column.tasks.filter((t) => t.id !== task.id),
               };
             }
+
             setTimeout(() => (this.taskAnimationState = null), 200);
-            this.notificationService.openSnackBar(
-              'Task deleted',
-              'Undo',
-              3000,
-              () => {
-                this.restoreTask();
-              }
-            );
           },
           error: (err) => console.error('Failed to delete task:', err),
         });
     }
   }
 
-  restoreTask() {
-    const lastDeletedTask = this.stateService.getLastDeletedTask();
+  restoreTaskInUI(
+    lastDeletedTask: {
+      boardId: string;
+      columnId: string;
+      index: number;
+      task: Task;
+    },
+    restoredTask: Task
+  ) {
+    if (!this.column || this.column.id !== lastDeletedTask.columnId) return;
 
-    if (lastDeletedTask && this.boardId) {
-      this.taskService
-        .restoreTask(
-          lastDeletedTask.boardId,
-          lastDeletedTask.columnId,
-          lastDeletedTask.task,
-          lastDeletedTask.index,          
-          "board-view"
-        )
-        .pipe(takeUntil(this.unsubscribe$))
-        .subscribe((restoredTask) => {
-          if (this.column.id === lastDeletedTask.columnId) {
-            const updatedTasks = [...this.column.tasks]; 
-            updatedTasks.splice(lastDeletedTask.index, 0, restoredTask);
-          
-            this.column = {
-              ...this.column,
-              tasks: updatedTasks,
-            };
-          }
-          this.stateService.clearLastDeletedTask();
-        });
-    }
+    const updatedTasks = [...this.column.tasks];
+    updatedTasks.splice(lastDeletedTask.index, 0, restoredTask);
+
+    this.column = {
+      ...this.column,
+      tasks: updatedTasks,
+    };
   }
 
   getPriorityColor(

@@ -10,14 +10,13 @@ import { TaskService } from '../../api/task.service';
 import { Subject, takeUntil } from 'rxjs';
 import { CalendarUtilsService } from '../../core/services/calendar-utils.service';
 import { TaskCardComponent } from '../../shared/task-card/task-card.component';
-
+import { StateService } from '../../core/services/state.service';
 
 @Component({
   selector: 'app-task-list',
   imports: [CommonModule, FullCalendarModule, TaskCardComponent],
   templateUrl: './task-list.component.html',
   styleUrl: './task-list.component.scss',
-  
 })
 export class TaskListComponent implements OnInit, OnDestroy {
   calendarOptions: CalendarOptions = {
@@ -49,7 +48,8 @@ export class TaskListComponent implements OnInit, OnDestroy {
 
   constructor(
     private readonly taskService: TaskService,
-    private readonly calendarUtilsService: CalendarUtilsService
+    private readonly calendarUtilsService: CalendarUtilsService,
+    private readonly stateService: StateService
   ) {}
 
   @ViewChild('calendar') calendarComponent!: FullCalendarComponent;
@@ -69,6 +69,7 @@ export class TaskListComponent implements OnInit, OnDestroy {
   updateCalendarOptions(
     calendarTasks: {
       task: any;
+      taskIndex: number;
       boardName: string;
       boardId: string;
       columnId: string;
@@ -76,28 +77,31 @@ export class TaskListComponent implements OnInit, OnDestroy {
   ): void {
     this.calendarOptions = {
       ...this.calendarOptions,
-      events: calendarTasks.map(({ task, boardName, boardId, columnId }) => ({
-        title: task.name,
-        start: task.duedate,
-        id: task.id,
-        extendedProps: {
-          task,
-          boardName,
-          boardId,
-          columnId,
-        },
-        backgroundColor: this.calendarUtilsService.getPriorityColor(
-          task.completed,
-          task.priority,
-          task.duedate
-        ),
-      })),
+      events: calendarTasks.map(
+        ({ task, taskIndex, boardName, boardId, columnId }) => ({
+          title: task.name,
+          start: task.duedate,
+          id: task.id,
+          extendedProps: {
+            task,
+            taskIndex,
+            boardName,
+            boardId,
+            columnId,
+          },
+          backgroundColor: this.calendarUtilsService.getPriorityColor(
+            task.completed,
+            task.priority,
+            task.duedate
+          ),
+        })
+      ),
       eventDidMount: function (info) {
         const today = new Date();
         today.setHours(0, 0, 0, 0);
-        const duedate = info.event.start && new Date(info.event.start)
-        const isCompleted = info.event.extendedProps['task'].completed
-    
+        const duedate = info.event.start && new Date(info.event.start);
+        const isCompleted = info.event.extendedProps['task'].completed;
+
         if (duedate && duedate < today) {
           info.el.style.backgroundColor = '#f6ceb2';
         }
@@ -112,15 +116,24 @@ export class TaskListComponent implements OnInit, OnDestroy {
   }
 
   onDeleteTask(props: any) {
-    const { boardId, columnId, task } = props;
+    const { boardId, columnId, task, taskIndex } = props;
     const taskId = task.id;
 
     if (boardId && columnId && taskId) {
-
       this.taskService
         .deleteTask(boardId, columnId, taskId)
         .pipe(takeUntil(this.unsubscribe$))
-        .subscribe();
+        .subscribe({
+          next: () =>
+            this.stateService.storeDeletedTaskAndShowUndoSnackbar(
+              boardId,
+              columnId,
+              taskIndex,
+              task,
+              'task-list'
+            ),
+          error: (err) => console.error('Failed to delete task:', err),
+        });
     }
   }
 

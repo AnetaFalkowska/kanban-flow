@@ -27,7 +27,13 @@ export class TaskService {
   >([]);
   tasksForCalendar$ = this.tasksForCalendarSubject$.asObservable();
   private incompleteTasksSubject$ = new BehaviorSubject<
-    { task: Task; boardName: string; boardId: string; columnId: string }[]
+    {
+      task: Task;
+      taskIndex: number;
+      boardName: string;
+      boardId: string;
+      columnId: string;
+    }[]
   >([]);
   incompleteTasks$ = this.incompleteTasksSubject$.asObservable();
   private overdueTasksCountSubject$ = new Subject<number>();
@@ -86,16 +92,18 @@ export class TaskService {
           if (!boards) return [];
           let incompleteTasks: {
             task: Task;
+            taskIndex: number;
             boardName: string;
             boardId: string;
             columnId: string;
           }[] = [];
           boards.forEach((board) => {
             board.columns.forEach((column) => {
-              column.tasks.forEach((task) => {
+              column.tasks.forEach((task, taskIndex) => {
                 if (!task.completed && task.duedate) {
                   incompleteTasks.push({
                     task,
+                    taskIndex,
                     boardName: board.name,
                     boardId: board.id,
                     columnId: column.id,
@@ -172,34 +180,20 @@ export class TaskService {
   addTask(boardId: string, columnId: string, task: Task): Observable<Task> {
     return this.http
       .post<Task>(`${this.API_URL}/${boardId}/columns/${columnId}/tasks/`, task)
-      .pipe(
-        // tap(() => {
-        //   const today = new Date();
-        //   today.setHours(0, 0, 0, 0);
-
-        //   if (
-        //     !task.completed &&
-        //     task.duedate &&
-        //     new Date(task.duedate.toString()) < today
-        //   ) {
-        //     this.countOverdueTasks();
-        //   }
-        // }),
-        catchError(this.handleError('adding task'))
-      );
+      .pipe(catchError(this.handleError('adding task')));
   }
 
   restoreTask(
     boardId: string,
     columnId: string,
     task: Task,
-    index: number,
+    taskIndex: number,
     source: string
   ): Observable<Task> {
     return this.http
       .post<Task>(
         `${this.API_URL}/${boardId}/columns/${columnId}/tasks/${task.id}/restore`,
-        { task, index }
+        { task, taskIndex }
       )
       .pipe(
         tap(() => {
@@ -214,24 +208,22 @@ export class TaskService {
               this.countOverdueTasks();
             }
           }
-
           if (source === 'task-list') {
+            this.getIncompleteTasks();
             if (task.duedate && new Date(task.duedate.toString()) < today) {
               this.recalculateOverdueTasks();
             }
-            this.getIncompleteTasks();
           }
-
-          if (source === 'calendar') {
-            if (
-              !task.completed &&
-              task.duedate &&
-              new Date(task.duedate.toString()) < today
-            ) {
-              this.countOverdueTasks();
-            }
-            this.getTasksForCalendar();
-          }
+          // if (source === 'calendar') {
+          //   if (
+          //     !task.completed &&
+          //     task.duedate &&
+          //     new Date(task.duedate.toString()) < today
+          //   ) {
+          //     this.countOverdueTasks();
+          //   }
+          //   this.getTasksForCalendar();
+          // }
         }),
         catchError(this.handleError('restoring task'))
       );

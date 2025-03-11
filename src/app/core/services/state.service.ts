@@ -1,14 +1,20 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { Injectable, OnDestroy } from '@angular/core';
+import { BehaviorSubject, Observable, Subject, takeUntil } from 'rxjs';
 import { Board } from '../../api/board.model';
 import { BoardService } from '../../api/board.service';
 import { Task } from '../../api/task.model';
+import { NotificationService } from './notification.service';
+import { TaskService } from '../../api/task.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class StateService {
-  constructor(private boardService: BoardService) {}
+  constructor(
+    private boardService: BoardService,
+    private notificationService: NotificationService,
+    private taskService: TaskService
+  ) {}
 
   private currentTaskContext$ = new BehaviorSubject<{
     boardId: string | null;
@@ -27,7 +33,12 @@ export class StateService {
     taskId: string;
   } | null>(null);
 
-  private lastDeletedTask: { boardId: string, columnId: string, index:number, task: Task} | null = null;
+  private lastDeletedTask: {
+    boardId: string;
+    columnId: string;
+    index: number;
+    task: Task;
+  } | null = null;
 
   get taskCompletionChanges() {
     return this.taskCompletionChanges$.asObservable();
@@ -82,11 +93,16 @@ export class StateService {
     this.highlightedTask$.next({ columnId, taskId });
   }
 
-  clearHighlightedTask():void {
+  clearHighlightedTask(): void {
     this.highlightedTask$.next(null);
   }
 
-  setLastDeletedTask(boardId: string, columnId: string, index:number, task: Task) {
+  setLastDeletedTask(
+    boardId: string,
+    columnId: string,
+    index: number,
+    task: Task
+  ) {
     this.lastDeletedTask = { boardId, columnId, index, task };
   }
 
@@ -96,5 +112,62 @@ export class StateService {
 
   clearLastDeletedTask() {
     this.lastDeletedTask = null;
+  }
+
+  storeDeletedTaskAndShowUndoSnackbar(
+    boardId: string,
+    columnId: string,
+    taskIndex: number,
+    task: Task,
+    source: string,
+    restoreInUIFn?: (
+      lastDeletedTask: {
+        boardId: string;
+        columnId: string;
+        index: number;
+        task: Task;
+      },
+      restoredTask: Task
+    ) => void
+  ) {
+    if (taskIndex !== -1) {
+      this.setLastDeletedTask(boardId, columnId, taskIndex, task);
+    }
+
+    this.notificationService.openSnackBar('Task deleted', 'Undo', 4000, () => {
+      this.restoreTask(source, restoreInUIFn);
+    });
+  }
+
+  restoreTask(
+    source: string,
+    restoreInUIFn:
+      | ((
+          lastDeletedTask: {
+            boardId: string;
+            columnId: string;
+            index: number;
+            task: Task;
+          },
+          restoredTask: Task
+        ) => void)
+      | undefined
+  ) {
+    const lastDeletedTask = this.getLastDeletedTask();
+
+    if (lastDeletedTask) {
+      this.taskService
+        .restoreTask(
+          lastDeletedTask.boardId,
+          lastDeletedTask.columnId,
+          lastDeletedTask.task,
+          lastDeletedTask.index,
+          source
+        )
+        .subscribe((restoredTask) => {
+          if (restoreInUIFn) restoreInUIFn(lastDeletedTask, restoredTask);
+          this.clearLastDeletedTask();
+        });
+    }
   }
 }
