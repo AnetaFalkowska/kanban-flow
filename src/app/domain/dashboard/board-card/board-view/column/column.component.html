@@ -17,7 +17,7 @@
       class="task-card-wrapper"
       cdkDrag
       [cdkDragData]="task.name"
-      [@taskAnim]="taskAnimationState"      
+      [@taskAnim]="taskAnimationState"
       [ngClass]="highlightTask(task.id, column.id)"
       [id]="'task-' + task.id"
     >

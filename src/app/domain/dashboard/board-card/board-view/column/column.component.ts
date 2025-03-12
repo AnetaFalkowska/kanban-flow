@@ -83,6 +83,8 @@ export class ColumnComponent implements OnDestroy, OnInit {
           this.highlightedTaskId = highlight.taskId;
           this.highlightedColumnId = highlight.columnId;
           this.scrollToHighlightedTask();
+          setTimeout(() => {this.stateService.clearHighlightedTask();this.highlightedTaskId = null;
+            this.highlightedColumnId = null;}, 2000);
         }
       });
   }
@@ -114,6 +116,7 @@ export class ColumnComponent implements OnDestroy, OnInit {
   }
 
   onDrop(event: CdkDragDrop<{ tasks: Task[]; columnId: string }>) {
+    console.log("drop: ", this.highlightedColumnId, this.highlightedTaskId)
     this.dropEmitter.emit(event);
   }
 
