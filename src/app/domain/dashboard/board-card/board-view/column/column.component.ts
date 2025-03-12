@@ -53,6 +53,7 @@ import { NotificationService } from '../../../../../core/services/notification.s
       ]),
     ]),
   ],
+  // changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ColumnComponent implements OnDestroy, OnInit {
   @Input() column: Column = { id: '', name: '', tasks: [] };
@@ -207,15 +208,16 @@ export class ColumnComponent implements OnDestroy, OnInit {
     };
   }
 
-  getPriorityColor(
+  priorityStyle(
     completed: boolean,
     priority: 'high' | 'medium' | 'low' | null | undefined,
     duedate: String | undefined
   ) {
-    return this.calendarUtilsService.getPriorityColor(
+    const color = this.calendarUtilsService.getPriorityColor(
       completed,
       priority,
       duedate as string | undefined
     );
+    return { 'background-color': color };
   }
 }

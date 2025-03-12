@@ -42,16 +42,25 @@ width: 420px;
   cursor: move;
 }
 
-.task-card-wrapper::before {
-  content:'';
+// .task-card-wrapper::before {
+//   content:'';
+//   position:absolute;
+//   top:0;
+//   left:0;
+//   height: 100%;
+//   width: 8px;
+//   background: var(--priority-color, transparent);
+//   border-top-left-radius: 10px;
+//   border-bottom-left-radius: 10px;
+// }
+
+.priority-band {
   position:absolute;
-  // top:50%;
-  // transform: translateY(-50%);
   top:0;
   left:0;
   height: 100%;
   width: 8px;
-  background: var(--priority-color, transparent);
+  background: blue;
   border-top-left-radius: 10px;
   border-bottom-left-radius: 10px;
 }

@@ -28,17 +28,16 @@ export class CalendarUtilsService {
   getPriorityColor(
     completed: boolean,
     priority: 'high' | 'medium' | 'low' | null | undefined,
-    taskDate: string | undefined
+    taskDate?: string
   ): string {
     if (completed) return this.priorityColors.completed;
-    if (!taskDate) return this.priorityColors.low;
+    if (!taskDate) return this.priorityColors[priority || 'low'];
 
     const today = new Date().setHours(0, 0, 0, 0);
     const taskDateFormatted = new Date(taskDate).setHours(0, 0, 0, 0);
 
-    if (taskDateFormatted < today) return this.priorityColors.overdue;
+    return (taskDateFormatted < today) ? this.priorityColors.overdue : this.priorityColors[priority || 'low'];
 
-    return this.priorityColors[priority || 'low'];
   }
 
   getTextColor(
