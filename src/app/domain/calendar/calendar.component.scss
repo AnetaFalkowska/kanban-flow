@@ -1,9 +1,10 @@
 .calendar-wrapper {
+  position: relative;
   max-width: 1400px;
   max-height: 100%;
   overflow-y: auto;
   margin: auto;
-  padding: 15px 10px;  
+  padding: 0 10px 15px;  
   border-radius: 12px;
   background-color: rgba(white, 0.45);
 
@@ -37,4 +38,11 @@
 .task-name-multi-month {
   overflow: hidden;
   margin: 2px;
+}
+
+.fc-theme-standard th {
+  position: sticky;
+  top: 0;
+  background-color: rgba(white, 0.45); 
+  z-index: 100;
 }

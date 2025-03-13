@@ -89,7 +89,7 @@ export class TaskListComponent implements OnInit, OnDestroy {
             boardId,
             columnId,
           },
-          backgroundColor: this.calendarUtilsService.getPriorityColor(
+          backgroundColor: this.calendarUtilsService.getPriorityColorWithOverdue(
             task.completed,
             task.priority,
             task.duedate

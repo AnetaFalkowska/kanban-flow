@@ -25,18 +25,15 @@ export class CalendarUtilsService {
 
   constructor(private readonly taskService: TaskService) {}
 
-  getPriorityColor(
+  getPriorityColorWithOverdue(
     completed: boolean,
     priority: 'high' | 'medium' | 'low' | null | undefined,
     taskDate?: string
   ): string {
     if (completed) return this.priorityColors.completed;
-    if (!taskDate) return this.priorityColors[priority || 'low'];
-
-    const today = new Date().setHours(0, 0, 0, 0);
-    const taskDateFormatted = new Date(taskDate).setHours(0, 0, 0, 0);
-
-    return (taskDateFormatted < today) ? this.priorityColors.overdue : this.priorityColors[priority || 'low'];
+    return this.isTaskOverdue(taskDate)
+    ? this.priorityColors.overdue
+    : this.getPriorityColor(priority);
 
   }
 
@@ -46,11 +43,9 @@ export class CalendarUtilsService {
     taskDate: string
   ): string {
     if (completed) return 'lightgray';
-    const today = new Date().setHours(0, 0, 0, 0);
-    const taskDateFormatted = new Date(taskDate).setHours(0, 0, 0, 0);
-    return taskDateFormatted >= today && (priority === 'low' || !priority)
-      ? 'darkslategray'
-      : 'white';
+    return this.isTaskOverdue(taskDate) || priority !== 'low'
+      ? 'white'
+      : 'darkslategray';
   }
 
   updatePriorityColor(
@@ -59,7 +54,7 @@ export class CalendarUtilsService {
     priority: 'high' | 'medium' | 'low' | null,
     newDueDate: string
   ) {
-    const updatedPriorityColor = this.getPriorityColor(
+    const updatedPriorityColor = this.getPriorityColorWithOverdue(
       completed,
       priority,
       newDueDate
@@ -67,4 +62,22 @@ export class CalendarUtilsService {
     event.setProp('backgroundColor', updatedPriorityColor);
     event.setProp('borderColor', updatedPriorityColor);
   }
+
+  getPriorityColor(priority: 'high' | 'medium' | 'low' | null | undefined):string {
+    return this.priorityColors[priority || 'low'];
+  }
+
+  isOverdue(completed: boolean, taskDate?: string): string | undefined {
+    console.log(completed, taskDate);
+    console.log(this.isTaskOverdue(taskDate));
+    console.log(this.priorityColors.overdue);
+    return completed ? undefined : (this.isTaskOverdue(taskDate) ? this.priorityColors.overdue : undefined);
+  }
+
+  private isTaskOverdue(taskDate?: string): boolean {
+    if (!taskDate) return false;
+    const today = new Date().setHours(0, 0, 0, 0);
+    return new Date(taskDate).setHours(0, 0, 0, 0) < today;
+  }
+
 }

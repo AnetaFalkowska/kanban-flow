@@ -69,7 +69,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
         },
       },
       events: calendarTasks.map(({ task, boardName, boardId, columnId }) => {
-        const priorityColor = this.calendarUtilsService.getPriorityColor(
+        const priorityColor = this.calendarUtilsService.getPriorityColorWithOverdue(
           task.completed,
           task.priority,
           task.duedate
