@@ -8,11 +8,8 @@
   border-radius: 8px !important;
   max-height: 100%;
   overflow: auto;
-  position:relative
-    
+  position:relative    
   }
-
-
 
   .priority-band {
     position:absolute;
@@ -20,16 +17,14 @@
     left:0;
     height: 100%;
     width: 8px;
-    background: blue;
     border-top-left-radius: inherit;
     border-bottom-left-radius: inherit;
   }
 
   .task-priority, .task-duedate {
     padding: 5px 10px;
-  border-radius: 4px;
-
-  display: inline-block;
+    border-radius: 4px;
+    display: inline-block;
   }
 
   .task-duedate {

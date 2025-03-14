@@ -9,16 +9,17 @@
       <span class="material-icons-outlined">calendar_month</span>
     </div>
   </a>
-  <a routerLink="settings" class="settings-tab tab">
-    <div class="tab-tile">
-      <span class="material-icons-outlined">settings</span>
-    </div>
-  </a>
-  
   <a routerLink="notifications" class="notifications-tab tab">
     <div class="tab-tile notifications-tile">
       <span class="material-icons-outlined">notifications</span>
       @if (overdueCount > 0) {<span class="badge">{{ overdueCount }}</span>}
     </div>
   </a>
+  <!-- <a routerLink="settings" class="settings-tab tab">
+    <div class="tab-tile">
+      <span class="material-icons-outlined">settings</span>
+    </div>
+  </a> -->
+  
+
 </div>

@@ -1,9 +1,9 @@
 .navbar {
   display: flex;
   justify-content: center;
-  margin: 40px auto 20px;
+  margin: 15px auto;
   gap: 20px;
-  padding: 20px;
+  padding: 10px;
   border-radius: 12px;
   background-color: rgba(white, 0.25);
   backdrop-filter: blur(3px);
@@ -71,4 +71,11 @@
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+@media screen and (min-width: 1440px) {
+  .navbar {
+    margin: 40px auto 20px;
+    padding: 20px;
+  }
 }

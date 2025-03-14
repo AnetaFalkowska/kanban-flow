@@ -13,11 +13,11 @@ a {
 }
 
 h1 {
-  font-size: 48px;
+  font-size: 36px;
 }
 
 h2 {
-  font-size: 36px;
+  font-size: 28px;
 }
 
 h1.is-bold,
@@ -73,9 +73,12 @@ h4 {
   transition: all 0.2 ease;
 
   &.btn-small {
-    font-size: 12px;
+    font-size: 14px;
     padding: 4px 8px;
     background: rgba(black, 0.65);
+    i {
+      font-size: 18px;
+       }
   }
 
   &:hover {
@@ -202,4 +205,16 @@ body {
 .custom-snackbar {
   max-width: 300px !important;
   width: 300px !important;
+}
+
+.has-gradient-text {
+  background: -webkit-linear-gradient(45deg, #f7a1ab, #b8c4f5);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.has-gradient-text-2 {
+  background: -webkit-linear-gradient(45deg, #8adbe5, #fac6cc);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }

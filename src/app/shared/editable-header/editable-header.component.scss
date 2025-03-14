@@ -10,11 +10,13 @@
     cursor:text;
     overflow: hidden;
     text-overflow: ellipsis;
+    font-size: 24px;
   }
 
   .board-header-name {
     position: absolute;
     left: 3px;
+    font-size: 28px;
   }
 }
 
@@ -94,3 +96,19 @@
     background: rgba(black, 0.95);
   }
 }
+
+@media screen and (min-width: 1440px) {
+
+  :host {
+    .header-name {
+      font-size: 28px;
+    }
+    
+    .board-header-name {  
+      font-size: 36px;
+    }
+  }
+  
+}
+
+

@@ -45,6 +45,7 @@ export class TaskListComponent implements OnInit, OnDestroy {
   };
   private unsubscribe$ = new Subject<void>();
   taskAnimationState: 'remove' | null = null;
+  overdueCount: number = 0;
 
   constructor(
     private readonly taskService: TaskService,
@@ -55,6 +56,7 @@ export class TaskListComponent implements OnInit, OnDestroy {
   @ViewChild('calendar') calendarComponent!: FullCalendarComponent;
 
   ngOnInit(): void {
+    this.taskService.overdueTasksCount$.subscribe((overdueCount)=> this.overdueCount = overdueCount)
     this.taskService.getIncompleteTasks();
     this.taskService.incompleteTasks$
       .pipe(takeUntil(this.unsubscribe$))

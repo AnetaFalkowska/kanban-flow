@@ -1,8 +1,15 @@
 .task-list-wrapper {
   max-width: 800px;
   max-height: 100%;
-  overflow-y: auto;
   margin: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.calendar-wrapper {
+flex:1;
+  overflow-y: auto;
+  
   // padding: 10px;
   border-radius: 12px;
   background-color: rgba(white, 0.45);
@@ -17,9 +24,17 @@
   }
 }
 
-.task-list-body {
+.title {
+  color: #222222;
+  font-size: 32px;
+  font-weight: 400;
+  text-align: center;
+  margin: 20px 0;
+}
+
+.calendar-body {
   height: 100%;
-  padding: 15px 7px;
+  padding: 0px 7px 7px
 }
 
 ::ng-deep th {
@@ -39,6 +54,14 @@
   box-sizing: border-box;
   border: 5px solid var(--fc-event-border-color);
   border-radius: 2px;
+}
+
+@media screen and (min-width: 1440px) {
+  .task-list-body {
+    
+    padding: 15px 7px;
+  }
+
 }
 
 

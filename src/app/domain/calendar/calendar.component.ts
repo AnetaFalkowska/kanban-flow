@@ -10,6 +10,7 @@ import { TaskService } from '../../api/task.service';
 import { Subject, takeUntil } from 'rxjs';
 import { CalendarUtilsService } from '../../core/services/calendar-utils.service';
 import { DialogService } from '../../core/services/dialog.service';
+import { NotificationService } from '../../core/services/notification.service';
 
 @Component({
   selector: 'app-calendar',
@@ -24,7 +25,8 @@ export class CalendarComponent implements OnInit, OnDestroy {
   constructor(
     private readonly taskService: TaskService,
     private readonly calendarUtilsService: CalendarUtilsService,
-    private readonly dialogService: DialogService
+    private readonly dialogService: DialogService,
+    private readonly notificationService: NotificationService
   ) {}
 
   @ViewChild('calendar') calendarComponent!: FullCalendarComponent;
@@ -104,6 +106,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
         );
       },
       eventAllow: this.handleEventAllow.bind(this),
+      eventDragStop: this.handleEventDragStop.bind(this),
       eventDrop: this.handleEventDrop.bind(this),
       eventClick: this.handleEventClick.bind(this),
     };
@@ -130,8 +133,17 @@ export class CalendarComponent implements OnInit, OnDestroy {
   handleEventAllow(info: any): boolean {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
+    return info.start >= today;;
+  }
 
-    return info.start >= today;
+  handleEventDragStop(info: any): void {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const notAllowed = info.start >= today;
+    if (!notAllowed) {
+      this.notificationService.openSnackBar('Cannot move tasks to past dates!', undefined, 3000);
+    }
+    return
   }
 
   handleEventDrop(info: any) {

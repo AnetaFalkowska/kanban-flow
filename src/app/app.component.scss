@@ -13,6 +13,7 @@
 
 .top-section {
 //   background-color: darkblue;
+display: none;
   padding: 50px;
   text-align: center;
   color: whitesmoke;
@@ -32,7 +33,7 @@
 //   background-color: antiquewhite;
   flex-grow: 1;
   min-height: 0;
-  padding: 0 15px;
+  padding: 20px 15px 0;
 }
 
 .bottom-section {
@@ -40,5 +41,14 @@
 //   background-color: aquamarine;
   app-navbar {
     display: flex;
+  }
+}
+
+@media screen and (min-width: 1440px) {
+  .top-section {
+    display: block;
+  }
+  .content-section {
+    padding-top:0px;
   }
 }

@@ -8,7 +8,7 @@
   flex-direction: column;
   background: rgba(black, 0.2);
   border-radius: 12px;
-  padding: 12px 12px 6px;
+  padding: 10px;
   overflow: auto;
 }
 
@@ -18,7 +18,7 @@
   align-items: center;
   width: 100%;
   height: fit-content;
-  margin: 8px 0 20px;
+  margin: 0 0 8px;
   padding: 0 20px;
 
 }
@@ -30,7 +30,7 @@
 }
 
 .add-column-btn {
-  text-wrap: wrap;
+  text-wrap: nowrap;
   padding: 7px 12px;
   border-top-right-radius: 0% ;
   border-bottom-right-radius: 0% ;
@@ -50,13 +50,14 @@
   gap: 15px;
   overflow-x: auto;
   padding-bottom: 6px;
+  
 
   &::-webkit-scrollbar {
     height: 8px;
   }
 
   &::-webkit-scrollbar-thumb {
-    background: rgba(black, 0.8);
+    background: rgba(black, 0.4);
     border-radius: 4px;
   }
 }
@@ -65,4 +66,17 @@ app-editable-header {
   font-size: 36px;
   font-weight: 500;
   color: rgba(white, 0.85);
+}
+
+@media screen and (min-width: 1440px) {
+  .board-header {
+    margin: 8px 0 20px;
+  }
+  .board-container {
+  padding: 12px 12px 6px;
+  }
+
+  .add-column-btn {
+    text-wrap: wrap;
+  }
 }

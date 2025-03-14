@@ -1,19 +1,23 @@
 <div class="task-list-wrapper">
-  <div class="task-list-body">
-    <full-calendar #calendar [options]="calendarOptions">
-      <ng-template #eventContent let-arg>
-        <app-task-card
-          (toggleClick)="toggleCompleted(arg.event, $event)"
-          (deleteClick)="onDeleteTask(arg.event.extendedProps)"
-          [task]="arg.event.extendedProps.task"
-          [boardId]="arg.event.extendedProps.boardId"
-          [columnId]="arg.event.extendedProps.columnId"
-          [source]="'notifications'"
-        ></app-task-card>
-      </ng-template>
-    </full-calendar>
+  <h1 class="title">You have <span>{{ overdueCount}}</span> overdue tasks!</h1>
+  <div class="calendar-wrapper">  
+    <div class="calendar-body">
+      <full-calendar #calendar [options]="calendarOptions">
+        <ng-template #eventContent let-arg>
+          <app-task-card
+            (toggleClick)="toggleCompleted(arg.event, $event)"
+            (deleteClick)="onDeleteTask(arg.event.extendedProps)"
+            [task]="arg.event.extendedProps.task"
+            [boardId]="arg.event.extendedProps.boardId"
+            [columnId]="arg.event.extendedProps.columnId"
+            [source]="'notifications'"
+          ></app-task-card>
+        </ng-template>
+      </full-calendar>
+    </div>
   </div>
 </div>
+
 
 <!-- <ng-template #eventContent let-arg>
         <div

@@ -1,19 +1,20 @@
 <!-- <div>{{boards | json}}</div> -->
-<div class="dashboard-wrapper">
-  
+<div class="dashboard-wrapper">  
   <div class="container">
     <div class="dashboard-header">
-      <h1 class="title">Your Boards</h1>
+      <h1 class="title">Organize & Track Your Workflow</h1>
       <div class="btns-container btns-centered">
         <a routerLink="add" class="btn"
           ><i class="material-icons-outlined">add</i>Add</a
         >
       </div>
     </div>
-    <div class="boardcards-container">
-      @for (board of boards; track board.id) {
-      <app-board-card [board]="board"></app-board-card>
-      }
-    </div>
+    <div class="boards">
+      <div class="boardcards-container">
+        @for (board of boards; track board.id) {
+        <app-board-card [board]="board"></app-board-card>
+        }
+      </div>
+    </div>    
   </div>
 </div>
