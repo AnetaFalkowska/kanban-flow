@@ -25,10 +25,16 @@
   justify-content: flex-start;
   align-items: center;
   gap: 10px;
+  font-size: 24px;
 
   &.board-edit-mode {
     width: 100%;
+    font-size: 28px;
   }
+}
+
+.edit-name-container {
+flex:1;
 }
 
 .edit-name {
@@ -106,6 +112,14 @@
     
     .board-header-name {  
       font-size: 36px;
+    }
+
+    .edit-mode {
+      font-size: 28px;
+    
+      &.board-edit-mode {     
+        font-size: 36px;
+      }
     }
   }
   

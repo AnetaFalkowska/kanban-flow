@@ -1,6 +1,7 @@
 
 .column-wrapper {
-width: 420px;
+  flex-basis:1;
+  // width: 420px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;

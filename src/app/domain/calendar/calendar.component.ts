@@ -141,7 +141,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
     today.setHours(0, 0, 0, 0);
     const notAllowed = info.start >= today;
     if (!notAllowed) {
-      this.notificationService.openSnackBar('Cannot move tasks to past dates!', undefined, 3000);
+      this.notificationService.openSnackBar('Cannot move tasks to past dates!', undefined, 2000);
     }
     return
   }

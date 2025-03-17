@@ -184,9 +184,9 @@ body {
   // snack-bar
   @include mat.snack-bar-overrides(
     (
-      container-color: #333,
-      supporting-text-color: white,
-      button-color: #FFFF99,
+      container-color: #FFFF99,
+      supporting-text-color: #222222,
+      button-color: #333
     )
   );
 }
@@ -202,9 +202,9 @@ body {
   margin-left: 4px;
 }
 
-.custom-snackbar {
-  max-width: 300px !important;
-  width: 300px !important;
+
+.cdk-overlay-pane {
+  margin-right: 15px;
 }
 
 .has-gradient-text {
