@@ -14,7 +14,7 @@ export const routes: Routes = [
   { path: 'calendar', component: CalendarComponent, data: {tab:2} },
   { path: 'settings', component: SettingsComponent },
   { path: 'notifications', component: TaskListComponent, data: {tab:3} },
-  { path: ':id', component: BoardViewComponent },
+  { path: ':id', component: BoardViewComponent, data: {boardView:true}  },
   { path: ':id/edit', component: BoardFormComponent },
   { path: 'tasks/add', component: TaskFormComponent },
   { path: 'tasks/:taskId/edit', component: TaskFormComponent },

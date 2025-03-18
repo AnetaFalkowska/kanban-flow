@@ -1,9 +1,9 @@
 .navbar {
   display: flex;
   justify-content: center;
-  margin: 15px auto;
-  gap: 20px;
-  padding: 10px;
+  margin: 20px auto;
+  gap: 15px;
+  padding: 5px 8px;
   border-radius: 12px;
   background-color: rgba(white, 0.25);
   backdrop-filter: blur(3px);
@@ -38,7 +38,7 @@
 }
 
 .tab-tile:hover::before {
-  transform: scale(1.2);
+  transform: scale(1.1);
   opacity: 1;
 }
 
@@ -59,6 +59,17 @@
   background: linear-gradient(45deg, #b8c4f5, #f7a1ab);
 }
 
+.tab.selected .tab-tile {
+  transform: translateY(-30%);
+  transition-duration: 0.4s;
+  transition-timing-function: cubic-bezier(0,0,0,1.7);
+
+}
+
+.tab.selected .tab-tile:hover::before {
+  transform: scale(1);
+}
+
 .badge {
   position:absolute;
   top:-5px;
@@ -76,6 +87,6 @@
 @media screen and (min-width: 1440px) {
   .navbar {
     margin: 40px auto 20px;
-    padding: 20px;
+    padding: 10px 12px;
   }
 }

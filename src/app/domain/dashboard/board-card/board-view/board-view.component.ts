@@ -48,10 +48,13 @@ import { NotificationService } from '../../../../core/services/notification.serv
   animations: [
     trigger('boardViewAnim', [
       transition(':enter', [
-        style({ opacity: 0, transform: 'scale(0.85)' }),
+        style({
+          transform: 'scale(0.98)',
+          opacity: 0,          
+        }),
         animate(
-          '350ms 50ms ease-out',
-          style({ opacity: 1, transform: 'scale(1)' })
+          '350ms 100ms ease-out',
+          style({ transform: 'scale(1)', opacity: 1 })
         ),
       ]),
     ]),
