@@ -63,12 +63,18 @@
   transform: translateY(-30%);
   transition-duration: 0.4s;
   transition-timing-function: cubic-bezier(0,0,0,1.7);
-
 }
 
-.tab.selected .tab-tile:hover::before {
-  transform: scale(1);
-}
+// .tab.selected .tab-tile::before {
+//   transform: skew(45deg, -45deg) scale(0.7);
+//   opacity:1;
+//   box-shadow: 0px 7px 17px rgba(black,0.3);
+//   transition-delay: 0.2s;
+// }
+
+// .tab.selected .tab-tile:hover::before {
+//   transform: skew(45deg, -45deg) scale(0.7);
+// }
 
 .badge {
   position:absolute;

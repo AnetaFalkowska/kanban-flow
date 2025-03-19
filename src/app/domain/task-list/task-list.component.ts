@@ -104,6 +104,11 @@ export class TaskListComponent implements OnInit, OnDestroy {
         const duedate = info.event.start && new Date(info.event.start);
         const isCompleted = info.event.extendedProps['task'].completed;
 
+        info.el.setAttribute(
+          'title',
+          `Task: ${info.event.title} | Board: ${info.event.extendedProps['boardName']}`
+        );
+
         if (duedate && duedate < today) {
           info.el.style.backgroundColor = '#f6ceb2';
         }
