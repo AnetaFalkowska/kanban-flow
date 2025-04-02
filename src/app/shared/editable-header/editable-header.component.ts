@@ -89,4 +89,9 @@ export class EditableHeaderComponent implements AfterViewChecked {
     this.showValidationErrors = false;
     this.editMode = false;
   }
+
+  onBlur() {
+    setTimeout(() => this.onCancelEdit(), 100);
+
+  }
 }

@@ -1,4 +1,6 @@
-<div class="app-wrapper">
+<div class="app-wrapper">  
+  <app-intro-dialog [isIntroVisible]="isIntroVisible" (emitCloseIntro)="closeIntro($event)"></app-intro-dialog>
+  <app-info-dialog [isQuickGuideVisible]="isQuickGuideVisible" (emitCloseQuickGuide)="closeQuickGuide()"></app-info-dialog>
   <div class="top-section">
     <h1>{{dateTime | async | date:"HH:mm"}}</h1>
     <h2>{{dateTime | async | date:"d LLL y"}}</h2>
@@ -6,5 +8,6 @@
   <div class="content-section" [@routeAnimations]="prepareRoute(outlet)">
     <router-outlet #outlet="outlet"/>
   </div>
+  <i class="material-icons-outlined info-icon" (click)="showQuickGuide()">info</i>
   <div class="bottom-section"><app-navbar></app-navbar></div>
 </div>

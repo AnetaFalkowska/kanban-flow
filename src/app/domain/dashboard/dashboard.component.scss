@@ -28,14 +28,7 @@
   flex:1;
   overflow-y: auto;
   padding: 0 10px;
-  &::-webkit-scrollbar {
-    width: 8px;
-  }
 
-  &::-webkit-scrollbar-thumb {
-    background: rgba(0, 0, 0, 0.4);
-    border-radius: 4px;
-  }
 }
 
 .boardcards-container {

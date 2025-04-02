@@ -1,6 +1,7 @@
 
 .app-wrapper {
 //   background-color: green;
+position: relative;
   height: 100vh;
   display: flex;
   flex-direction: column;
@@ -9,6 +10,15 @@
   background-size:cover;
   background-position: center;
   background-attachment: fixed;
+}
+
+.info-icon {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  color: white;
+  font-size: 32px;
+  cursor: pointer;
 }
 
 .top-section {
@@ -33,7 +43,7 @@ display: none;
 //   background-color: antiquewhite;
   flex-grow: 1;
   min-height: 0;
-  padding: 20px 15px 0;
+  margin: 20px 15px 0;
 }
 
 .bottom-section {

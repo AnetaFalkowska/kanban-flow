@@ -50,16 +50,7 @@
   gap: 15px;
   overflow-x: auto;
   padding-bottom: 6px;
-  
 
-  &::-webkit-scrollbar {
-    height: 8px;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background: rgba(black, 0.4);
-    border-radius: 4px;
-  }
 }
 
 app-editable-header {

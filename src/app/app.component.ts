@@ -11,11 +11,21 @@ import {
 import { AsyncPipe, DatePipe } from '@angular/common';
 import { map, Observable, timer } from 'rxjs';
 import { TaskService } from './api/task.service';
-
+import { DialogService } from './core/services/dialog.service';
+import { InfoDialogComponent } from './core/layout/info-dialog/info-dialog.component';
+import { IntroDialogComponent } from './core/layout/intro-dialog/intro-dialog.component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, NavbarComponent, RouterModule, AsyncPipe, DatePipe],
+  imports: [
+    RouterOutlet,
+    NavbarComponent,
+    RouterModule,
+    AsyncPipe,
+    DatePipe,
+    IntroDialogComponent,
+    InfoDialogComponent,
+  ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
   animations: [
@@ -39,18 +49,22 @@ import { TaskService } from './api/task.service';
               style({ transform: 'scale(1)', opacity: 1 })
             ),
           ],
+          { optional: true }
         ),
       ]),
-      
     ]),
   ],
-
 })
 export class AppComponent implements OnInit {
   title = 'kanban-flow';
   dateTime!: Observable<Date>;
+  isIntroVisible: boolean = false;
+  isQuickGuideVisible: boolean = false;
 
-  constructor(private taskService: TaskService) {}
+  constructor(
+    private readonly taskService: TaskService,
+    private readonly dialogService: DialogService
+  ) {}
 
   ngOnInit() {
     this.dateTime = timer(0, 1000).pipe(
@@ -68,6 +82,9 @@ export class AppComponent implements OnInit {
         return now;
       })
     );
+    setTimeout(() => {
+      this.isIntroVisible = true;
+    }, 1000);
   }
 
   prepareRoute(outlet: RouterOutlet) {
@@ -78,182 +95,194 @@ export class AppComponent implements OnInit {
       // if (!tab && !boardView) return 'secondary';
       // if (boardView) return 'board-view';
       // return tab;
-      return outlet.activatedRoute.snapshot.url
+      return outlet.activatedRoute.snapshot.url;
     }
-    return null
+    return null;
+  }
 
+  showQuickGuide() {
+    this.isQuickGuideVisible = true;
+  }
+
+  closeQuickGuide() {
+    this.isQuickGuideVisible = false;
+  }
+
+  closeIntro(openQuickGuide: boolean) {
+    this.isIntroVisible = false;
+    if (openQuickGuide) {
+      this.showQuickGuide();
+    }
   }
 }
 
-
 // translate for the router outlet
-  // animations: [
-  //   trigger('routeAnimations', [
-  //     transition(':increment', [
-  //       style({ position: 'relative', overflow: 'hidden' }),
-  //       query(
-  //         ':enter, :leave',
-  //         [
-  //           style({
-  //             position: 'absolute',
-  //             top: 0,
-  //             left: 0,
-  //             width: '100%',
-  //             height: '100%',
-  //           }),
-  //         ],
-  //         { optional: true }
-  //       ),
-  //       query(':enter', [style({ opacity: 0 })], { optional: true }),
-  //       group([
-  //         query(
-  //           ':leave',
-  //           [
-  //             animate(
-  //               '200ms ease-in',
-  //               style({ transform: 'translateX(-40px)', opacity: 0 })
-  //             ),
-  //           ],
-  //           { optional: true }
-  //         ),
-  //         query(
-  //           ':enter',
-  //           [
-  //             style({ transform: 'translateX(40px)' }),
-  //             animate(
-  //               '250ms 200ms ease-out',
-  //               style({ transform: 'translateX(0)', opacity: 1 })
-  //             ),
-  //           ],
-  //           { optional: true }
-  //         ),
-  //       ]),
-  //     ]),
-  //     transition(':decrement', [
-  //       style({ position: 'relative', overflow: 'hidden' }),
-  //       query(
-  //         ':enter, :leave',
-  //         [
-  //           style({
-  //             position: 'absolute',
-  //             top: 0,
-  //             left: 0,
-  //             width: '100%',
-  //             height: '100%',
-  //           }),
-  //         ],
-  //         { optional: true }
-  //       ),
-  //       query(':enter', [style({ opacity: 0 })], { optional: true }),
-  //       group([
-  //         query(
-  //           ':leave',
-  //           [
-  //             animate(
-  //               '200ms ease-in',
-  //               style({ transform: 'translateX(40px)', opacity: 0 })
-  //             ),
-  //           ],
-  //           { optional: true }
-  //         ),
-  //         query(
-  //           ':enter',
-  //           [
-  //             style({ transform: 'translateX(-40px)' }),
-  //             animate(
-  //               '250ms 150ms ease-out',
-  //               style({ transform: 'translateX(0)', opacity: 1 })
-  //             ),
-  //           ],
-  //           { optional: true }
-  //         ),
-  //       ]),
-  //     ]),
-  //   ]),
-  // ],
+// animations: [
+//   trigger('routeAnimations', [
+//     transition(':increment', [
+//       style({ position: 'relative', overflow: 'hidden' }),
+//       query(
+//         ':enter, :leave',
+//         [
+//           style({
+//             position: 'absolute',
+//             top: 0,
+//             left: 0,
+//             width: '100%',
+//             height: '100%',
+//           }),
+//         ],
+//         { optional: true }
+//       ),
+//       query(':enter', [style({ opacity: 0 })], { optional: true }),
+//       group([
+//         query(
+//           ':leave',
+//           [
+//             animate(
+//               '200ms ease-in',
+//               style({ transform: 'translateX(-40px)', opacity: 0 })
+//             ),
+//           ],
+//           { optional: true }
+//         ),
+//         query(
+//           ':enter',
+//           [
+//             style({ transform: 'translateX(40px)' }),
+//             animate(
+//               '250ms 200ms ease-out',
+//               style({ transform: 'translateX(0)', opacity: 1 })
+//             ),
+//           ],
+//           { optional: true }
+//         ),
+//       ]),
+//     ]),
+//     transition(':decrement', [
+//       style({ position: 'relative', overflow: 'hidden' }),
+//       query(
+//         ':enter, :leave',
+//         [
+//           style({
+//             position: 'absolute',
+//             top: 0,
+//             left: 0,
+//             width: '100%',
+//             height: '100%',
+//           }),
+//         ],
+//         { optional: true }
+//       ),
+//       query(':enter', [style({ opacity: 0 })], { optional: true }),
+//       group([
+//         query(
+//           ':leave',
+//           [
+//             animate(
+//               '200ms ease-in',
+//               style({ transform: 'translateX(40px)', opacity: 0 })
+//             ),
+//           ],
+//           { optional: true }
+//         ),
+//         query(
+//           ':enter',
+//           [
+//             style({ transform: 'translateX(-40px)' }),
+//             animate(
+//               '250ms 150ms ease-out',
+//               style({ transform: 'translateX(0)', opacity: 1 })
+//             ),
+//           ],
+//           { optional: true }
+//         ),
+//       ]),
+//     ]),
+//   ]),
+// ],
 
+// transitions for the secondary view
 
-  // transitions for the secondary view
-
-  // transition('*=>secondary', [
-      //   style({
-      //      position: 'relative', 
-      //     }),
-      //   query(
-      //     ':enter, :leave',
-      //     [
-      //       baseStyles,
-      //     ],
-      //     { optional: true }
-      //   ),
-      //   query(':enter', [style({ opacity: 0 })], { optional: true }),
-      //   group([
-      //     query(
-      //       ':leave',
-      //       [
-      //         animate(
-      //           '200ms ease-in',
-      //           style({ opacity: 0, transform: 'scale(0.95)' })
-      //         ),
-      //       ],
-      //       {
-      //         optional: true,
-      //       }
-      //     ),
-      //     query(
-      //       ':enter',
-      //       [
-      //         style({ transform: 'scale(1.05)' }),
-      //         animate(
-      //           '250ms 120ms ease-out',
-      //           style({ opacity: 1, transform: 'scale(1)' })
-      //         ),
-      //       ],
-      //       {
-      //         optional: true,
-      //       }
-      //     ),
-      //   ]),
-      // ]),
-      // transition('secondary=>*', [
-      //   style({
-      //      position: 'relative', 
-      //     // overflow can't be hidden, otherwise only content of the box will sacle down, while the whole box is the same size during the animation
-      //     //  overflow: 'hidden' 
-      //     }),
-      //   query(
-      //     ':enter, :leave',
-      //     [
-      //       baseStyles,
-      //     ],
-      //     { optional: true }
-      //   ),
-      //   query(':enter', [style({ opacity: 0 })], { optional: true }),
-      //   group([
-      //     query(
-      //       ':leave',
-      //       [
-      //         animate(
-      //           '200ms ease-in',
-      //           style({ opacity: 0, transform: 'scale(1.05)' })
-      //         ),
-      //       ],
-      //       {
-      //         optional: true,
-      //       }
-      //     ),
-      //     query(
-      //       ':enter',
-      //       [
-      //         style({ transform: 'scale(0.98)' }),
-      //         animate(
-      //           '250ms 120ms ease-out',
-      //           style({ opacity: 1, transform: 'scale(1)' })
-      //         ),
-      //       ],
-      //       {
-      //         optional: true,
-      //       }
-      //     ),
-      //   ]),
-      // ]),
+// transition('*=>secondary', [
+//   style({
+//      position: 'relative',
+//     }),
+//   query(
+//     ':enter, :leave',
+//     [
+//       baseStyles,
+//     ],
+//     { optional: true }
+//   ),
+//   query(':enter', [style({ opacity: 0 })], { optional: true }),
+//   group([
+//     query(
+//       ':leave',
+//       [
+//         animate(
+//           '200ms ease-in',
+//           style({ opacity: 0, transform: 'scale(0.95)' })
+//         ),
+//       ],
+//       {
+//         optional: true,
+//       }
+//     ),
+//     query(
+//       ':enter',
+//       [
+//         style({ transform: 'scale(1.05)' }),
+//         animate(
+//           '250ms 120ms ease-out',
+//           style({ opacity: 1, transform: 'scale(1)' })
+//         ),
+//       ],
+//       {
+//         optional: true,
+//       }
+//     ),
+//   ]),
+// ]),
+// transition('secondary=>*', [
+//   style({
+//      position: 'relative',
+//     // overflow can't be hidden, otherwise only content of the box will sacle down, while the whole box is the same size during the animation
+//     //  overflow: 'hidden'
+//     }),
+//   query(
+//     ':enter, :leave',
+//     [
+//       baseStyles,
+//     ],
+//     { optional: true }
+//   ),
+//   query(':enter', [style({ opacity: 0 })], { optional: true }),
+//   group([
+//     query(
+//       ':leave',
+//       [
+//         animate(
+//           '200ms ease-in',
+//           style({ opacity: 0, transform: 'scale(1.05)' })
+//         ),
+//       ],
+//       {
+//         optional: true,
+//       }
+//     ),
+//     query(
+//       ':enter',
+//       [
+//         style({ transform: 'scale(0.98)' }),
+//         animate(
+//           '250ms 120ms ease-out',
+//           style({ opacity: 1, transform: 'scale(1)' })
+//         ),
+//       ],
+//       {
+//         optional: true,
+//       }
+//     ),
+//   ]),
+// ]),

@@ -21,6 +21,7 @@ import { NotificationService } from '../../core/services/notification.service';
 export class CalendarComponent implements OnInit, OnDestroy {
   calendarOptions!: CalendarOptions;
   unsubscribe$ = new Subject<void>();
+  eventDropAllowed = true;
 
   constructor(
     private readonly taskService: TaskService,
@@ -133,17 +134,14 @@ export class CalendarComponent implements OnInit, OnDestroy {
   handleEventAllow(info: any): boolean {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    return info.start >= today;;
+    this.eventDropAllowed = info.start >= today;
+    return this.eventDropAllowed;
   }
 
   handleEventDragStop(info: any): void {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const notAllowed = info.start >= today;
-    if (!notAllowed) {
+    if (!this.eventDropAllowed) {
       this.notificationService.openSnackBar('Cannot move tasks to past dates!', undefined, 2000);
     }
-    return
   }
 
   handleEventDrop(info: any) {

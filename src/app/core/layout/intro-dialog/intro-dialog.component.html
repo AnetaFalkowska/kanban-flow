@@ -1,0 +1,19 @@
+@if (isIntroVisible) {
+<div class="info-container" @introAnimation (click)="closeIntro()">
+  <div class="tooltip" (click)="$event.stopPropagation()">
+    <h2>Welcome to Kanban Flow!</h2>
+
+    <div class="menu">
+      <p class="intro-message">
+        This is a simple kanban board app, where you can create tasks, move them
+        between columns, and track their progress. Enjoy!
+      </p>
+      <div class="btns-container">      <button class="btn btn-outline" (click)="closeIntro()">Got it!</button>
+        <button class="btn btn-outline align-end" (click)="closeIntro(true)">
+          See Quick Giude
+        </button></div>
+
+    </div>
+  </div>
+</div>
+}

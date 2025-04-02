@@ -14,14 +14,7 @@ flex:1;
   border-radius: 12px;
   background-color: rgba(white, 0.45);
 
-  &::-webkit-scrollbar {
-    width: 8px;
-  }
 
-  &::-webkit-scrollbar-thumb {
-    background: rgba(0, 0, 0, 0.4);
-    border-radius: 4px;
-  }
 }
 
 .title {
