@@ -7,7 +7,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
   templateUrl: './intro-dialog.component.html',
   styleUrl: './intro-dialog.component.scss',
   animations: [
-      trigger('introlAnimation', [
+      trigger('introAnimation', [
         transition(':enter', [
           style({ opacity: 0 }),
           animate('200ms ease-out', style({ opacity: 1 })),
@@ -17,11 +17,10 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
     ],
 })
 export class IntroDialogComponent {
-  @Input() isIntroVisible: boolean = false;
-  @Output() emitCloseIntro: EventEmitter<boolean> = new EventEmitter<boolean>();
+  @Output() emitCloseIntro: EventEmitter<'quickGuide' | null> = new EventEmitter<'quickGuide' | null>();
 
-  closeIntro(openQuickGuide: boolean = false) {
-    this.emitCloseIntro.emit(openQuickGuide);
+  closeIntro(openDialog?: 'quickGuide') {
+    this.emitCloseIntro.emit(openDialog || null);
   }
 
 }

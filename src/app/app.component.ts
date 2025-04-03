@@ -3,6 +3,7 @@ import { RouterModule, RouterOutlet, UrlSegment } from '@angular/router';
 import { NavbarComponent } from './core/layout/navbar/navbar.component';
 import {
   animate,
+  group,
   query,
   style,
   transition,
@@ -53,13 +54,34 @@ import { IntroDialogComponent } from './core/layout/intro-dialog/intro-dialog.co
         ),
       ]),
     ]),
+    trigger('backdropAnimation', [
+      transition(':enter', [
+        style({ opacity: 0 }),
+        animate('150ms ease-out', style({ opacity: 1 })),
+      ]),
+      transition(':leave', [animate('150ms ease-in', style({ opacity: 0 }))]),
+      transition('intro => quickGuide', [
+        group([
+          query(':leave', [animate('100ms ease-in', style({ opacity: 0 }))], {
+            optional: true,
+          }),
+          query(
+            ':enter',
+            [
+              style({ opacity: 0}),
+              animate('200ms ease-out', style({ opacity: 1})),
+            ],
+            { optional: true }
+          ),
+        ]),
+      ]),
+    ]),
   ],
 })
 export class AppComponent implements OnInit {
   title = 'kanban-flow';
   dateTime!: Observable<Date>;
-  isIntroVisible: boolean = false;
-  isQuickGuideVisible: boolean = false;
+  visibleDialog: 'intro' | 'quickGuide' | null = null;
 
   constructor(
     private readonly taskService: TaskService,
@@ -83,7 +105,7 @@ export class AppComponent implements OnInit {
       })
     );
     setTimeout(() => {
-      this.isIntroVisible = true;
+      this.visibleDialog = 'intro';
     }, 1000);
   }
 
@@ -100,19 +122,12 @@ export class AppComponent implements OnInit {
     return null;
   }
 
-  showQuickGuide() {
-    this.isQuickGuideVisible = true;
+  showInfoDialog() {
+    this.visibleDialog = 'quickGuide';
   }
 
-  closeQuickGuide() {
-    this.isQuickGuideVisible = false;
-  }
-
-  closeIntro(openQuickGuide: boolean) {
-    this.isIntroVisible = false;
-    if (openQuickGuide) {
-      this.showQuickGuide();
-    }
+  closeDialog(openDialog: 'quickGuide' | null) {
+    this.visibleDialog = openDialog;
   }
 }
 

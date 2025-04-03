@@ -1,5 +1,5 @@
-@if (isIntroVisible) {
-<div class="info-container" @introAnimation (click)="closeIntro()">
+
+
   <div class="tooltip" (click)="$event.stopPropagation()">
     <h2>Welcome to Kanban Flow!</h2>
 
@@ -9,11 +9,11 @@
         between columns, and track their progress. Enjoy!
       </p>
       <div class="btns-container">      <button class="btn btn-outline" (click)="closeIntro()">Got it!</button>
-        <button class="btn btn-outline align-end" (click)="closeIntro(true)">
+        <button class="btn btn-outline align-end" (click)="closeIntro('quickGuide')">
           Show Quick Giude
         </button></div>
 
     </div>
   </div>
-</div>
-}
+
+

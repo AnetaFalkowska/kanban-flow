@@ -1,6 +1,5 @@
-@if (isQuickGuideVisible) {
-<div class="info-container" @quickGuideAnimation (click)="closeQuickGuide()">
-  <div class="tooltip" (click)="$event.stopPropagation()">
+
+  <div class="tooltip animated-dialog" (click)="$event.stopPropagation()">
     <h2>Quick Guide</h2>
 
     <div class="menu">
@@ -70,5 +69,5 @@
       <p class="copyright">© 2024 Aneta Falkowska. All rights reserved.</p>
     </div>
   </div>
-</div>
-}
+
+
