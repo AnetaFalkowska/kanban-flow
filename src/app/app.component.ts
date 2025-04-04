@@ -12,7 +12,6 @@ import {
 import { AsyncPipe, DatePipe } from '@angular/common';
 import { map, Observable, timer } from 'rxjs';
 import { TaskService } from './api/task.service';
-import { DialogService } from './core/services/dialog.service';
 import { InfoDialogComponent } from './core/layout/info-dialog/info-dialog.component';
 import { IntroDialogComponent } from './core/layout/intro-dialog/intro-dialog.component';
 
@@ -91,7 +90,7 @@ export class AppComponent implements OnInit {
 
   constructor(
     private readonly taskService: TaskService,
-    private readonly dialogService: DialogService
+
   ) {}
 
   ngOnInit() {

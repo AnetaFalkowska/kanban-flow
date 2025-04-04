@@ -1,4 +1,4 @@
-<div class="container">
+
   <div class="calendar-wrapper">
     <full-calendar #calendar [options]="calendarOptions">      
       <ng-template #eventContent let-arg>
@@ -8,6 +8,5 @@
         </div>} @else {<div class="task-name-multi-month">{{ arg.event.title }}</div>}
       </ng-template>
     </full-calendar>
-</div>
 </div>
 

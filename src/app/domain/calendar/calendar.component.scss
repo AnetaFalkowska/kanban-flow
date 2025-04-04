@@ -1,17 +1,19 @@
-.container {
-  padding:0 10px;
+:host {
+  display: flex;
+  justify-content: center;   
+  align-items: center;  
+  height: 100%;
 }
 
 .calendar-wrapper {
-  position: relative;
-  max-width: 1400px;
+  position: relative;  
+  max-width: 98%;
   max-height: 100%;
   overflow-y: auto;
-  margin: auto;
+  // margin: auto;
   padding: 0 10px 15px;  
   border-radius: 12px;
   background-color: rgba(white, 0.45);
-
 }
 
 .task-wrapper {
@@ -42,3 +44,10 @@
   background-color: rgba(white, 0.45); 
   z-index: 100;
 }
+
+@media screen and (min-width: 1440px) {
+  .calendar-wrapper {
+    max-width: 1400px;
+  }
+}
+

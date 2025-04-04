@@ -60,7 +60,7 @@ position: relative;
 .top-section {
 //   background-color: darkblue;
 display: none;
-  padding: 50px;
+  padding: 50px 50px 25px;
   text-align: center;
   color: whitesmoke;
   h1 {
@@ -76,7 +76,7 @@ display: none;
 }
 
 .content-section {
-//   background-color: antiquewhite;
+  // background-color: antiquewhite;
   flex-grow: 1;
   min-height: 0;
   margin-top: 20px;

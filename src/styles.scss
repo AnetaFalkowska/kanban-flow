@@ -23,7 +23,7 @@ h2 {
 h1.is-bold,
 h2.is-bold {
   font-weight: bold;
-  letter-spacing: -2px;
+
   margin-bottom: 20px;
 }
 
@@ -239,4 +239,8 @@ body {
   background: rgba(0, 0, 0, 0.1);
 }
 
+* {
+  scrollbar-width: thin; /* lub auto, none */
+  scrollbar-color: rgba(0, 0, 0, 0.4) rgba(0, 0, 0, 0.1); /* thumb color, track color */
+}
 
