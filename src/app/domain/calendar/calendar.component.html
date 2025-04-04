@@ -1,4 +1,5 @@
-<div class="calendar-wrapper">
+<div class="container">
+  <div class="calendar-wrapper">
     <full-calendar #calendar [options]="calendarOptions">      
       <ng-template #eventContent let-arg>
         @if (calendarComponent.getApi().view.type === 'dayGridMonth') {<div class="task-wrapper">
@@ -8,3 +9,5 @@
       </ng-template>
     </full-calendar>
 </div>
+</div>
+

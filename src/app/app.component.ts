@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { RouterModule, RouterOutlet, UrlSegment } from '@angular/router';
 import { NavbarComponent } from './core/layout/navbar/navbar.component';
 import {
@@ -60,7 +60,7 @@ import { IntroDialogComponent } from './core/layout/intro-dialog/intro-dialog.co
         animate('150ms ease-out', style({ opacity: 1 })),
       ]),
       transition(':leave', [animate('150ms ease-in', style({ opacity: 0 }))]),
-      transition('intro => quickGuide', [
+      transition('intro => quickGuide, mobileNotice <=> intro, quickGuide => intro', [
         group([
           query(':leave', [animate('100ms ease-in', style({ opacity: 0 }))], {
             optional: true,
@@ -68,8 +68,8 @@ import { IntroDialogComponent } from './core/layout/intro-dialog/intro-dialog.co
           query(
             ':enter',
             [
-              style({ opacity: 0}),
-              animate('200ms ease-out', style({ opacity: 1})),
+              style({ opacity: 0 }),
+              animate('200ms ease-out', style({ opacity: 1 })),
             ],
             { optional: true }
           ),
@@ -81,7 +81,13 @@ import { IntroDialogComponent } from './core/layout/intro-dialog/intro-dialog.co
 export class AppComponent implements OnInit {
   title = 'kanban-flow';
   dateTime!: Observable<Date>;
-  visibleDialog: 'intro' | 'quickGuide' | null = null;
+  visibleDialog: 'intro' | 'quickGuide' | 'mobileNotice' | null = null;
+  isIntroBlocked: boolean = false;
+
+  @HostListener('window:resize', ['$event'])
+  onResize() {
+    this.checkScreenSize();
+  }
 
   constructor(
     private readonly taskService: TaskService,
@@ -104,9 +110,27 @@ export class AppComponent implements OnInit {
         return now;
       })
     );
+    this.checkScreenSize();
     setTimeout(() => {
-      this.visibleDialog = 'intro';
+      if (this.visibleDialog !== 'mobileNotice') {
+        this.visibleDialog = 'intro';
+      } else {
+        this.isIntroBlocked = true;
+      }
     }, 1000);
+  }
+
+  checkScreenSize() {
+    if (window.innerWidth <= 1024) {
+      this.visibleDialog = 'mobileNotice';
+    } else if (this.visibleDialog === 'mobileNotice') {
+      this.visibleDialog = null;
+
+      if (this.isIntroBlocked) {
+        this.visibleDialog = 'intro';
+        this.isIntroBlocked = false;
+      }
+    }
   }
 
   prepareRoute(outlet: RouterOutlet) {

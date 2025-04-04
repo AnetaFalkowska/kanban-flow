@@ -1,6 +1,6 @@
 .board-container {
   width:fit-content;
-  max-width: 90%;
+  max-width: 98%;
   min-width: 800px;
   margin: auto;
   height: 100%;
@@ -47,7 +47,7 @@
 .columns-container {
   flex-grow: 1;
   display: flex;
-  justify-content: center;
+  // justify-content: center;
   gap: 15px;
   overflow-x: auto;
   padding-bottom: 6px;

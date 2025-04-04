@@ -1,4 +1,9 @@
-@if (visibleDialog) {<div class="backdrop" (click)="closeDialog(null)" [@backdropAnimation]="visibleDialog">
+@if (visibleDialog) {
+<div
+  class="backdrop"
+  (click)="visibleDialog !== 'mobileNotice' ? closeDialog(null) : null"
+  [@backdropAnimation]="visibleDialog"
+>
   <div class="dialogs">
     @if (visibleDialog === "intro") {<app-intro-dialog
       (emitCloseIntro)="closeDialog($event)"
@@ -6,14 +11,20 @@
     >} @if (visibleDialog === 'quickGuide') {<app-info-dialog
       (emitCloseQuickGuide)="closeDialog($event)"
     ></app-info-dialog
-    >}
+    >} @if (visibleDialog === 'mobileNotice') {
+    <div class="mobile-dialog">
+      <span class="material-icons-outlined"> warning </span>
+      <h2>Mobile & Tablet Views in Progress</h2>
+      <p class="message">
+        Try resizing or switching to a desktop for the best experience!
+      </p>
+    </div>
+    }
   </div>
-</div>}
+</div>
+}
 
-
-
-<div class="app-wrapper">  
-
+<div class="app-wrapper">
   <div class="top-section">
     <h1>{{ dateTime | async | date : "HH:mm" }}</h1>
     <h2>{{ dateTime | async | date : "d LLL y" }}</h2>
