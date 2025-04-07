@@ -51,9 +51,11 @@
       display: flex;
       margin-right: 10px;
     }
+
+
   }
 
-  .tooltip button {
+  button {
     display: block;
     margin: 20px auto;
   }
@@ -64,6 +66,8 @@
     text-align: center;
     margin-top: 10px;
   }
+
+
 }
 
 @keyframes expandHeight {
