@@ -1,60 +1,51 @@
 :host {
   display: flex;
-  justify-content: center;   
-  align-items: center;  
+  justify-content: center;
+  align-items: center;
   height: 100%;
 }
 
 .calendar-wrapper {
-  position: relative;  
+  position: relative;
   max-width: 98%;
   max-height: 100%;
   overflow-y: auto;
   // margin: auto;
-  padding: 0 10px 15px;  
+  padding: 0 10px 15px;
   border-radius: 12px;
   background-color: rgba(white, 0.45);
-  margin-bottom:15px;
-}
+  margin-bottom: 15px;
+  @media screen and (min-width: 1440px) {
+    max-width: 1400px;
+  }
+  @media screen and (min-width: 1024px) {
+    margin-bottom: 15px;
+  }
+  .task-wrapper {
+    display: flex;
+    justify-content: flex-start;
+    margin: 6px 3px;
+    .task-name {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-right: 4px;
+    }
 
-.task-wrapper {
-  display: flex;
-  justify-content: flex-start;
-  margin: 6px 3px;
-}
+    .board-name {
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
 
-.task-name {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  margin-right: 4px;
-}
-
-.board-name {
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.task-name-multi-month {
-  overflow: hidden;
-  margin: 2px;
+  .task-name-multi-month {
+    overflow: hidden;
+    margin: 2px;
+  }
 }
 
 .fc-theme-standard th {
   position: sticky;
   top: 0;
-  background-color: rgba(white, 0.45); 
+  background-color: rgba(white, 0.45);
   z-index: 100;
 }
-
-@media screen and (min-width: 1440px) {
-  .calendar-wrapper {
-    max-width: 1400px;
-  }
-}
-
-@media screen and (min-width: 1024px) {
-  .calendar-wrapper {
-    margin-bottom:auto;
-  }
-}
-

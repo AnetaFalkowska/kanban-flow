@@ -1,72 +1,58 @@
-
 .column-wrapper {
-  flex-basis:0;
+  flex-basis: 0;
   flex-grow: 1;
-  // width: 420px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   min-width: 320px;
-  // max-width: 450px;
-
-  margin:auto;
+  margin: 0;
   height: 100%;
   padding: 10px;
   border-radius: 12px;
   background-color: rgba(white, 0.45);
   backdrop-filter: blur(3px);
   text-align: center;
-}
-
-.tasks-container {
-  height: 100%;
-  padding: 0 5px;
-  overflow-y: auto;
-
-  &::-webkit-scrollbar {
-    width: 7px;
-
+  @media screen and (min-width: 1440px) {
+    padding: 15px 10px;
+  }
+  @media screen and (min-width: 1024px) {
+    min-width: 280px;
   }
 
+  .tasks-container {
+    height: 100%;
+    padding: 0 5px;
+    overflow-y: auto;
 
-}
+    &::-webkit-scrollbar {
+      width: 7px;
+    }
 
-.task-card-wrapper {
-  position:relative;
-  background: rgba(white, 0.35);
-  // background: rgba(black, 0.07);
-  border-radius: 10px;
-  margin-bottom: 10px;
-  padding: 15px 10px 15px 15px;
-  cursor: move;
-}
+    .task-card-wrapper {
+      position: relative;
+      background: rgba(white, 0.35);
+      // background: rgba(black, 0.07);
+      border-radius: 10px;
+      margin-bottom: 10px;
+      padding: 15px 10px 15px 15px;
+      cursor: move;
+    }
 
-// .task-card-wrapper::before {
-//   content:'';
-//   position:absolute;
-//   top:0;
-//   left:0;
-//   height: 100%;
-//   width: 8px;
-//   background: var(--priority-color, transparent);
-//   border-top-left-radius: 10px;
-//   border-bottom-left-radius: 10px;
-// }
+    .priority-band {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 8px;
+      background: blue;
+      border-top-left-radius: inherit;
+      border-bottom-left-radius: inherit;
+    }
+  }
 
-.priority-band {
-  position:absolute;
-  top:0;
-  left:0;
-  height: 100%;
-  width: 8px;
-  background: blue;
-  border-top-left-radius: inherit;
-  border-bottom-left-radius: inherit;
-}
-
-.add-task-btn {
- margin-top:8px;
-
+  .add-task-btn {
+    margin-top: 8px;
+  }
 }
 
 .cdk-drag-preview {
@@ -74,7 +60,7 @@
   border-radius: 10px;
   box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
     0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);
-    overflow: hidden;
+  overflow: hidden;
 }
 
 .cdk-drag-placeholder {
@@ -85,21 +71,20 @@
   transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
 
-.tasks-container.cdk-drop-list-dragging .task-card-wrapper:not(.cdk-drag-placeholder) {
+.tasks-container.cdk-drop-list-dragging
+  .task-card-wrapper:not(.cdk-drag-placeholder) {
   transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
-//   background-color: aqua;
 }
 
 .highlighted {
   animation: fadeOut 1s forwards;
   animation-delay: 1s;
-  background-color: #FFFF99;
-  // background: rgba(white, 0.95);
+  background-color: #ffff99;
 }
 
 @keyframes fadeOut {
   from {
-    background-color: #FFFF99;
+    background-color: #ffff99;
   }
   to {
     background: rgba(white, 0.35);
@@ -107,23 +92,10 @@
 }
 
 app-editable-header {
-  font-weight: 500; 
-  color: rgba(black, 0.65); 
+  font-weight: 500;
+  color: rgba(black, 0.65);
   padding-bottom: 10px;
-}
-
-// .task-placeholder {
-//   background: rgba(black, 0.07);
-//   border-radius: 12px;
-//   min-height: 90px;
-//   transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
-// }
-
-@media screen and (min-width: 1440px) {
-  app-editable-header {
+  @media screen and (min-width: 1440px) {
     padding-bottom: 15px;
-  }
-  .column-wrapper {
-    padding:15px 10px;
   }
 }

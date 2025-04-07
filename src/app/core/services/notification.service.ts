@@ -1,24 +1,26 @@
-import {Injectable } from '@angular/core';
-import {inject} from '@angular/core';
-import {MatSnackBar} from '@angular/material/snack-bar';
-
+import { Injectable } from '@angular/core';
+import { inject } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class NotificationService {
-
   private _snackBar = inject(MatSnackBar);
 
-  openSnackBar(message: string, action?: string, duration: number = 1500, undoCallback?: () => void) {
-    const snackBarRef =   this._snackBar.open(message, action, {
+  openSnackBar(
+    message: string,
+    action?: string,
+    duration: number = 1500,
+    undoCallback?: () => void
+  ) {
+    const snackBarRef = this._snackBar.open(message, action, {
       duration: duration,
-      horizontalPosition: 'end', 
-      verticalPosition: 'bottom', 
-      // panelClass: ['custom-snackbar'],
-    })
+      horizontalPosition: 'end',
+      verticalPosition: 'bottom',
+    });
     snackBarRef.onAction().subscribe(() => {
-      if (action === "Undo" && undoCallback) {
+      if (action === 'Undo' && undoCallback) {
         undoCallback();
       }
     });

@@ -10,5 +10,4 @@ import { Router, RouterModule } from '@angular/router';
 })
 export class BoardCardComponent {
   @Input() board?: Board;
-
 }

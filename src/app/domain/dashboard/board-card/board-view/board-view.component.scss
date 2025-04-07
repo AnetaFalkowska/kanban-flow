@@ -1,8 +1,10 @@
 .board-container {
-  width:fit-content;
-  max-width: 98%;
-  min-width: 800px;
-  margin: auto;
+  // width: fit-content;
+  // max-width: 98%;
+  // min-width: 0;
+  // margin: auto;
+  min-width: 640px;
+  width: 100%;
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -10,65 +12,56 @@
   border-radius: 12px;
   padding: 10px;
   overflow: auto;
-}
+  @media screen and (min-width: 1440px) {
+    padding: 12px 12px 6px;
+  }
+  @media screen and (min-width: 1024px) {
+    width: fit-content;
+    max-width: 98%;
+    margin: auto;
+  }
+  .board-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    height: fit-content;
+    margin: 0 0 8px;
+    padding: 0 20px;
+    @media screen and (min-width: 1440px) {
+      margin: 8px 0 20px;
+    }
+    .header-btns-container {
+      display: flex;
+      gap: 2px;
+      .add-column-btn {
+        white-space: nowrap;
+        padding: 7px 12px;
+        border-top-right-radius: 0%;
+        border-bottom-right-radius: 0%;
+        @media screen and (min-width: 1024px) {
+          white-space: wrap;
+        }
+      }
 
-.board-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  height: fit-content;
-  margin: 0 0 8px;
-  padding: 0 20px;
-
-}
-
-.header-btns-container {
-  display: flex;
-  gap: 2px;
-
-}
-
-.add-column-btn {
-  text-wrap: nowrap;
-  padding: 7px 12px;
-  border-top-right-radius: 0% ;
-  border-bottom-right-radius: 0% ;
-}
-
-.delete-board-btn {
-  padding: 7px 14px;
-  // border-top-right-radius: 50% ;
-  // border-bottom-right-radius: 50% ;
-  border-top-left-radius: 0% ;
-  border-bottom-left-radius: 0% ;
-}
-
-.columns-container {
-  flex-grow: 1;
-  display: flex;
-  // justify-content: center;
-  gap: 15px;
-  overflow-x: auto;
-  padding-bottom: 6px;
-
+      .delete-board-btn {
+        padding: 7px 14px;
+        border-top-left-radius: 0%;
+        border-bottom-left-radius: 0%;
+      }
+    }
+  }
+  .columns-container {
+    flex-grow: 1;
+    display: flex;
+    gap: 15px;
+    overflow-x: auto;
+    padding-bottom: 6px;
+  }
 }
 
 app-editable-header {
   font-size: 36px;
   font-weight: 500;
   color: rgba(white, 0.85);
-}
-
-@media screen and (min-width: 1440px) {
-  .board-header {
-    margin: 8px 0 20px;
-  }
-  .board-container {
-  padding: 12px 12px 6px;
-  }
-
-  .add-column-btn {
-    text-wrap: wrap;
-  }
 }

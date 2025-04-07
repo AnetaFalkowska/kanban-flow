@@ -1,6 +1,6 @@
 <a [routerLink]="['/', board?.id]" class="board-card-link">
   <div class="board-card">
-    <h3 class="board-card-title">{{board?.name}}</h3>
+    <h3 class="board-card-title">{{ board?.name }}</h3>
     <div class="board-card-content">
       <p class="board-card-subtitle">Tasks:</p>
       <ul class="tasks-list">
@@ -9,10 +9,8 @@
           <p class="task-category">{{ column.name }}</p>
           <span class="task-count">{{ column.tasks.length }}</span>
         </li>
-        }  
+        }
       </ul>
     </div>
-    
   </div>
 </a>
-

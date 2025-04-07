@@ -1,73 +1,61 @@
-
 .dashboard-wrapper {
   height: 100%;
-  margin-right:10px;
-}
+  margin: auto;
 
-.container {
-  height: 100%;
-  // background-color: rgba(white, 0.45);
-  // border-radius: 12px;
-  // padding:0 15px 10px;
-  display: flex;
-  flex-direction: column;
-}
+  .container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
 
-.dashboard-header {
-  position: relative;
-  margin: 20px 0;
-}
+    .dashboard-header {
+      position: relative;
+      margin: 10px 0;
+      @media screen and (min-width: 1440px) {
+        margin: 20px 0 30px;
+      }
+      @media screen and (min-width: 1024px) {
+        margin: 20px 0;
+      }
 
-.btns-container {
-  position: absolute;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
-}
+      .title {
+        color: #222222;
+        font-size: 28px;
+        font-weight: 400;
+        text-align: center;
+        @media screen and (min-width: 1024px) {
+          font-size: 36px;
+        }
+      }
 
-.boards {
-  flex:1;
-  overflow-y: auto;
-  padding: 0 10px;
+      .btns-container {
+        position: absolute;
+        right: 0;
+        top: 50%;
+        transform: translateY(-50%);
+      }
 
-}
+      .add-btn {
+        margin-right: 10px;
+      }
+    }
 
-.boardcards-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 20px;
-  margin: 10px 0;
-}
+    .boards {
+      flex: 1;
+      overflow-y: auto;
+      padding: 0 10px;
 
-.title {
-  color: #222222;
-  font-size: 28px;
-  font-weight: 400;
-  text-align: center;
-}
-
-.has-gradient-text {
-  background: -webkit-linear-gradient(45deg, #f7a1ab, #b8c4f5);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-
-@media screen and (min-width: 1440px) {
-  .dashboard-header {
-
-    margin: 20px 0 30px;
+      .boardcards-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+        margin: 10px 0;
+      }
+    }
   }
 }
 
-@media screen and (min-width: 1024px) {
-  .title {
-    font-size: 36px;
-
-  }
-
-  .dashboard-wrapper {
-    margin-right:auto;;
-  
-  }
-}
+// .has-gradient-text {
+//   background: -webkit-linear-gradient(45deg, #f7a1ab, #b8c4f5);
+//   -webkit-background-clip: text;
+//   -webkit-text-fill-color: transparent;
+// }

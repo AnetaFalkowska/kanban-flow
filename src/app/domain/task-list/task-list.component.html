@@ -1,6 +1,9 @@
 <div class="task-list-wrapper">
-  <h1 class="title">You have <span>{{ overdueCount}}</span> overdue tasks!</h1>
-  <div class="calendar-wrapper">  
+  <h1 class="title">
+    You have <span>{{ overdueCount }}</span> overdue
+    {{ overdueCount === 1 ? "task" : "tasks" }}!
+  </h1>
+  <div class="calendar-wrapper">
     <div class="calendar-body">
       <full-calendar #calendar [options]="calendarOptions">
         <ng-template #eventContent let-arg>
@@ -17,16 +20,3 @@
     </div>
   </div>
 </div>
-
-
-<!-- <ng-template #eventContent let-arg>
-        <div
-          class="task-wrapper"
-          [class.overdue]="isTaskOverdue(arg.event.extendedProps.task.duedate)"
-        >
-          <div class="task-name">{{ arg.event.title }}</div>
-          <div class="board-name">
-            ({{ arg.event.extendedProps.boardName }})
-          </div>
-        </div>
-      </ng-template> -->

@@ -1,5 +1,10 @@
 <div class="navbar">
-  <a routerLink="/" routerLinkActive="selected" [routerLinkActiveOptions]="{ exact: true }"  class="dashboard-tab tab">
+  <a
+    routerLink="/"
+    routerLinkActive="selected"
+    [routerLinkActiveOptions]="{ exact: true }"
+    class="dashboard-tab tab"
+  >
     <div class="tab-tile">
       <span class="material-icons-outlined">dashboard_customize</span>
     </div>
@@ -9,17 +14,15 @@
       <span class="material-icons-outlined">calendar_month</span>
     </div>
   </a>
-  <a routerLink="notifications" routerLinkActive="selected" class="notifications-tab tab">
+  <a
+    routerLink="notifications"
+    routerLinkActive="selected"
+    class="notifications-tab tab"
+  >
     <div class="tab-tile notifications-tile">
       <span class="material-icons-outlined">notifications</span>
-      @if (overdueCount > 0) {<span class="badge">{{ overdueCount }}</span>}
+      @if (overdueCount > 0) {<span class="badge">{{ overdueCount }}</span
+      >}
     </div>
   </a>
-  <!-- <a routerLink="settings" class="settings-tab tab">
-    <div class="tab-tile">
-      <span class="material-icons-outlined">settings</span>
-    </div>
-  </a> -->
-  
-
 </div>

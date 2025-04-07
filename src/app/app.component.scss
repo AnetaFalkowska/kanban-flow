@@ -9,9 +9,9 @@
 }
 
 .mobile-dialog {
-  position:fixed;
-  top:50%;
-  left:50%;
+  position: fixed;
+  top: 50%;
+  left: 50%;
   transform: translate(-50%, -50%);
   background: rgba(240, 113, 40, 0.986);
   backdrop-filter: blur(10px);
@@ -24,41 +24,22 @@
   text-align: center;
 
   .message {
-
-      font-size: 20px;
-      font-weight: 400;
-      line-height: 1.5;
-      margin: 15px auto 0;
-
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 1.5;
+    margin: 15px auto 0;
   }
 }
-
-.portfolio-link {
-  color: #dfdcdc;
-  text-decoration: none;
-  font-size: 14px;
-  font-weight: 500;
-  text-align: center;
-  display: block;
-  margin-top: 20px;
-  cursor: pointer;
-
-  &:hover {
-    color: #faf9f9;
-  }
-}
-
-
 
 .app-wrapper {
-//   background-color: green;
-position: relative;
+  //   background-color: green;
+  position: relative;
   height: 100vh;
   display: flex;
   flex-direction: row-reverse;
-    background-image: url("../assets/picture1.jpg");
+  background-image: url("../assets/picture1.jpg");
   background-repeat: no-repeat;
-  background-size:cover;
+  background-size: cover;
   background-position: center;
   background-attachment: fixed;
 }
@@ -73,7 +54,7 @@ position: relative;
 }
 
 .top-section {
-//   background-color: darkblue;
+  //   background-color: darkblue;
   display: none;
   padding: 50px 50px 25px;
   text-align: center;
@@ -91,7 +72,6 @@ position: relative;
 }
 
 .content-section {
-  // background-color: antiquewhite;
   flex-grow: 1;
   min-height: 0;
   margin-top: 20px;
@@ -99,7 +79,6 @@ position: relative;
 
 .bottom-section {
   height: 100%;
-//   background-color: aquamarine;
   app-navbar {
     display: flex;
   }
@@ -110,23 +89,19 @@ position: relative;
     display: block;
   }
   .content-section {
-    padding-top:0px;
+    padding-top: 0px;
   }
 }
-
 
 @media screen and (min-width: 1024px) {
   .app-wrapper {
     flex-direction: column;
   }
   .bottom-section {
-    height:auto;
+    height: auto;
     width: 100%;
     app-navbar {
       display: flex;
     }
   }
-
 }
-
-

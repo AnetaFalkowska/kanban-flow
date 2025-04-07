@@ -1,11 +1,5 @@
-import { inject, Injectable } from '@angular/core';
-import { TaskService } from '../../api/task.service';
-import { StateService } from './state.service';
-import { MatDialog } from '@angular/material/dialog';
-import { Router } from '@angular/router';
-import { Task } from '../../api/task.model';
-import { TaskViewComponent } from '../../shared/task-view/task-view.component';
-import { DialogService } from './dialog.service';
+import { Injectable } from '@angular/core';
+
 
 @Injectable({
   providedIn: 'root',
@@ -23,7 +17,7 @@ export class CalendarUtilsService {
     // overdue: 'crimson',
   } as const;
 
-  constructor(private readonly taskService: TaskService) {}
+  constructor() {}
 
   getPriorityColorWithOverdue(
     completed: boolean,
@@ -32,9 +26,8 @@ export class CalendarUtilsService {
   ): string {
     if (completed) return this.priorityColors.completed;
     return this.isTaskOverdue(taskDate)
-    ? this.priorityColors.overdue
-    : this.getPriorityColor(priority);
-
+      ? this.priorityColors.overdue
+      : this.getPriorityColor(priority);
   }
 
   getTextColor(
@@ -63,15 +56,18 @@ export class CalendarUtilsService {
     event.setProp('borderColor', updatedPriorityColor);
   }
 
-  getPriorityColor(priority: 'high' | 'medium' | 'low' | null | undefined):string {
+  getPriorityColor(
+    priority: 'high' | 'medium' | 'low' | null | undefined
+  ): string {
     return this.priorityColors[priority || 'low'];
   }
 
   isOverdue(completed: boolean, taskDate?: string): string | undefined {
-    console.log(completed, taskDate);
-    console.log(this.isTaskOverdue(taskDate));
-    console.log(this.priorityColors.overdue);
-    return completed ? undefined : (this.isTaskOverdue(taskDate) ? this.priorityColors.overdue : undefined);
+    return completed
+      ? undefined
+      : this.isTaskOverdue(taskDate)
+      ? this.priorityColors.overdue
+      : undefined;
   }
 
   private isTaskOverdue(taskDate?: string): boolean {
@@ -79,5 +75,4 @@ export class CalendarUtilsService {
     const today = new Date().setHours(0, 0, 0, 0);
     return new Date(taskDate).setHours(0, 0, 0, 0) < today;
   }
-
 }

@@ -5,10 +5,10 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
   imports: [],
   templateUrl: './info-dialog.component.html',
   styleUrl: './info-dialog.component.scss',
-  
 })
 export class InfoDialogComponent {
-  @Output() emitCloseQuickGuide: EventEmitter<'quickGuide' | null> = new EventEmitter<'quickGuide' | null>();
+  @Output() emitCloseQuickGuide: EventEmitter<'quickGuide' | null> =
+    new EventEmitter<'quickGuide' | null>();
 
   closeQuickGuide() {
     this.emitCloseQuickGuide.emit(null);

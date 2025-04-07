@@ -1,7 +1,5 @@
-import { Injectable, OnDestroy } from '@angular/core';
-import { BehaviorSubject, Observable, Subject, takeUntil } from 'rxjs';
-import { Board } from '../../api/board.model';
-import { BoardService } from '../../api/board.service';
+import { Injectable} from '@angular/core';
+import { BehaviorSubject, Subject } from 'rxjs';
 import { Task } from '../../api/task.model';
 import { NotificationService } from './notification.service';
 import { TaskService } from '../../api/task.service';
@@ -11,9 +9,8 @@ import { TaskService } from '../../api/task.service';
 })
 export class StateService {
   constructor(
-    private boardService: BoardService,
-    private notificationService: NotificationService,
-    private taskService: TaskService
+    private readonly notificationService: NotificationService,
+    private readonly taskService: TaskService
   ) {}
 
   private currentTaskContext$ = new BehaviorSubject<{

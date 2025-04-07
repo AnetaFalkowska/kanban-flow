@@ -1,73 +1,64 @@
+<div class="tooltip animated-dialog" (click)="$event.stopPropagation()">
+  <h2>Quick Guide</h2>
 
-  <div class="tooltip animated-dialog" (click)="$event.stopPropagation()">
-    <h2>Quick Guide</h2>
+  <div>
+    <div class="guide-section">
+      <span class="material-icons-outlined menu-icon">dashboard_customize</span>
+      <p class="section-name">
+        <span>Dashboard</span>: View all your Kanban boards.
+      </p>
+    </div>
 
-    <div class="menu">
-      <div>
-        <div class="guide-section">
-          <span class="material-icons-outlined menu-icon">dashboard_customize</span>
-          <p class="section-name">
-            <span>Dashboard</span>: View all your Kanban boards.
-          </p>
-        </div>
+    <ul>
+      <li>
+        <span class="material-icons">chevron_right</span>Click on a board card
+        to manage your tasks.
+      </li>
+      <li>
+        <span class="material-icons">chevron_right</span>Click on a task to see
+        its details and edit the content.
+      </li>
+      <li>
+        <span class="material-icons">chevron_right</span>Drag and drop a task to
+        move it to another column or to a different position within the same
+        column.
+      </li>
+      <li>
+        <span class="material-icons">chevron_right</span>Click on the column or
+        board title to rename them.
+      </li>
+    </ul>
+  </div>
+  <div>
+    <div class="guide-section">
+      <span class="material-icons-outlined">calendar_month</span>
+      <p class="section-name">
+        <span>Calendar</span>: See tasks assigned to specific days.
+      </p>
+    </div>
 
-        <ul>
-          <li>
-            <span class="material-icons">chevron_right</span>Click on a board
-            card to manage your tasks.
-          </li>
-          <li>
-            <span class="material-icons">chevron_right</span>Click on a task to
-            see its details and edit the content.
-          </li>
-          <li>
-            <span class="material-icons">chevron_right</span>Drag and drop a
-            task to move it to another column or to a different position within
-            the same column.
-          </li>
-          <li>
-            <span class="material-icons">chevron_right</span>Click on the column
-            or board title to rename them.
-          </li>
-        </ul>
-      </div>
-      <div>
-        <div class="guide-section">
-          <span class="material-icons-outlined">calendar_month</span>
-          <p class="section-name">
-            <span>Calendar</span>: See tasks assigned to specific days.
-          </p>
-        </div>
-
-        <ul>
-          <li>
-            <span class="material-icons">chevron_right</span>Click on a task to
-            view its details and edit the content.
-          </li>
-          <li>
-            <span class="material-icons">chevron_right</span>Drag and drop a
-            task to change the due date and move it to a different day.
-          </li>
-        </ul>
-      </div>
-      <div>
-        <div class="guide-section">
-          <span class="material-icons-outlined">notifications</span>
-          <p class="section-name">
-            <span>Notifications</span>: Manage overdue tasks.
-          </p>
-        </div>
-        <!-- <ul>
-          <li>
-            <span class="material-icons">chevron_right</span>See notifications
-            for tasks that have passed their due date and need attention.
-          </li>
-        </ul> -->
-      </div>
-      <button class="btn btn-outline" (click)="closeQuickGuide()">Close</button>
-      <a href="https://falkowska-portfolio.onrender.com/" class="portfolio-link">See My Portfolio Website</a>
-      <p class="copyright">© 2024 Aneta Falkowska. All rights reserved.</p>
+    <ul>
+      <li>
+        <span class="material-icons">chevron_right</span>Click on a task to view
+        its details and edit the content.
+      </li>
+      <li>
+        <span class="material-icons">chevron_right</span>Drag and drop a task to
+        change the due date and move it to a different day.
+      </li>
+    </ul>
+  </div>
+  <div>
+    <div class="guide-section">
+      <span class="material-icons-outlined">notifications</span>
+      <p class="section-name">
+        <span>Notifications</span>: Manage overdue tasks.
+      </p>
     </div>
   </div>
-
-
+  <button class="btn btn-outline" (click)="closeQuickGuide()">Close</button>
+  <a href="https://falkowska-portfolio.onrender.com/" class="portfolio-link"
+    >See My Portfolio Website</a
+  >
+  <p class="copyright">© 2024 Aneta Falkowska. All rights reserved.</p>
+</div>
