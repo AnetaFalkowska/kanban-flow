@@ -1,7 +1,8 @@
-@if (visibleDialog) {
+@if (visibleDialog === 'intro' || visibleDialog === 'quickGuide') {
 <div
   class="backdrop"
-  (click)="visibleDialog !== 'mobileNotice' ? closeDialog(null) : null"
+
+  (click)="closeDialog(null)"
   [@backdropAnimation]="visibleDialog"
 >
   <div class="dialogs">
@@ -11,7 +12,8 @@
     >} @if (visibleDialog === 'quickGuide') {<app-info-dialog
       (emitCloseQuickGuide)="closeDialog($event)"
     ></app-info-dialog
-    >} @if (visibleDialog === 'mobileNotice') {
+    >} 
+    <!-- @if (visibleDialog === 'mobileNotice') {
     <div class="mobile-dialog">
       <span class="material-icons-outlined"> warning </span>
       <h2>Mobile & Tablet Views in Progress</h2>
@@ -20,7 +22,7 @@
       </p>
       <a href="https://falkowska-portfolio.onrender.com/" class="portfolio-link">See My Portfolio Website</a>
     </div>
-    }
+    } -->
   </div>
 </div>
 }
@@ -38,3 +40,8 @@
   >
   <div class="bottom-section"><app-navbar></app-navbar></div>
 </div>
+
+
+
+<!-- 
+(click)="visibleDialog !== 'mobileNotice' ? closeDialog(null) : null" -->

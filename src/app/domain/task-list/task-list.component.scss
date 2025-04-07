@@ -13,13 +13,14 @@ flex:1;
   // padding: 10px;
   border-radius: 12px;
   background-color: rgba(white, 0.45);
+  margin:10px;
 
 
 }
 
 .title {
   color: #222222;
-  font-size: 32px;
+  font-size: 28px;
   font-weight: 400;
   text-align: center;
   margin: 20px 0;
@@ -50,11 +51,20 @@ flex:1;
 }
 
 @media screen and (min-width: 1440px) {
-  .task-list-body {
+  .task-list-wrapper {
     
     padding: 15px 7px;
   }
 
+}
+
+@media screen and (min-width: 1024px) {
+  .task-list-body {    
+    padding: 15px 7px;
+  }
+  .title {    
+    font-size: 32px;    
+  }
 }
 
 

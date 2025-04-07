@@ -1,9 +1,10 @@
 .navbar {
   display: flex;
-  justify-content: center;
-  margin: 20px auto;
+  flex-direction: column;
+  align-items: center;
+  margin: 20px 15px auto;
+  padding: 8px 5px;
   gap: 15px;
-  padding: 5px 8px;
   border-radius: 12px;
   background-color: rgba(white, 0.25);
   backdrop-filter: blur(3px);
@@ -52,7 +53,7 @@
 }
 
 .settings-tab .tab-tile::before {
-  background: linear-gradient(45deg, #fac6cc,#8adbe5);
+  background: linear-gradient(45deg, #fac6cc, #8adbe5);
 }
 
 .notifications-tab .tab-tile::before {
@@ -60,16 +61,13 @@
 }
 
 .tab.selected .tab-tile {
-  transform: translateY(-30%);
+  transform: translateX(23%);
   transition-duration: 0.4s;
-  transition-timing-function: cubic-bezier(0,0,0,1.7);
+  transition-timing-function: cubic-bezier(0, 0, 0, 1.7);
   &::before {
     opacity: 1;
   }
-
 }
-
-
 
 // .tab.selected .tab-tile::before {
 //   transform: skew(45deg, -45deg) scale(0.7);
@@ -83,13 +81,13 @@
 // }
 
 .badge {
-  position:absolute;
-  top:-5px;
-  right:-8px;
+  position: absolute;
+  top: -5px;
+  right: -8px;
   background-color: #d54b21;
-  color:white;
+  color: white;
   border-radius: 50%;
-  padding:2px 5px;
+  padding: 2px 5px;
   font-size: 12px;
   display: flex;
   justify-content: center;
@@ -100,5 +98,19 @@
   .navbar {
     margin: 40px auto 20px;
     padding: 10px 12px;
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  .navbar {
+    flex-direction: row;
+    justify-content: center;
+    margin: 20px auto;
+
+    padding: 5px 8px;
+  }
+
+  .tab.selected .tab-tile {
+    transform: translateY(-30%);
   }
 }
