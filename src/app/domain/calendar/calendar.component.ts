@@ -65,7 +65,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
       views: {
         multiMonthYear: {
           type: 'multiMonthYear',
-          duration: { months: 12 },
+          duration: { years: 1 },
           multiMonthMaxColumns: 3,
           buttonText: 'year',
           aspectRatio: 1.35,
@@ -110,6 +110,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
       eventDragStop: this.handleEventDragStop.bind(this),
       eventDrop: this.handleEventDrop.bind(this),
       eventClick: this.handleEventClick.bind(this),
+      datesSet: () => this.scrollToCurrentMonth(),
     };
   }
 
@@ -173,4 +174,20 @@ export class CalendarComponent implements OnInit, OnDestroy {
   //   let calendarApi = this.calendarComponent.getApi();
   //   calendarApi.changeView('multiMonthYear');
   // }
+
+  scrollToCurrentMonth(): void {
+    setTimeout(() => {
+      const today = new Date();
+      const currentMonth = today.toLocaleString('en-US', { month: 'long' });  
+      const months = document.querySelectorAll('.fc-multimonth-month');
+        
+      for (const month of months) {
+        const header = month.querySelector('.fc-multimonth-title');
+        if (header?.textContent?.toLowerCase().includes(currentMonth.toLowerCase())) {
+          month.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          break;
+        }
+      }
+    }, 0);
+  }
 }
