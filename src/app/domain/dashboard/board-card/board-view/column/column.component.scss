@@ -26,17 +26,7 @@
 
     &::-webkit-scrollbar {
       width: 7px;
-    }
-
-    .task-card-wrapper {
-      position: relative;
-      background: rgba(white, 0.35);
-      // background: rgba(black, 0.07);
-      border-radius: 10px;
-      margin-bottom: 10px;
-      padding: 15px 10px 15px 15px;
-      cursor: move;
-    }
+    }    
 
     .priority-band {
       position: absolute;
@@ -55,7 +45,18 @@
   }
 }
 
+.task-card-wrapper {
+  position: relative;
+  background: rgba(white, 0.35);
+  // background: rgba(black, 0.07);
+  border-radius: 10px;
+  margin-bottom: 10px;
+  padding: 15px 10px 15px 15px;
+  cursor: move;
+}
+
 .cdk-drag-preview {
+  @extend .task-card-wrapper;
   box-sizing: border-box;
   border-radius: 10px;
   box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
@@ -99,3 +100,10 @@ app-editable-header {
     padding-bottom: 15px;
   }
 }
+
+
+
+// vvv
+
+
+
